@@ -46,13 +46,18 @@ function parsePhp(content) {
     var isInSingleQuotedString  = false;
     var isInDoubleQuotedString  = false;
     var isInHereDocString       = false;
+    var isInHereDocTag          = false;
+    var hereDocTag              = null;
     var previousChar            = "";
+    var charDouble              = "";
+    var charTriple              = "";
     var buffer                  = "";
     var commentList             = [];
 
     while (!scanner.hasEnded.call(scanner)) {
         var char        = scanner.getNextChar.call(scanner);
-        var charDouble  = previousChar + char;
+        charTriple      = charDouble + char;
+        charDouble      = previousChar + char;
         previousChar    = char;
 
         if (isInDoubleQuotedString && '"' == char && '\\"' != charDouble) {
@@ -61,6 +66,30 @@ function parsePhp(content) {
         } else if (isInSingleQuotedString && "'" == char && "\\'" != charDouble) {
             isInSingleQuotedString = false;
             continue;
+        } else if (isInHereDocTag) {
+            if ("\n" == char || "\r" == char) {
+                hereDocTag          = buffer;
+                hereDocTag          = hereDocTag.replace(/['"]/g, '');
+                buffer              = "";
+                isInHereDocTag      = false;
+                isInHereDocString   = true;
+                continue;
+            }
+
+            buffer += char;
+            continue;
+        } else if (isInHereDocString) {
+            if ("\n" == char || "\r" == char) {
+                if (hereDocTag == buffer || `${hereDocTag};` == buffer) {
+                    isInHereDocString = false;
+                }
+
+                buffer = "";
+                continue;
+            }
+
+            buffer += char;
+            continue;
         } else if (isInSingleQuotedString || isInDoubleQuotedString || isInHereDocString) {
             continue;
         } else if ('"' == char) {
@@ -68,6 +97,9 @@ function parsePhp(content) {
             continue;
         } else if ("'" == char) {
             isInSingleQuotedString = true;
+            continue;
+        } else if ("<<<" == charTriple) {
+            isInHereDocTag = true;
             continue;
         }
 

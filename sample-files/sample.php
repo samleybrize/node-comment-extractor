@@ -57,12 +57,14 @@ $t = 4; /* TODO should appear7 */
 STR TEXT
 STR;
 
-<<<STR
+<<<'STR'
 /*
  * TODO should not appear10
  */
 STR;
 
-<<<STR
+<<<"STR"
 # TODO should not appear11
 STR;
+
+$t = 4; /* TODO should appear8 */
