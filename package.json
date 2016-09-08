@@ -10,7 +10,6 @@
     "dependencies": {
     },
     "devDependencies": {
-        "eslint": "^2.13.1",
         "mocha": "^2.5.3",
         "chai": "^3.5.0"
     }
