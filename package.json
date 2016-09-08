@@ -1,0 +1,17 @@
+{
+    "name": "node-comment-parser",
+    "version": "0.0.0",
+    "description": "todo",
+    "scripts": {
+        "test": "mocha"
+    },
+    "author": "Stephen Berquet",
+    "private": true,
+    "dependencies": {
+    },
+    "devDependencies": {
+        "eslint": "^2.13.1",
+        "mocha": "^2.5.3",
+        "chai": "^3.5.0"
+    }
+}

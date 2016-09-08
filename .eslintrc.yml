@@ -1,0 +1,26 @@
+root: true
+parserOptions:
+    ecmaVersion: 6
+    sourceType: module
+env:
+    es6: true
+    node: true
+    browser: true
+    mocha: true
+extends: 'eslint:recommended'
+rules:
+    comma-dangle:
+        - warn
+        - always-multiline
+    semi:
+        - warn
+        - always
+    no-debugger: warn
+    no-console: warn
+    quotes:
+        - warn
+        - single
+        - avoid-escape
+    indent:
+        - warn
+        - 4
