@@ -5,7 +5,11 @@ import { SourceCode } from './source-code';
 export class SourceCodeFile implements SourceCode {
     private sourceCodeString:string;
 
-    constructor(private filePath:string) {
+    constructor(private identifier:string, private filePath:string) {
+    }
+
+    getIdentifier() : string {
+        return this.identifier;
     }
 
     getNextCharacter() : string {
@@ -22,5 +26,9 @@ export class SourceCodeFile implements SourceCode {
     hasReachedEndOfSourceCode() : boolean {
         // return !this.sourceCodeString[this.index];
         return true;
+    }
+
+    setBufferSize(bufferSize:number) {
+
     }
 }

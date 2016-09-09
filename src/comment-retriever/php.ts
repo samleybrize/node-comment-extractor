@@ -70,7 +70,7 @@ export class CommentRetrieverPhp implements CommentRetriever {
                 if ("\n" == char || "\r" == char) {
                     buffer = buffer.trim();
 
-                    commentList.push(new Comment(buffer, 0, 1, ''));
+                    commentList.push(new Comment(buffer, 0, sourceCode.getIdentifier()));
                     isInSingleLineComment   = false;
                     buffer                  = "";
                     continue;
@@ -84,7 +84,7 @@ export class CommentRetrieverPhp implements CommentRetriever {
                     buffer = buffer.replace(new RegExp('\\*+\\s*$'), '');
                     buffer = buffer.trim();
 
-                    commentList.push(new Comment(buffer, 0, 0, ''));
+                    commentList.push(new Comment(buffer, 0, sourceCode.getIdentifier()));
                     isInMultiLineComment    = false;
                     buffer                  = "";
                     continue;

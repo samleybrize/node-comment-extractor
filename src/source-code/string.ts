@@ -3,7 +3,11 @@ import { SourceCode } from './source-code';
 export class SourceCodeString implements SourceCode {
     private index = 0;
 
-    constructor(private sourceCodeString:string) {
+    constructor(private identifier:string, private sourceCodeString:string) {
+    }
+
+    getIdentifier() : string {
+        return this.identifier;
     }
 
     getNextCharacter() : string {

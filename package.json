@@ -1,18 +1,23 @@
 {
-    "name": "node-comment-parser",
+    "name": "comment-extractor",
+    "description": "Extracts comments from source files with a not regex-based parser. Various languages supported.",
+    "keywords": [
+        "comment-parser",
+        "comment",
+        "parser",
+        "todo"
+    ],
     "version": "0.0.0",
-    "description": "todo",
+    "author": "Stephen Berquet",
+    "private": true,
+    "main": "src/index.js",
     "scripts": {
         "postinstall": "typings install",
         "typings": "typings",
-        "test": "mocha",
-        "pretest": "tsc",
+        "test": "mocha ./dist/tests --recursive",
+        "pretest": "npm run tsc",
         "tsc": "tsc",
         "pretsc": "rm -rf ./dist "
-    },
-    "author": "Stephen Berquet",
-    "private": true,
-    "dependencies": {
     },
     "devDependencies": {
         "mocha": "^2.5.3",
