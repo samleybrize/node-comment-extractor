@@ -3,7 +3,8 @@
     "version": "0.0.0",
     "description": "todo",
     "scripts": {
-        "test": "mocha"
+        "test": "mocha",
+        "typings": "typings"
     },
     "author": "Stephen Berquet",
     "private": true,
@@ -11,6 +12,8 @@
     },
     "devDependencies": {
         "mocha": "^2.5.3",
-        "chai": "^3.5.0"
+        "chai": "^3.5.0",
+        "typescript": "^1.8.0",
+        "typings": "^1.3.0"
     }
 }
