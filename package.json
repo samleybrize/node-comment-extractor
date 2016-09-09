@@ -3,8 +3,12 @@
     "version": "0.0.0",
     "description": "todo",
     "scripts": {
+        "postinstall": "typings install",
+        "typings": "typings",
         "test": "mocha",
-        "typings": "typings"
+        "pretest": "tsc",
+        "tsc": "tsc",
+        "pretsc": "rm -rf ./dist "
     },
     "author": "Stephen Berquet",
     "private": true,

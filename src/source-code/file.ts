@@ -9,16 +9,18 @@ export class SourceCodeFile implements SourceCode {
     }
 
     getNextCharacter() : string {
-        if (this.hasReachedEndOfSourceCode()) {
-            return "";
-        }
+        // if (this.hasReachedEndOfSourceCode()) {
+        //     return "";
+        // }
 
-        let char = this.sourceCodeString[this.index];
-        this.index++;
-        return char;
+        // let char = this.sourceCodeString[this.index];
+        // this.index++;
+        // return char;
+        return "";
     }
 
     hasReachedEndOfSourceCode() : boolean {
-        return !this.sourceCodeString[this.index];
+        // return !this.sourceCodeString[this.index];
+        return true;
     }
 }
