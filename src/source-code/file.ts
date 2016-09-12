@@ -16,13 +16,13 @@ export class SourceCodeFile implements SourceCode {
         this.sourceCodeFileDescriptor = fs.openSync(filePath, 'r');
     }
 
-    getIdentifier() : string {
+    getIdentifier(): string {
         return this.identifier;
     }
 
-    getNextCharacter() : string {
+    getNextCharacter(): string {
         if (this.hasReachedEndOfSourceCode()) {
-            return "";
+            return '';
         }
 
         let char = this.sourceCodeBuffer[this.sourceCodeBufferIndex];
@@ -30,7 +30,7 @@ export class SourceCodeFile implements SourceCode {
         return char;
     }
 
-    hasReachedEndOfSourceCode() : boolean {
+    hasReachedEndOfSourceCode(): boolean {
         if (!this.sourceCodeEndOfFileReached && this.isAllBufferReaded()) {
             this.readFileIntoBuffer();
         }

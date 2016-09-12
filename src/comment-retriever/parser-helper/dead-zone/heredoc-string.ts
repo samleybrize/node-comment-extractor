@@ -43,7 +43,7 @@ export class ParserHelperDeadZoneHeredocString implements ParserHelperDeadZone {
         }
     }
 
-    isInDeadZone() : boolean {
+    isInDeadZone(): boolean {
         return this.isInString || this.isInTagName;
     }
 

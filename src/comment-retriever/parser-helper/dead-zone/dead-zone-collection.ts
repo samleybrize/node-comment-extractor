@@ -30,7 +30,7 @@ export class ParserHelperDeadZoneCollection implements ParserHelperDeadZone {
         }
     }
 
-    isInDeadZone() : boolean {
+    isInDeadZone(): boolean {
         for (let i in this.parserHelperList) {
             if (this.parserHelperList[i].isInDeadZone()) {
                 return true;

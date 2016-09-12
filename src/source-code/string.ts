@@ -6,13 +6,13 @@ export class SourceCodeString implements SourceCode {
     constructor(private identifier:string, private sourceCodeString:string) {
     }
 
-    getIdentifier() : string {
+    getIdentifier(): string {
         return this.identifier;
     }
 
-    getNextCharacter() : string {
+    getNextCharacter(): string {
         if (this.hasReachedEndOfSourceCode()) {
-            return "";
+            return '';
         }
 
         let char = this.sourceCodeString[this.index];
@@ -20,7 +20,7 @@ export class SourceCodeString implements SourceCode {
         return char;
     }
 
-    hasReachedEndOfSourceCode() : boolean {
+    hasReachedEndOfSourceCode(): boolean {
         return !this.sourceCodeString[this.index];
     }
 }

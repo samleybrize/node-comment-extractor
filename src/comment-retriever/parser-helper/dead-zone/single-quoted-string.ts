@@ -7,14 +7,14 @@ export class ParserHelperDeadZoneSingleQuotedString implements ParserHelperDeadZ
     addCharacter(character:string) {
         if (!this.isInDeadZone() && "'" == character) {
             this.isInString = true;
-        } else if (this.isInDeadZone() && "'" == character && "\\" != this.lastCharacter) {
+        } else if (this.isInDeadZone() && "'" == character && '\\' != this.lastCharacter) {
             this.isInString = false;
         }
 
         this.lastCharacter = character;
     }
 
-    isInDeadZone() : boolean {
+    isInDeadZone(): boolean {
         return this.isInString;
     }
 

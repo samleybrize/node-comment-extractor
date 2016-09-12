@@ -4,7 +4,7 @@ import { LineCounter } from '../line-counter';
 import { SourceCode } from '../source-code/source-code';
 
 export class CommentRetrieverPhp implements CommentRetriever {
-    getCommentList(sourceCode:SourceCode) : Comment[] {
+    getCommentList(sourceCode:SourceCode): Comment[] {
         let isInSingleLineComment   = false;
         let isInMultiLineComment    = false;
         let isInSingleQuotedString  = false;
@@ -12,10 +12,10 @@ export class CommentRetrieverPhp implements CommentRetriever {
         let isInHereDocString       = false;
         let isInHereDocTag          = false;
         let hereDocTag              = null;
-        let previousChar            = "";
-        let charDouble              = "";
-        let charTriple              = "";
-        let buffer                  = "";
+        let previousChar            = '';
+        let charDouble              = '';
+        let charTriple              = '';
+        let buffer                  = '';
         let commentList:Comment[]   = [];
         let lineCounter             = new LineCounter();
         let commentLineStart        = null;
@@ -35,10 +35,10 @@ export class CommentRetrieverPhp implements CommentRetriever {
                     isInSingleQuotedString = false;
                     continue;
                 } else if (isInHereDocTag) {
-                    if ("\n" == char || "\r" == char) {
+                    if ('\n' == char || '\r' == char) {
                         hereDocTag          = buffer;
                         hereDocTag          = hereDocTag.replace(/['"]/g, '');
-                        buffer              = "";
+                        buffer              = '';
                         isInHereDocTag      = false;
                         isInHereDocString   = true;
                         continue;
@@ -47,12 +47,12 @@ export class CommentRetrieverPhp implements CommentRetriever {
                     buffer += char;
                     continue;
                 } else if (isInHereDocString) {
-                    if ("\n" == char || "\r" == char) {
+                    if ('\n' == char || '\r' == char) {
                         if (hereDocTag == buffer || `${hereDocTag};` == buffer) {
                             isInHereDocString = false;
                         }
 
-                        buffer = "";
+                        buffer = '';
                         continue;
                     }
 
@@ -66,19 +66,19 @@ export class CommentRetrieverPhp implements CommentRetriever {
                 } else if ("'" == char) {
                     isInSingleQuotedString = true;
                     continue;
-                } else if ("<<<" == charTriple) {
+                } else if ('<<<' == charTriple) {
                     isInHereDocTag = true;
                     continue;
                 }
             }
 
             if (isInSingleLineComment) {
-                if ("\n" == char || "\r" == char) {
+                if ('\n' == char || '\r' == char) {
                     buffer = buffer.trim();
 
                     commentList.push(new Comment(buffer, commentLineStart, sourceCode.getIdentifier()));
                     isInSingleLineComment   = false;
-                    buffer                  = "";
+                    buffer                  = '';
                     commentLineStart        = null;
                     continue;
                 }
@@ -86,13 +86,13 @@ export class CommentRetrieverPhp implements CommentRetriever {
                 buffer += char;
                 continue;
             } else if (isInMultiLineComment) {
-                if ("*/" == charDouble) {
+                if ('*/' == charDouble) {
                     let commentToStripMatch = buffer.match(new RegExp('^[\\s*]+'));
 
                     if (commentToStripMatch) {
-                        let lineCounter = new LineCounter();
-                        lineCounter.addText(commentToStripMatch[0]);
-                        commentLineStart += lineCounter.getCurrentLineNumber() - 1;
+                        let commentLineCounter = new LineCounter();
+                        commentLineCounter.addText(commentToStripMatch[0]);
+                        commentLineStart += commentLineCounter.getCurrentLineNumber() - 1;
                     }
 
                     buffer = buffer.replace(new RegExp('^\\s*\\*+'), '');
@@ -101,18 +101,18 @@ export class CommentRetrieverPhp implements CommentRetriever {
 
                     commentList.push(new Comment(buffer, commentLineStart, sourceCode.getIdentifier()));
                     isInMultiLineComment    = false;
-                    buffer                  = "";
+                    buffer                  = '';
                     commentLineStart        = null;
                     continue;
                 }
 
                 buffer += char;
                 continue;
-            } else if ("//" == charDouble || "#" == char) {
+            } else if ('//' == charDouble || '#' == char) {
                 isInSingleLineComment   = true;
                 commentLineStart        = lineCounter.getCurrentLineNumber();
                 continue;
-            } else if ("/*" == charDouble) {
+            } else if ('/*' == charDouble) {
                 isInMultiLineComment    = true;
                 commentLineStart        = lineCounter.getCurrentLineNumber();
                 continue;

@@ -1,6 +1,6 @@
 export class LineCounter {
     private currentLineNumber = 1;
-    private lastCharacter = "";
+    private lastCharacter = '';
 
     addText(text:string) {
         let textLength = text.length;
@@ -20,12 +20,12 @@ export class LineCounter {
         this.lastCharacter = character;
     }
 
-    getCurrentLineNumber() : number {
+    getCurrentLineNumber(): number {
         return this.currentLineNumber;
     }
 
     reset() {
         this.currentLineNumber  = 1;
-        this.lastCharacter      = "";
+        this.lastCharacter      = '';
     }
 }

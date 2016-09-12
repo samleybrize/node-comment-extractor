@@ -7,7 +7,7 @@ export class ParserHelperDeadZoneDoubleQuotedString implements ParserHelperDeadZ
     addCharacter(character:string) {
         if (!this.isInDeadZone() && '"' == character) {
             this.isInString = true;
-        } else if (this.isInDeadZone() && '"' == character && "\\" != this.lastCharacter) {
+        } else if (this.isInDeadZone() && '"' == character && '\\' != this.lastCharacter) {
             this.isInString = false;
         }
 
