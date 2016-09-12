@@ -49,7 +49,7 @@ describe('source code: file', () => {
     it('should throw an error when file does not exists', () => {
         let fn = () => {
             new SourceCodeFile('tests/fixtures/source-code/file-that-does-not-exists', 'tests/fixtures/source-code/file-that-does-not-exists');
-        }
+        };
         expect(fn).to.throw("no such file or directory, access 'tests/fixtures/source-code/file-that-does-not-exists'");
     });
     it('should throw an error when buffer size is lower than 1', () => {

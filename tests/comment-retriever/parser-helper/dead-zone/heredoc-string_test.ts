@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import * as path from 'path';
 
 import { ParserHelperDeadZoneHeredocString } from '../../../../src';
 
@@ -10,7 +9,7 @@ describe('parser helper: dead zone: heredoc string', () => {
     });
 
     it('should enter in dead zone', () => {
-        let sourceCodeString    = ' ' + '\n' + "$t = 4; <<<TAG\nstr\nTAG;";
+        let sourceCodeString    = ' ' + '\n' + '$t = 4; <<<TAG\nstr\nTAG;';
         let parserHelper        = new ParserHelperDeadZoneHeredocString();
 
         parserHelper.addCharacter(sourceCodeString[0]);
@@ -45,7 +44,7 @@ describe('parser helper: dead zone: heredoc string', () => {
     });
 
     it('should leave dead zone', () => {
-        let sourceCodeString    = ' ' + '\n' + "$t = 4; <<<TAG\nstr\nTAG;\n";
+        let sourceCodeString    = ' ' + '\n' + '$t = 4; <<<TAG\nstr\nTAG;\n';
         let parserHelper        = new ParserHelperDeadZoneHeredocString();
 
         parserHelper.addCharacter(sourceCodeString[10]);

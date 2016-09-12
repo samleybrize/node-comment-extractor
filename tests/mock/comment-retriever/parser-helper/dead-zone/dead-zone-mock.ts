@@ -18,7 +18,7 @@ export class ParserHelperDeadZoneMock implements ParserHelperDeadZone {
         }
     }
 
-    isInDeadZone() : boolean {
+    isInDeadZone(): boolean {
         return this.isInDeadZoneProperty;
     }
 
@@ -41,7 +41,7 @@ export class ParserHelperDeadZoneMock implements ParserHelperDeadZone {
         this.willLeaveDeadZoneOnNextCharacter = willLeaveDeadZoneOnNextCharacter;
     }
 
-    getLastCharacter() : string {
+    getLastCharacter(): string {
         return this.lastCharacter;
     }
 }
