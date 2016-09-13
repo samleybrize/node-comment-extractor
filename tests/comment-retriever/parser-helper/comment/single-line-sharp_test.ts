@@ -80,5 +80,6 @@ describe('parser helper: comment: single line sharp', () => {
         parserHelper.addCharacter(sourceCodeString[12]);
 
         expect(parserHelper.getLastCommentText()).to.equal('comment');
+        expect(parserHelper.getLastCommentLineStart()).to.equal(1);
     });
 });

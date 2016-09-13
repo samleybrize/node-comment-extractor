@@ -101,6 +101,7 @@ describe('parser helper: comment: collection', () => {
 
         parserHelperCollection.addCharacter('a');
         parserHelperMock2.setWillBeInCommentOnNextCharacter(true);
+        parserHelperMock2.setCommentLineStartOnNextCharacter(3);
         parserHelperCollection.addCharacter('b');
         parserHelperCollection.addCharacter('c');
         parserHelperCollection.addCharacter('d');
@@ -114,6 +115,7 @@ describe('parser helper: comment: collection', () => {
         expect(parserHelperMock1.getLastCommentText()).to.equal(null);
         expect(parserHelperMock2.getLastCommentText()).to.equal(null);
         expect(parserHelperCollection.getLastCommentText()).to.equal('cd\nefg');
+        expect(parserHelperCollection.getLastCommentLineStart()).to.equal(3);
     });
 
     it('should empty last comment text when one of its parser helpers enters comment', () => {
@@ -132,5 +134,6 @@ describe('parser helper: comment: collection', () => {
         parserHelperCollection.addCharacter('d');
         parserHelperCollection.addCharacter('e');
         expect(parserHelperCollection.getLastCommentText()).to.equal(null);
+        expect(parserHelperCollection.getLastCommentLineStart()).to.equal(null);
     });
 });

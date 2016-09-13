@@ -57,7 +57,7 @@ describe('parser helper: comment: multiline slash asterisk', () => {
     });
 
     it('should return comment text', () => {
-        let sourceCodeString    = '/** \n * comment \n **/';
+        let sourceCodeString    = '/** \n * comment \n \n * k **/';
         let parserHelper        = new ParserHelperCommentMultiLineSlashAsterisk();
 
         parserHelper.addCharacter(sourceCodeString[0]);
@@ -81,7 +81,14 @@ describe('parser helper: comment: multiline slash asterisk', () => {
         parserHelper.addCharacter(sourceCodeString[18]);
         parserHelper.addCharacter(sourceCodeString[19]);
         parserHelper.addCharacter(sourceCodeString[20]);
+        parserHelper.addCharacter(sourceCodeString[21]);
+        parserHelper.addCharacter(sourceCodeString[22]);
+        parserHelper.addCharacter(sourceCodeString[23]);
+        parserHelper.addCharacter(sourceCodeString[24]);
+        parserHelper.addCharacter(sourceCodeString[25]);
+        parserHelper.addCharacter(sourceCodeString[26]);
 
-        expect(parserHelper.getLastCommentText()).to.equal('comment');
+        expect(parserHelper.getLastCommentText()).to.equal('comment\n\nk');
+        expect(parserHelper.getLastCommentLineStart()).to.equal(2);
     });
 });

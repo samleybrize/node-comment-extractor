@@ -1,10 +1,12 @@
 import { ParserHelperComment } from './comment';
+import { LineCounter } from '../../../line-counter';
 
 export class ParserHelperCommentMultiLineSlashAsterisk implements ParserHelperComment {
     private isInCommentProperty = false;
     private lastCharacter = '';
     private commentTextBuffer = '';
     private lastCommentText:string;
+    private lastCommentLineStart:number;
 
     addCharacter(character:string) {
         if (this.isInComment()) {
@@ -27,14 +29,29 @@ export class ParserHelperCommentMultiLineSlashAsterisk implements ParserHelperCo
 
     private endOfComment() {
         let lastCommentText         = this.commentTextBuffer;
-        lastCommentText             = lastCommentText.replace(/^(\*|\s)+/, '');
-        lastCommentText             = lastCommentText.replace(/(\*|\s)+$/, '');
+        let lastCommentLineStart    = this.calculateLineStart(lastCommentText);
+        lastCommentText             = lastCommentText.replace(/^[\t *]+/gm, '');
+        lastCommentText             = lastCommentText.replace(/[\t *]+$/gm, '');
         lastCommentText             = lastCommentText.trim();
 
         this.lastCommentText        = lastCommentText;
+        this.lastCommentLineStart   = lastCommentLineStart;
         this.lastCharacter          = '';
         this.commentTextBuffer      = '';
         this.isInCommentProperty    = false;
+    }
+
+    private calculateLineStart(text:string): number {
+        let commentLineStart    = 1;
+        let commentToStripMatch = text.match(/^[\s*]+/);
+
+        if (commentToStripMatch) {
+            let commentLineCounter = new LineCounter();
+            commentLineCounter.addText(commentToStripMatch[0]);
+            commentLineStart = commentLineCounter.getCurrentLineNumber();
+        }
+
+        return commentLineStart;
     }
 
     isInComment(): boolean {
@@ -45,10 +62,15 @@ export class ParserHelperCommentMultiLineSlashAsterisk implements ParserHelperCo
         return this.lastCommentText;
     }
 
+    getLastCommentLineStart(): number {
+        return this.lastCommentLineStart;
+    }
+
     reset() {
         this.isInCommentProperty    = false;
         this.lastCharacter          = '';
         this.commentTextBuffer      = '';
         this.lastCommentText        = null;
+        this.lastCommentLineStart   = null;
     }
 }

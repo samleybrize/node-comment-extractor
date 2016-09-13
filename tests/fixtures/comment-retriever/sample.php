@@ -7,7 +7,7 @@
 /*
 text
 TODO should appear3
-text
+ * text
 */
 
 /*

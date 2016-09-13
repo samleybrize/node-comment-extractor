@@ -83,5 +83,6 @@ describe('parser helper: comment: single line double slash', () => {
         parserHelper.addCharacter(sourceCodeString[12]);
 
         expect(parserHelper.getLastCommentText()).to.equal('comment');
+        expect(parserHelper.getLastCommentLineStart()).to.equal(1);
     });
 });

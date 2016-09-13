@@ -1,121 +1,60 @@
 import { Comment } from '../comment';
 import { CommentRetriever } from './comment-retriever';
 import { LineCounter } from '../line-counter';
+import { ParserHelperDeadZoneCollection } from './parser-helper/dead-zone/dead-zone-collection';
+import { ParserHelperDeadZoneDoubleQuotedString } from './parser-helper/dead-zone/double-quoted-string';
+import { ParserHelperDeadZoneHeredocString } from './parser-helper/dead-zone/heredoc-string';
+import { ParserHelperDeadZoneSingleQuotedString } from './parser-helper/dead-zone/single-quoted-string';
+import { ParserHelperCommentCollection } from './parser-helper/comment/comment-collection';
+import { ParserHelperCommentMultiLineSlashAsterisk } from './parser-helper/comment/multi-line-slash-asterisk';
+import { ParserHelperCommentSingleLineDoubleSlash } from './parser-helper/comment/single-line-double-slash';
+import { ParserHelperCommentSingleLineSharp } from './parser-helper/comment/single-line-sharp';
 import { SourceCode } from '../source-code/source-code';
 
 export class CommentRetrieverPhp implements CommentRetriever {
     getCommentList(sourceCode:SourceCode): Comment[] {
-        let isInSingleLineComment   = false;
-        let isInMultiLineComment    = false;
-        let isInSingleQuotedString  = false;
-        let isInDoubleQuotedString  = false;
-        let isInHereDocString       = false;
-        let isInHereDocTag          = false;
-        let hereDocTag              = null;
-        let previousChar            = '';
-        let charDouble              = '';
-        let charTriple              = '';
-        let buffer                  = '';
-        let commentList:Comment[]   = [];
         let lineCounter             = new LineCounter();
+        let commentList:Comment[]   = [];
         let commentLineStart        = null;
+        let parserHelperDeadZone    = new ParserHelperDeadZoneCollection();
+        parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneDoubleQuotedString());
+        parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneSingleQuotedString());
+        parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneHeredocString());
+        let parserHelperComment     = new ParserHelperCommentCollection();
+        parserHelperComment.addParserHelper(new ParserHelperCommentMultiLineSlashAsterisk());
+        parserHelperComment.addParserHelper(new ParserHelperCommentSingleLineDoubleSlash());
+        parserHelperComment.addParserHelper(new ParserHelperCommentSingleLineSharp());
 
         while (!sourceCode.hasReachedEndOfSourceCode()) {
-            let char        = sourceCode.getNextCharacter();
-            charTriple      = charDouble + char;
-            charDouble      = previousChar + char;
-            previousChar    = char;
-            lineCounter.addText(char);
+            let character = sourceCode.getNextCharacter();
+            lineCounter.addText(character);
 
-            if (!isInSingleLineComment && !isInMultiLineComment) {
-                if (isInDoubleQuotedString && '"' == char && '\\"' != charDouble) {
-                    isInDoubleQuotedString = false;
-                    continue;
-                } else if (isInSingleQuotedString && "'" == char && "\\'" != charDouble) {
-                    isInSingleQuotedString = false;
-                    continue;
-                } else if (isInHereDocTag) {
-                    if ('\n' == char || '\r' == char) {
-                        hereDocTag          = buffer;
-                        hereDocTag          = hereDocTag.replace(/['"]/g, '');
-                        buffer              = '';
-                        isInHereDocTag      = false;
-                        isInHereDocString   = true;
-                        continue;
-                    }
+            if (!parserHelperComment.isInComment()) {
+                let isInDeadZone = parserHelperDeadZone.isInDeadZone();
+                parserHelperDeadZone.addCharacter(character);
 
-                    buffer += char;
-                    continue;
-                } else if (isInHereDocString) {
-                    if ('\n' == char || '\r' == char) {
-                        if (hereDocTag == buffer || `${hereDocTag};` == buffer) {
-                            isInHereDocString = false;
-                        }
-
-                        buffer = '';
-                        continue;
-                    }
-
-                    buffer += char;
-                    continue;
-                } else if (isInSingleQuotedString || isInDoubleQuotedString || isInHereDocString) {
-                    continue;
-                } else if ('"' == char) {
-                    isInDoubleQuotedString = true;
-                    continue;
-                } else if ("'" == char) {
-                    isInSingleQuotedString = true;
-                    continue;
-                } else if ('<<<' == charTriple) {
-                    isInHereDocTag = true;
+                if (isInDeadZone && !parserHelperDeadZone.isInDeadZone()) {
+                    // just leaved a dead zone, we don't want to give the character to the comment parser helper
                     continue;
                 }
             }
 
-            if (isInSingleLineComment) {
-                if ('\n' == char || '\r' == char) {
-                    buffer = buffer.trim();
+            if (!parserHelperDeadZone.isInDeadZone()) {
+                let isInComment = parserHelperComment.isInComment();
+                parserHelperComment.addCharacter(character);
 
-                    commentList.push(new Comment(buffer, commentLineStart, sourceCode.getIdentifier()));
-                    isInSingleLineComment   = false;
-                    buffer                  = '';
-                    commentLineStart        = null;
-                    continue;
+                if (!isInComment && parserHelperComment.isInComment()) {
+                    // entered in a comment
+                    commentLineStart = lineCounter.getCurrentLineNumber();
+                } else if (isInComment && !parserHelperComment.isInComment()) {
+                    // leaved a comment
+                    commentList.push(new Comment(
+                        parserHelperComment.getLastCommentText(),
+                        commentLineStart + parserHelperComment.getLastCommentLineStart() - 1,
+                        sourceCode.getIdentifier()
+                    ));
+                    commentLineStart = null;
                 }
-
-                buffer += char;
-                continue;
-            } else if (isInMultiLineComment) {
-                if ('*/' == charDouble) {
-                    let commentToStripMatch = buffer.match(new RegExp('^[\\s*]+'));
-
-                    if (commentToStripMatch) {
-                        let commentLineCounter = new LineCounter();
-                        commentLineCounter.addText(commentToStripMatch[0]);
-                        commentLineStart += commentLineCounter.getCurrentLineNumber() - 1;
-                    }
-
-                    buffer = buffer.replace(new RegExp('^\\s*\\*+'), '');
-                    buffer = buffer.replace(new RegExp('\\*+\\s*$'), '');
-                    buffer = buffer.trim();
-
-                    commentList.push(new Comment(buffer, commentLineStart, sourceCode.getIdentifier()));
-                    isInMultiLineComment    = false;
-                    buffer                  = '';
-                    commentLineStart        = null;
-                    continue;
-                }
-
-                buffer += char;
-                continue;
-            } else if ('//' == charDouble || '#' == char) {
-                isInSingleLineComment   = true;
-                commentLineStart        = lineCounter.getCurrentLineNumber();
-                continue;
-            } else if ('/*' == charDouble) {
-                isInMultiLineComment    = true;
-                commentLineStart        = lineCounter.getCurrentLineNumber();
-                continue;
             }
         }
 

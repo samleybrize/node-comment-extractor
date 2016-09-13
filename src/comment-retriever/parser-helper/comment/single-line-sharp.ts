@@ -40,6 +40,10 @@ export class ParserHelperCommentSingleLineSharp implements ParserHelperComment {
         return this.lastCommentText;
     }
 
+    getLastCommentLineStart(): number {
+        return 1;
+    }
+
     reset() {
         this.isInCommentProperty    = false;
         this.commentTextBuffer      = '';

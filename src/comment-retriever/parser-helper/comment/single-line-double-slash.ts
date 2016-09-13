@@ -44,6 +44,10 @@ export class ParserHelperCommentSingleLineDoubleSlash implements ParserHelperCom
         return this.lastCommentText;
     }
 
+    getLastCommentLineStart(): number {
+        return 1;
+    }
+
     reset() {
         this.isInCommentProperty    = false;
         this.lastCharacter          = '';

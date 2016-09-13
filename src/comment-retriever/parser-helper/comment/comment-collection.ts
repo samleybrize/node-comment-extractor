@@ -4,6 +4,7 @@ export class ParserHelperCommentCollection implements ParserHelperComment {
     private parserHelperList:ParserHelperComment[] = [];
     private inCommentParserHelper:ParserHelperComment;
     private lastCommentText:string;
+    private lastCommentLineStart:number;
 
     addParserHelper(parserHelper:ParserHelperComment) {
         this.parserHelperList.push(parserHelper);
@@ -15,9 +16,11 @@ export class ParserHelperCommentCollection implements ParserHelperComment {
 
             if (!this.inCommentParserHelper.isInComment()) {
                 let lastCommentText         = this.inCommentParserHelper.getLastCommentText();
+                let lastCommentLineStart    = this.inCommentParserHelper.getLastCommentLineStart();
                 this.inCommentParserHelper  = null;
                 this.reset();
                 this.lastCommentText        = lastCommentText;
+                this.lastCommentLineStart   = lastCommentLineStart;
             }
 
             return;
@@ -29,6 +32,7 @@ export class ParserHelperCommentCollection implements ParserHelperComment {
             if (this.parserHelperList[i].isInComment()) {
                 this.inCommentParserHelper  = this.parserHelperList[i];
                 this.lastCommentText        = null;
+                this.lastCommentLineStart   = null;
                 break;
             }
         }
@@ -46,6 +50,10 @@ export class ParserHelperCommentCollection implements ParserHelperComment {
 
     getLastCommentText(): string {
         return this.lastCommentText;
+    }
+
+    getLastCommentLineStart(): number {
+        return this.lastCommentLineStart;
     }
 
     reset() {
