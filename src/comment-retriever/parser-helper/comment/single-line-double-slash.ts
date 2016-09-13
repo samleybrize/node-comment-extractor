@@ -26,8 +26,12 @@ export class ParserHelperCommentSingleLineDoubleSlash implements ParserHelperCom
     }
 
     private endOfComment() {
+        let lastCommentText         = this.commentTextBuffer;
+        lastCommentText             = lastCommentText.replace(/^\/+/, '');
+        lastCommentText             = lastCommentText.trim();
+
+        this.lastCommentText        = lastCommentText;
         this.lastCharacter          = '';
-        this.lastCommentText        = this.commentTextBuffer;
         this.commentTextBuffer      = '';
         this.isInCommentProperty    = false;
     }

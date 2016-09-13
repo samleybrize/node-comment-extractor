@@ -23,7 +23,11 @@ export class ParserHelperCommentSingleLineSharp implements ParserHelperComment {
     }
 
     private endOfComment() {
-        this.lastCommentText        = this.commentTextBuffer;
+        let lastCommentText         = this.commentTextBuffer;
+        lastCommentText             = lastCommentText.replace(/^#+/, '');
+        lastCommentText             = lastCommentText.trim();
+
+        this.lastCommentText        = lastCommentText;
         this.commentTextBuffer      = '';
         this.isInCommentProperty    = false;
     }
