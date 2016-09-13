@@ -1,22 +1,49 @@
 import { ParserHelperComment } from './comment';
 
 export class ParserHelperCommentSingleLineDoubleSlash implements ParserHelperComment {
+    private isInCommentProperty = false;
+    private lastCharacter = '';
+    private commentTextBuffer = '';
+    private lastCommentText:string;
+
     addCharacter(character:string) {
-        // TODO
+        if (this.isInComment()) {
+            if ('\r' == character || '\n' == character) {
+                this.endOfComment();
+            } else {
+                this.commentTextBuffer += character;
+            }
+        } else if ('/' == character && '/' == this.lastCharacter) {
+            this.startOfComment();
+        } else {
+            this.lastCharacter = character;
+        }
+    }
+
+    private startOfComment() {
+        this.isInCommentProperty    = true;
+        this.commentTextBuffer      = '';
+    }
+
+    private endOfComment() {
+        this.lastCharacter          = '';
+        this.lastCommentText        = this.commentTextBuffer;
+        this.commentTextBuffer      = '';
+        this.isInCommentProperty    = false;
     }
 
     isInComment(): boolean {
-        // TODO
-
-        return false;
+        return this.isInCommentProperty;
     }
 
     getLastCommentText(): string {
-        // TODO
-        return '';
+        return this.lastCommentText;
     }
 
     reset() {
-        // TODO
+        this.isInCommentProperty    = false;
+        this.lastCharacter          = '';
+        this.commentTextBuffer      = '';
+        this.lastCommentText        = null;
     }
 }
