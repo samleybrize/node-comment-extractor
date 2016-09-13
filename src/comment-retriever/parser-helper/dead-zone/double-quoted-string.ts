@@ -14,7 +14,7 @@ export class ParserHelperDeadZoneDoubleQuotedString implements ParserHelperDeadZ
         this.lastCharacter = character;
     }
 
-    isInDeadZone() : boolean {
+    isInDeadZone(): boolean {
         return this.isInString;
     }
 
