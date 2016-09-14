@@ -26,15 +26,15 @@ export class SourceCodePartial implements SourceCode {
     }
 
     private getIgnoredZoneByStartPosition(): SourceCodeZone {
-
+        return null;
     }
 
     private isNextPositionStartsAnIgnoredZone(): boolean {
-
+        return false;
     }
 
     private isNextPositionEndsAnIgnoredZone(ignoredZone:SourceCodeZone): boolean {
-
+        return false;
     }
 
     getCurrentPosition(): number {

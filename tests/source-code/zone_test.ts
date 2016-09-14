@@ -65,7 +65,7 @@ describe('source code: Partial', () => {
         expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.equal(true);
     });
 
-    it.skip('should return true if there is no more non-ignored characters', () => {
+    it('should return true if there is no more non-ignored characters', () => {
         let sourceCodeString    = new SourceCodeString('the-identifier', 'source');
         let sourceCodePartial   = new SourceCodePartial(sourceCodeString, [
             new SourceCodeZone(4, 6),
@@ -76,7 +76,7 @@ describe('source code: Partial', () => {
         expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.equal(true);
     });
 
-    it.skip('should return true if source code is empty', () => {
+    it('should return true if source code is empty', () => {
         let sourceCodeString    = new SourceCodeString('the-identifier', '');
         let sourceCodePartial   = new SourceCodePartial(sourceCodeString, [
             new SourceCodeZone(4, 6),
