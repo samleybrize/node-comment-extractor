@@ -24,7 +24,9 @@ export * from './comment-retriever/parser-helper/dead-zone/single-quoted-string'
 
 export * from './source-code/source-code';
 export * from './source-code/file';
+export * from './source-code/partial';
 export * from './source-code/string';
+export * from './source-code/zone';
 
 export * from './comment';
 export * from './line-counter';
