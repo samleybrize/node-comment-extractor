@@ -4,8 +4,13 @@ export class ParserHelperCommentSingleLineSharp implements ParserHelperComment {
     private isInCommentProperty = false;
     private commentTextBuffer = '';
     private lastCommentText:string;
+    private isNoMoreCharacter = false;
 
     addCharacter(character:string) {
+        if (this.isNoMoreCharacter) {
+            throw "Can't add a character because noMoreCharacter() was called. Use reset() before adding any character";
+        }
+
         if (this.isInComment()) {
             if ('\r' == character || '\n' == character) {
                 this.endOfComment();
@@ -20,6 +25,7 @@ export class ParserHelperCommentSingleLineSharp implements ParserHelperComment {
     private startOfComment() {
         this.isInCommentProperty    = true;
         this.commentTextBuffer      = '';
+        this.lastCommentText        = null;
     }
 
     private endOfComment() {
@@ -41,12 +47,23 @@ export class ParserHelperCommentSingleLineSharp implements ParserHelperComment {
     }
 
     getLastCommentLineStart(): number {
-        return 1;
+        return (null !== this.lastCommentText) ? 1 : null;
+    }
+
+    noMoreCharacter() {
+        this.isNoMoreCharacter = true;
+
+        if (this.isInComment()) {
+            this.endOfComment();
+        } else {
+            this.lastCommentText = null;
+        }
     }
 
     reset() {
         this.isInCommentProperty    = false;
         this.commentTextBuffer      = '';
         this.lastCommentText        = null;
+        this.isNoMoreCharacter      = false;
     }
 }

@@ -5,8 +5,13 @@ export class ParserHelperCommentSingleLineDoubleSlash implements ParserHelperCom
     private lastCharacter = '';
     private commentTextBuffer = '';
     private lastCommentText:string;
+    private isNoMoreCharacter = false;
 
     addCharacter(character:string) {
+        if (this.isNoMoreCharacter) {
+            throw "Can't add a character because noMoreCharacter() was called. Use reset() before adding any character";
+        }
+
         if (this.isInComment()) {
             if ('\r' == character || '\n' == character) {
                 this.endOfComment();
@@ -23,6 +28,7 @@ export class ParserHelperCommentSingleLineDoubleSlash implements ParserHelperCom
     private startOfComment() {
         this.isInCommentProperty    = true;
         this.commentTextBuffer      = '';
+        this.lastCommentText        = null;
     }
 
     private endOfComment() {
@@ -45,7 +51,18 @@ export class ParserHelperCommentSingleLineDoubleSlash implements ParserHelperCom
     }
 
     getLastCommentLineStart(): number {
-        return 1;
+        return (null !== this.lastCommentText) ? 1 : null;
+    }
+
+    noMoreCharacter() {
+        this.isNoMoreCharacter = true;
+
+        if (this.isInComment()) {
+            this.endOfComment();
+        } else {
+            this.lastCharacter          = '';
+            this.lastCommentText        = null;
+        }
     }
 
     reset() {
@@ -53,5 +70,6 @@ export class ParserHelperCommentSingleLineDoubleSlash implements ParserHelperCom
         this.lastCharacter          = '';
         this.commentTextBuffer      = '';
         this.lastCommentText        = null;
+        this.isNoMoreCharacter      = false;
     }
 }

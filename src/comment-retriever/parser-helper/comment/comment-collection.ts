@@ -15,12 +15,7 @@ export class ParserHelperCommentCollection implements ParserHelperComment {
             this.inCommentParserHelper.addCharacter(character);
 
             if (!this.inCommentParserHelper.isInComment()) {
-                let lastCommentText         = this.inCommentParserHelper.getLastCommentText();
-                let lastCommentLineStart    = this.inCommentParserHelper.getLastCommentLineStart();
-                this.inCommentParserHelper  = null;
-                this.reset();
-                this.lastCommentText        = lastCommentText;
-                this.lastCommentLineStart   = lastCommentLineStart;
+                this.endOfComment();
             }
 
             return;
@@ -30,15 +25,32 @@ export class ParserHelperCommentCollection implements ParserHelperComment {
             this.parserHelperList[i].addCharacter(character);
 
             if (this.parserHelperList[i].isInComment()) {
-                this.inCommentParserHelper  = this.parserHelperList[i];
-                this.lastCommentText        = null;
-                this.lastCommentLineStart   = null;
+                this.startOfComment(this.parserHelperList[i]);
                 break;
             }
         }
     }
 
+    private startOfComment(parserHelper:ParserHelperComment) {
+        this.inCommentParserHelper  = parserHelper;
+        this.lastCommentText        = null;
+        this.lastCommentLineStart   = null;
+    }
+
+    private endOfComment() {
+        let lastCommentText         = this.inCommentParserHelper.getLastCommentText();
+        let lastCommentLineStart    = this.inCommentParserHelper.getLastCommentLineStart();
+        this.inCommentParserHelper  = null;
+        this.reset();
+        this.lastCommentText        = lastCommentText;
+        this.lastCommentLineStart   = lastCommentLineStart;
+    }
+
     isInComment(): boolean {
+        if (this.inCommentParserHelper) {
+            return true;
+        }
+
         for (let i in this.parserHelperList) {
             if (this.parserHelperList[i].isInComment()) {
                 return true;
@@ -56,8 +68,22 @@ export class ParserHelperCommentCollection implements ParserHelperComment {
         return this.lastCommentLineStart;
     }
 
+    noMoreCharacter() {
+        for (let i in this.parserHelperList) {
+            this.parserHelperList[i].noMoreCharacter();
+        }
+
+        if (this.isInComment()) {
+            this.endOfComment();
+        } else {
+            this.lastCommentText        = null;
+            this.lastCommentLineStart   = null;
+        }
+    }
+
     reset() {
-        this.lastCommentText = null;
+        this.lastCommentText        = null;
+        this.lastCommentLineStart   = null;
 
         for (let i in this.parserHelperList) {
             this.parserHelperList[i].reset();

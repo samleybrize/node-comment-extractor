@@ -7,8 +7,13 @@ export class ParserHelperCommentMultiLineSlashAsterisk implements ParserHelperCo
     private commentTextBuffer = '';
     private lastCommentText:string;
     private lastCommentLineStart:number;
+    private isNoMoreCharacter = false;
 
     addCharacter(character:string) {
+        if (this.isNoMoreCharacter) {
+            throw "Can't add a character because noMoreCharacter() was called. Use reset() before adding any character";
+        }
+
         if (this.isInComment()) {
             if ('*' == this.lastCharacter && '/' == character) {
                 this.endOfComment();
@@ -25,6 +30,8 @@ export class ParserHelperCommentMultiLineSlashAsterisk implements ParserHelperCo
     private startOfComment() {
         this.isInCommentProperty    = true;
         this.commentTextBuffer      = '';
+        this.lastCommentText        = null;
+        this.lastCommentLineStart   = null;
     }
 
     private endOfComment() {
@@ -66,11 +73,24 @@ export class ParserHelperCommentMultiLineSlashAsterisk implements ParserHelperCo
         return this.lastCommentLineStart;
     }
 
+    noMoreCharacter() {
+        this.isNoMoreCharacter = true;
+
+        if (this.isInComment()) {
+            this.endOfComment();
+        } else {
+            this.lastCharacter          = '';
+            this.lastCommentText        = null;
+            this.lastCommentLineStart   = null;
+        }
+    }
+
     reset() {
         this.isInCommentProperty    = false;
         this.lastCharacter          = '';
         this.commentTextBuffer      = '';
         this.lastCommentText        = null;
         this.lastCommentLineStart   = null;
+        this.isNoMoreCharacter      = false;
     }
 }

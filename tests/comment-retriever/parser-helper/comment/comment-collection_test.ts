@@ -136,4 +136,67 @@ describe('parser helper: comment: collection', () => {
         expect(parserHelperCollection.getLastCommentText()).to.equal(null);
         expect(parserHelperCollection.getLastCommentLineStart()).to.equal(null);
     });
+
+    it('should end current comment when noMoreCharacter() is called', () => {
+        let parserHelperMock1       = new ParserHelperCommentMock();
+        let parserHelperMock2       = new ParserHelperCommentMock();
+        let parserHelperCollection  = new ParserHelperCommentCollection();
+        parserHelperCollection.addParserHelper(parserHelperMock1);
+        parserHelperCollection.addParserHelper(parserHelperMock2);
+
+        parserHelperMock2.setWillBeInCommentOnNextCharacter(true);
+        parserHelperMock2.setCommentLineStartOnNextCharacter(3);
+        parserHelperCollection.addCharacter('a');
+        parserHelperCollection.addCharacter('b');
+        parserHelperCollection.addCharacter('c');
+
+        parserHelperCollection.noMoreCharacter();
+        expect(parserHelperCollection.getLastCommentText()).to.equal('bc');
+        expect(parserHelperCollection.getLastCommentLineStart()).to.equal(3);
+    });
+
+    it('should reset lastCommentText when noMoreCharacter() is called', () => {
+        let parserHelperMock1       = new ParserHelperCommentMock();
+        let parserHelperMock2       = new ParserHelperCommentMock();
+        let parserHelperCollection  = new ParserHelperCommentCollection();
+        parserHelperCollection.addParserHelper(parserHelperMock1);
+        parserHelperCollection.addParserHelper(parserHelperMock2);
+
+        parserHelperMock2.setWillBeInCommentOnNextCharacter(true);
+        parserHelperCollection.addCharacter('a');
+        parserHelperCollection.addCharacter('b');
+        parserHelperCollection.addCharacter('c');
+        parserHelperMock2.setWillLeaveCommentOnNextCharacter(true);
+        parserHelperCollection.addCharacter('d');
+
+        parserHelperCollection.noMoreCharacter();
+        expect(parserHelperCollection.getLastCommentText()).to.equal(null);
+        expect(parserHelperCollection.getLastCommentLineStart()).to.equal(null);
+    });
+
+    it('should throw an error when calling addCharacter() after noMoreCharacter()', () => {
+        let fn = () => {
+            let parserHelperMock1       = new ParserHelperCommentMock();
+            let parserHelperMock2       = new ParserHelperCommentMock();
+            let parserHelperCollection  = new ParserHelperCommentCollection();
+            parserHelperCollection.addParserHelper(parserHelperMock1);
+            parserHelperCollection.addParserHelper(parserHelperMock2);
+
+            parserHelperCollection.noMoreCharacter();
+            parserHelperCollection.addCharacter('e');
+        };
+        expect(fn).to.throw("Can't add a character because noMoreCharacter() was called. Use reset() before adding any character");
+    });
+
+    it('should accept a character when reset() was called after noMoreCharacter()', () => {
+        let parserHelperMock1       = new ParserHelperCommentMock();
+        let parserHelperMock2       = new ParserHelperCommentMock();
+        let parserHelperCollection  = new ParserHelperCommentCollection();
+        parserHelperCollection.addParserHelper(parserHelperMock1);
+        parserHelperCollection.addParserHelper(parserHelperMock2);
+
+        parserHelperCollection.noMoreCharacter();
+        parserHelperCollection.reset();
+        parserHelperCollection.addCharacter('e');
+    });
 });

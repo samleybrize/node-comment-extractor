@@ -9,8 +9,13 @@ export class ParserHelperCommentMock implements ParserHelperComment {
     private buffer = '';
     private lastCommentText;
     private lastCommentLineStart;
+    private isNoMoreCharacter = false;
 
     addCharacter(character:string) {
+        if (this.isNoMoreCharacter) {
+            throw "Can't add a character because noMoreCharacter() was called. Use reset() before adding any character";
+        }
+
         this.lastCharacter = character;
 
         if (this.isInComment()) {
@@ -18,14 +23,22 @@ export class ParserHelperCommentMock implements ParserHelperComment {
         }
 
         if (this.willBeInCommentOnNextCharacter) {
-            this.setIsInComment(true);
-            this.willBeInCommentOnNextCharacter = false;
-            this.lastCommentLineStart           = this.commentLineStartOnNextCharacter ? this.commentLineStartOnNextCharacter : 1;
+            this.startOfComment();
         } else if (this.willLeaveCommentOnNextCharacter) {
-            this.lastCommentText = this.buffer;
-            this.setIsInComment(false);
-            this.willLeaveCommentOnNextCharacter = false;
+            this.endOfComment();
         }
+    }
+
+    private startOfComment() {
+        this.setIsInComment(true);
+        this.willBeInCommentOnNextCharacter = false;
+        this.lastCommentLineStart           = this.commentLineStartOnNextCharacter ? this.commentLineStartOnNextCharacter : 1;
+    }
+
+    private endOfComment() {
+        this.lastCommentText = this.buffer;
+        this.setIsInComment(false);
+        this.willLeaveCommentOnNextCharacter = false;
     }
 
     isInComment(): boolean {
@@ -40,12 +53,25 @@ export class ParserHelperCommentMock implements ParserHelperComment {
         return this.lastCommentLineStart;
     }
 
+    noMoreCharacter() {
+        this.isNoMoreCharacter = true;
+
+        if (this.isInComment()) {
+            this.endOfComment();
+        } else {
+            this.lastCharacter          = '';
+            this.lastCommentText        = null;
+            this.lastCommentLineStart   = null;
+        }
+    }
+
     reset() {
         this.isInCommentProperty                = false;
         this.buffer                             = '';
         this.lastCharacter                      = '';
         this.lastCommentText                    = null;
         this.lastCommentLineStart               = null;
+        this.isNoMoreCharacter                  = false;
         this.willBeInCommentOnNextCharacter     = false;
         this.willLeaveCommentOnNextCharacter    = false;
         this.commentLineStartOnNextCharacter    = null;

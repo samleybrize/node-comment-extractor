@@ -56,7 +56,7 @@ describe('source code: file', () => {
         let fn = () => {
             let sourceFile = new SourceCodeFile('tests/fixtures/source-code/file-that-does-not-exists', 'tests/fixtures/source-code/file-end-of-source-code');
             sourceFile.setBufferSize(0);
-        }
+        };
         expect(fn).to.throw("Buffer size can't be lower than 1");
     });
 });

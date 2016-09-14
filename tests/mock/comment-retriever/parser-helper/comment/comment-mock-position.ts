@@ -36,6 +36,10 @@ export class ParserHelperCommentMockPosition implements ParserHelperComment {
         return 1;
     }
 
+    noMoreCharacter() {
+        //
+    }
+
     reset() {
         this.characterCounter           = 0;
         this.lastCommentText            = null;

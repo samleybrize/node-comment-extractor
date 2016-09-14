@@ -1,70 +1,70 @@
 <?php
 
-// TODO should appear1
+// should appear1
 
-# TODO should appear2
+# should appear2
 
 /*
 text
-TODO should appear3
+should appear3
  * text
 */
 
 /*
- * TODO should appear8
+ * should appear8
  */
 
-/** TODO should appear4 */
+/** should appear4 */
 
-$t = 4; // TODO should appear5
+$t = 4; // should appear5
 
-$t = 4; # TODO should appear6
+$t = 4; # should appear6
 
-$t = 4; /* TODO should appear7 */
+$t = 4; /* should appear7 */
 
 "
 \"
-// TODO should not appear3
+// should not appear3
 ";
 
 "
 /*
- * TODO should not appear4
+ * should not appear4
  */
 ";
 
 "
-# TODO should not appear6
+# should not appear6
 ";
 
 '
 \'
-// TODO should not appear7
+// should not appear7
 ';
 
 '
 /*
- * TODO should not appear8
+ * should not appear8
  */
 ';
 
 '
-# TODO should not appear9
+# should not appear9
 ';
 
 <<<STR
-// TODO should not appear5
+// should not appear5
 STR TEXT
 STR;
 
 <<<'STR'
 /*
- * TODO should not appear10
+ * should not appear10
  */
 STR;
 
 <<<"STR"
-# TODO should not appear11
+# should not appear11
 STR;
 
-$t = 4; /* TODO should 'appear9' */
+$t = 4; /* should 'appear9' */

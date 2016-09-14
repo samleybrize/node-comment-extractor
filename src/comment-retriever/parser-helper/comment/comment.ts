@@ -3,5 +3,6 @@ export interface ParserHelperComment {
     isInComment(): boolean;
     getLastCommentText(): string;
     getLastCommentLineStart(): number;
+    noMoreCharacter();
     reset();
 }
