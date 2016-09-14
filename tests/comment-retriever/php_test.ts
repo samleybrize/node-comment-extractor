@@ -91,8 +91,8 @@ describe('comment retriever: php', () => {
         let commentList         = commentRetriever.getCommentList(sourceCode);
 
         expect(commentList).to.be.an('array').that.have.lengthOf(1);
-        expect(commentList[0].text).to.equal('ZE');
-        expect(commentList[0].lineStart).to.equal(1);
+        expect(commentList[0].text).to.equal('comment');
+        expect(commentList[0].lineStart).to.equal(2);
         expect(commentList[0].sourceIdentifier).to.equal('php-sample');
     });
 });

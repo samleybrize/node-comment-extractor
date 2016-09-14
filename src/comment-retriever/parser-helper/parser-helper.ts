@@ -43,6 +43,15 @@ export class ParserHelper {
             }
         }
 
+        if (parserHelperComment.isInComment()) {
+            parserHelperComment.noMoreCharacter();
+            commentList.push(new Comment(
+                parserHelperComment.getLastCommentText(),
+                commentLineStart + parserHelperComment.getLastCommentLineStart() - 1,
+                sourceCode.getIdentifier()
+            ));
+        }
+
         return commentList;
     }
 }
