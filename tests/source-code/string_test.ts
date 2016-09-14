@@ -65,5 +65,18 @@ describe('source code: string', () => {
         let character = sourceCode.getNextCharacter();
         expect(character).to.equal('s');
         expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
+        expect(sourceCode.getCurrentPosition()).to.equal(1);
+    });
+
+    it('should return the current position', () => {
+        let sourceCode = new SourceCodeString('the-identifier', 'source\n');
+
+        expect(sourceCode.getCurrentPosition()).to.equal(0);
+
+        sourceCode.getNextCharacter();
+        sourceCode.getNextCharacter();
+        sourceCode.getNextCharacter();
+
+        expect(sourceCode.getCurrentPosition()).to.equal(3);
     });
 });

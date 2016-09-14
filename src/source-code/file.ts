@@ -13,6 +13,7 @@ export class SourceCodeFile implements SourceCode {
     private sourceCodeBuffer:string;
     private sourceCodeBufferSize = 0;
     private sourceCodeBufferIndex = 0;
+    private sourceCodeIndex = 0;
     private sourceCodeFileDescriptor:number;
     private sourceCodeEndOfFileReached = false;
     private bufferSize = 1000;
@@ -28,10 +29,11 @@ export class SourceCodeFile implements SourceCode {
             fs.closeSync(this.sourceCodeFileDescriptor);
         }
 
-        this.sourceCodeFileDescriptor = fs.openSync(this.filePath, 'r');
+        this.sourceCodeFileDescriptor   = fs.openSync(this.filePath, 'r');
         this.sourceCodeBuffer           = null;
         this.sourceCodeBufferSize       = 0;
         this.sourceCodeBufferIndex      = 0;
+        this.sourceCodeIndex            = 0;
         this.sourceCodeEndOfFileReached = false;
     }
 
@@ -46,7 +48,12 @@ export class SourceCodeFile implements SourceCode {
 
         let char = this.sourceCodeBuffer[this.sourceCodeBufferIndex];
         this.sourceCodeBufferIndex++;
+        this.sourceCodeIndex++;
         return char;
+    }
+
+    getCurrentPosition(): number {
+        return this.sourceCodeIndex;
     }
 
     hasReachedEndOfSourceCode(): boolean {

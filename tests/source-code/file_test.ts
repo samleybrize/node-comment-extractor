@@ -74,6 +74,8 @@ describe('source code: file', () => {
     it('should reset its state', () => {
         let fixtureFilePath = path.join(__dirname, '../../../tests/fixtures/source-code/file-reset');
         let sourceCode      = new SourceCodeFile('tests/fixtures/source-code/file-reset', fixtureFilePath);
+        sourceCode.setBufferSize(3);
+
         sourceCode.getNextCharacter();
         sourceCode.getNextCharacter();
         sourceCode.getNextCharacter();
@@ -86,5 +88,19 @@ describe('source code: file', () => {
         let character = sourceCode.getNextCharacter();
         expect(character).to.equal('s');
         expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
+        expect(sourceCode.getCurrentPosition()).to.equal(1);
+    });
+
+    it('should return the current position', () => {
+        let fixtureFilePath = path.join(__dirname, '../../../tests/fixtures/source-code/file-current-position');
+        let sourceCode      = new SourceCodeFile('tests/fixtures/source-code/file-current-position', fixtureFilePath);
+
+        expect(sourceCode.getCurrentPosition()).to.equal(0);
+
+        sourceCode.getNextCharacter();
+        sourceCode.getNextCharacter();
+        sourceCode.getNextCharacter();
+
+        expect(sourceCode.getCurrentPosition()).to.equal(3);
     });
 });

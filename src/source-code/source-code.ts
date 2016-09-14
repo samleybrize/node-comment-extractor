@@ -8,6 +8,7 @@
 export interface SourceCode {
     getIdentifier(): string;
     getNextCharacter(): string;
+    getCurrentPosition(): number;
     hasReachedEndOfSourceCode(): boolean;
     rewind();
 }

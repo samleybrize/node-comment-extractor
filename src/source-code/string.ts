@@ -27,6 +27,10 @@ export class SourceCodeString implements SourceCode {
         return char;
     }
 
+    getCurrentPosition(): number {
+        return this.index;
+    }
+
     hasReachedEndOfSourceCode(): boolean {
         return !this.sourceCodeString[this.index];
     }
