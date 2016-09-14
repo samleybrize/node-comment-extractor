@@ -14,6 +14,7 @@ describe('source code: string', () => {
         let sourceCode = new SourceCodeString('the-identifier', 'source \ncode');
         expect(sourceCode.getIdentifier()).to.equal('the-identifier');
     });
+
     it('should return all characters in order', () => {
         let sourceCode = new SourceCodeString('the-identifier', 'source \ncode');
         expect(sourceCode.getNextCharacter()).to.equal('s');
@@ -30,6 +31,7 @@ describe('source code: string', () => {
         expect(sourceCode.getNextCharacter()).to.equal('e');
         expect(sourceCode.getNextCharacter()).to.equal('');
     });
+
     it('should return true if there is no more characters', () => {
         let sourceCode = new SourceCodeString('the-identifier', 'source\n');
         expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
@@ -47,5 +49,21 @@ describe('source code: string', () => {
         expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
         sourceCode.getNextCharacter();
         expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(true);
+    });
+
+    it('should reset its state', () => {
+        let sourceCode = new SourceCodeString('the-identifier', 'source\n');
+        sourceCode.getNextCharacter();
+        sourceCode.getNextCharacter();
+        sourceCode.getNextCharacter();
+        sourceCode.getNextCharacter();
+        sourceCode.getNextCharacter();
+        sourceCode.getNextCharacter();
+        sourceCode.getNextCharacter();
+
+        sourceCode.rewind();
+        let character = sourceCode.getNextCharacter();
+        expect(character).to.equal('s');
+        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
     });
 });

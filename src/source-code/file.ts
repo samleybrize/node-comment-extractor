@@ -17,10 +17,22 @@ export class SourceCodeFile implements SourceCode {
     private sourceCodeEndOfFileReached = false;
     private bufferSize = 1000;
 
-    constructor(private identifier:string, filePath:string, private sourceCodeCharset = 'utf8') {
-        fs.accessSync(filePath, fs.constants.R_OK);
+    constructor(private identifier:string, private filePath:string, private sourceCodeCharset = 'utf8') {
+        this.openFile();
+    }
 
-        this.sourceCodeFileDescriptor = fs.openSync(filePath, 'r');
+    private openFile() {
+        fs.accessSync(this.filePath, fs.constants.R_OK);
+
+        if (this.sourceCodeFileDescriptor) {
+            fs.closeSync(this.sourceCodeFileDescriptor);
+        }
+
+        this.sourceCodeFileDescriptor = fs.openSync(this.filePath, 'r');
+        this.sourceCodeBuffer           = null;
+        this.sourceCodeBufferSize       = 0;
+        this.sourceCodeBufferIndex      = 0;
+        this.sourceCodeEndOfFileReached = false;
     }
 
     getIdentifier(): string {
@@ -66,5 +78,9 @@ export class SourceCodeFile implements SourceCode {
         }
 
         this.bufferSize = bufferSize;
+    }
+
+    rewind() {
+        this.openFile();
     }
 }

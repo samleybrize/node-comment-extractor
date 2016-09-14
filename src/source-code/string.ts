@@ -30,4 +30,8 @@ export class SourceCodeString implements SourceCode {
     hasReachedEndOfSourceCode(): boolean {
         return !this.sourceCodeString[this.index];
     }
+
+    rewind() {
+        this.index = 0;
+    }
 }
