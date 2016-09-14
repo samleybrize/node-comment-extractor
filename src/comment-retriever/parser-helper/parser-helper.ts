@@ -1,3 +1,10 @@
+/*
+ * (c) Stephen Berquet <stephen.berquet@gmail.com>
+ *
+ * Licensed under the MIT License. See the LICENSE file in
+ * the project root for license information.
+ */
+
 import { Comment } from '../../comment';
 import { LineCounter } from '../../line-counter';
 import { ParserHelperDeadZone } from './dead-zone/dead-zone';

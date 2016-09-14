@@ -1,3 +1,10 @@
+/*
+ * (c) Stephen Berquet <stephen.berquet@gmail.com>
+ *
+ * Licensed under the MIT License. See the LICENSE file in
+ * the project root for license information.
+ */
+
 import { SourceCode } from './source-code';
 
 export class SourceCodeString implements SourceCode {

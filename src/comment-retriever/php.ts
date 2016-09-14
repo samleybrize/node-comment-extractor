@@ -1,3 +1,10 @@
+/*
+ * (c) Stephen Berquet <stephen.berquet@gmail.com>
+ *
+ * Licensed under the MIT License. See the LICENSE file in
+ * the project root for license information.
+ */
+
 import { Comment } from '../comment';
 import { CommentRetriever } from './comment-retriever';
 import { ParserHelper } from './parser-helper/parser-helper';
