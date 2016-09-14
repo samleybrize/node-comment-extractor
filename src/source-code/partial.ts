@@ -17,24 +17,43 @@ export class SourceCodePartial implements SourceCode {
     }
 
     getNextCharacter(): string {
-        // TODO check if next character's position starts an ignored zone
-        // TODO = if yes:
-        // TODO = retrieve the object that ignores this position
-        // TODO = iterate over the characters until the end position is reached, or the end of source code
-        // TODO return the next character
+        if (this.isNextPositionStartsAnIgnoredZone()) {
+            let ignoredZone = this.getIgnoredZoneByStartPosition(this.getNextPosition());
+
+            do {
+                this.sourceCode.getNextCharacter();
+            } while (!this.isCurrentPositionEndsAnIgnoredZone(ignoredZone));
+        }
+
         return this.sourceCode.getNextCharacter();
     }
 
-    private getIgnoredZoneByStartPosition(): SourceCodeZone {
-        return null;
+    private getNextPosition() {
+        return this.sourceCode.getCurrentPosition() + 1;
+    }
+
+    private getIgnoredZoneByStartPosition(startPosition:number): SourceCodeZone {
+        for (let i in this.ignoredZoneList) {
+            if (startPosition === this.ignoredZoneList[i].startPosition) {
+                return this.ignoredZoneList[i];
+            }
+        }
     }
 
     private isNextPositionStartsAnIgnoredZone(): boolean {
+        let nextPosition = this.getNextPosition();
+
+        for (let i in this.ignoredZoneList) {
+            if (nextPosition === this.ignoredZoneList[i].startPosition) {
+                return true;
+            }
+        }
+
         return false;
     }
 
-    private isNextPositionEndsAnIgnoredZone(ignoredZone:SourceCodeZone): boolean {
-        return false;
+    private isCurrentPositionEndsAnIgnoredZone(ignoredZone:SourceCodeZone): boolean {
+        return this.getCurrentPosition() === ignoredZone.endPosition;
     }
 
     getCurrentPosition(): number {
