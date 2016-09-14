@@ -50,7 +50,7 @@ describe('comment retriever: php', () => {
         expect(commentList[8].lineStart).to.equal(70);
         expect(commentList[8].sourceIdentifier).to.equal('php-sample');
     });
-    
+
     it('should be able to handle multiple files', () => {
         let fixtureFilePath     = path.join(__dirname, '../../../tests/fixtures/comment-retriever/sample.php');
         let sourceCodeContent   = fs.readFileSync(fixtureFilePath, 'utf8');
@@ -82,5 +82,17 @@ describe('comment retriever: php', () => {
         expect(commentList2[6].lineStart).to.equal(21);
         expect(commentList2[7].lineStart).to.equal(23);
         expect(commentList2[8].lineStart).to.equal(70);
+    });
+
+    it('should add a non-ended comment when reached the end of the source code', () => {
+        let sourceCodeContent   = '<?php\n// comment';
+        let sourceCode          = new SourceCodeString('php-sample', sourceCodeContent);
+        let commentRetriever    = new CommentRetrieverPhp();
+        let commentList         = commentRetriever.getCommentList(sourceCode);
+
+        expect(commentList).to.be.an('array').that.have.lengthOf(1);
+        expect(commentList[0].text).to.equal('ZE');
+        expect(commentList[0].lineStart).to.equal(1);
+        expect(commentList[0].sourceIdentifier).to.equal('php-sample');
     });
 });
