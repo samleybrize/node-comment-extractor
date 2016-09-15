@@ -58,7 +58,9 @@ describe('source code: file', () => {
 
     it('should throw an error when file does not exists', () => {
         let fn = () => {
+            /* tslint:disable */
             new SourceCodeFile('tests/fixtures/source-code/file-that-does-not-exists', 'tests/fixtures/source-code/file-that-does-not-exists');
+            /* tslint:enable */
         };
         expect(fn).to.throw("no such file or directory, access 'tests/fixtures/source-code/file-that-does-not-exists'");
     });
