@@ -9,6 +9,10 @@ import { SourceCode } from './source-code';
 import { SourceCodeZone } from './zone';
 
 export class SourceCodePartial implements SourceCode {
+    private currentPosition:number = null;
+    private hasReachedEnd:boolean = null;
+    private nextCharacter:string = null;
+
     constructor(private sourceCode:SourceCode, private ignoredZoneList:SourceCodeZone[]) {
     }
 
@@ -17,6 +21,14 @@ export class SourceCodePartial implements SourceCode {
     }
 
     getNextCharacter(): string {
+        if (this.isNextCharacterPreFetched()) {
+            let character           = this.nextCharacter;
+            this.nextCharacter      = null;
+            this.currentPosition    = null;
+            this.hasReachedEnd      = null;
+            return character;
+        }
+
         if (this.isNextPositionStartsAnIgnoredZone()) {
             let ignoredZone = this.getIgnoredZoneByStartPosition(this.getNextPosition());
 
@@ -26,6 +38,10 @@ export class SourceCodePartial implements SourceCode {
         }
 
         return this.sourceCode.getNextCharacter();
+    }
+
+    private isNextCharacterPreFetched() {
+        return null !== this.nextCharacter;
     }
 
     private getNextPosition() {
@@ -57,11 +73,28 @@ export class SourceCodePartial implements SourceCode {
     }
 
     getCurrentPosition(): number {
-        return this.sourceCode.getCurrentPosition();
+        return (null !== this.currentPosition) ? this.currentPosition : this.sourceCode.getCurrentPosition();
     }
 
     hasReachedEndOfSourceCode(): boolean {
-        return this.sourceCode.hasReachedEndOfSourceCode();
+        if (!this.isNextCharacterPreFetched() && !this.sourceCode.hasReachedEndOfSourceCode()) {
+            this.preFetchNextCharacter();
+        }
+
+        return (null !== this.hasReachedEnd) ? this.hasReachedEnd : this.sourceCode.hasReachedEndOfSourceCode();
+    }
+
+    private preFetchNextCharacter() {
+        let currentPosition     = this.sourceCode.getCurrentPosition();
+        let hasReachedEnd       = this.sourceCode.hasReachedEndOfSourceCode();
+
+        this.nextCharacter      = this.getNextCharacter();
+        this.currentPosition    = currentPosition;
+        this.hasReachedEnd      = hasReachedEnd;
+
+        if ('' === this.nextCharacter) {
+            this.hasReachedEnd = true;
+        }
     }
 
     rewind() {

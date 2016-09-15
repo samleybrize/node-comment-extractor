@@ -9,7 +9,7 @@ import { expect } from 'chai';
 
 import { SourceCodeString, SourceCodePartial, SourceCodeZone } from '../../src';
 
-describe('source code: Partial', () => {
+describe('source code: partial', () => {
     it('should return the right identifier', () => {
         let sourceCodeString    = new SourceCodeString('the-identifier', 'source \ncode');
         let sourceCodePartial   = new SourceCodePartial(sourceCodeString, []);
@@ -110,11 +110,10 @@ describe('source code: Partial', () => {
         ]);
 
         expect(sourceCodePartial.getCurrentPosition()).to.equal(0);
-
         sourceCodePartial.getNextCharacter();
         sourceCodePartial.getNextCharacter();
+        expect(sourceCodePartial.getCurrentPosition()).to.equal(2);
         sourceCodePartial.getNextCharacter();
-
         expect(sourceCodePartial.getCurrentPosition()).to.equal(6);
     });
 });
