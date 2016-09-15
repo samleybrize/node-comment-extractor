@@ -7,5 +7,6 @@
 
 export class SourceCodeZone {
     constructor(public startPosition:number, public endPosition:number) {
+        // TODO ensure that end pos is not lower than start pos
     }
 }
