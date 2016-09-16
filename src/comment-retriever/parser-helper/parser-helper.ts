@@ -6,13 +6,14 @@
  */
 
 import { Comment } from '../../comment';
+import { ContextDetector } from './context-detector/context-detector';
 import { LineCounter } from '../../line-counter';
 import { ParserHelperDeadZone } from './dead-zone/dead-zone';
 import { ParserHelperComment } from './comment/comment';
 import { SourceCode } from '../../source-code/source-code';
 
 export class ParserHelper {
-    getCommentList(sourceCode:SourceCode, parserHelperDeadZone:ParserHelperDeadZone, parserHelperComment:ParserHelperComment): Comment[] {
+    getCommentList(sourceCode:SourceCode, parserHelperDeadZone:ParserHelperDeadZone, parserHelperComment:ParserHelperComment, contextDetector?:ContextDetector): Comment[] {
         let lineCounter             = new LineCounter();
         let commentList:Comment[]   = [];
         let commentLineStart        = null;
@@ -20,6 +21,14 @@ export class ParserHelper {
         while (!sourceCode.hasReachedEndOfSourceCode()) {
             let character = sourceCode.getNextCharacter();
             lineCounter.addText(character);
+
+            if (contextDetector) {
+                contextDetector.addCharacter(character);
+
+                if (!contextDetector.isInContext()) {
+                    continue;
+                }
+            }
 
             if (!parserHelperComment.isInComment()) {
                 let isInDeadZone = parserHelperDeadZone.isInDeadZone();

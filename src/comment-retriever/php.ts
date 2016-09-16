@@ -7,6 +7,7 @@
 
 import { Comment } from '../comment';
 import { CommentRetriever } from './comment-retriever';
+import { ContextDetectorPhp } from './parser-helper/context-detector/php';
 import { ParserHelper } from './parser-helper/parser-helper';
 import { ParserHelperDeadZoneCollection } from './parser-helper/dead-zone/dead-zone-collection';
 import { ParserHelperDeadZoneDoubleQuotedString } from './parser-helper/dead-zone/double-quoted-string';
@@ -20,6 +21,7 @@ import { SourceCode } from '../source-code/source-code';
 
 export class CommentRetrieverPhp implements CommentRetriever {
     getCommentList(sourceCode:SourceCode): Comment[] {
+        let contextDetector         = new ContextDetectorPhp();
         let parserHelper            = new ParserHelper();
         let parserHelperDeadZone    = new ParserHelperDeadZoneCollection();
         parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneDoubleQuotedString());
@@ -30,6 +32,6 @@ export class CommentRetrieverPhp implements CommentRetriever {
         parserHelperComment.addParserHelper(new ParserHelperCommentSingleLineDoubleSlash());
         parserHelperComment.addParserHelper(new ParserHelperCommentSingleLineSharp());
 
-        return parserHelper.getCommentList(sourceCode, parserHelperDeadZone, parserHelperComment);
+        return parserHelper.getCommentList(sourceCode, parserHelperDeadZone, parserHelperComment, contextDetector);
     }
 }

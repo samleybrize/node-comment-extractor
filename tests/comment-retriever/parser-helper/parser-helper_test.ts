@@ -9,6 +9,7 @@ import { expect } from 'chai';
 
 import { ParserHelper, SourceCodeString } from '../../../src';
 
+import { ContextDetectorMock } from '../../mock/comment-retriever/parser-helper/context-detector/context-detector-mock';
 import { ParserHelperCommentMockPosition } from '../../mock/comment-retriever/parser-helper/comment/comment-mock-position';
 import { ParserHelperDeadZoneMockPosition } from '../../mock/comment-retriever/parser-helper/dead-zone/dead-zone-mock-position';
 
@@ -80,6 +81,25 @@ describe('parser helper', () => {
 
         parserHelperComment.addCommentPosition(3, 20);
         let commentList             = parserHelper.getCommentList(sourceCode, parserHelperDeadZone, parserHelperComment);
+
+        expect(commentList).to.be.an('array').that.have.lengthOf(1);
+        expect(commentList[0].text).to.equal('ZE');
+        expect(commentList[0].lineStart).to.equal(1);
+        expect(commentList[0].sourceIdentifier).to.equal('parser-helper');
+    });
+
+    it('should return comments in zones allowed by the context detector', () => {
+        let sourceCodeContent       = '..!ZE!..';
+        let sourceCode              = new SourceCodeString('parser-helper', sourceCodeContent);
+        let parserHelper            = new ParserHelper();
+        let parserHelperComment     = new ParserHelperCommentMockPosition();
+        let parserHelperDeadZone    = new ParserHelperDeadZoneMockPosition();
+        let contextDetector         = new ContextDetectorMock();
+
+        contextDetector.addContextRange(3, 6);
+        parserHelperComment.addCommentPosition(1, 3);
+        parserHelperComment.addCommentPosition(4, 6);
+        let commentList             = parserHelper.getCommentList(sourceCode, parserHelperDeadZone, parserHelperComment, contextDetector);
 
         expect(commentList).to.be.an('array').that.have.lengthOf(1);
         expect(commentList[0].text).to.equal('ZE');
