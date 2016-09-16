@@ -9,11 +9,13 @@ import { SourceCode } from './source-code';
 import { SourceCodeZone } from './zone';
 
 export class SourceCodePartial implements SourceCode {
+    private ignoredZoneList:SourceCodeZone[];
     private currentPosition:number = null;
     private hasReachedEnd:boolean = null;
     private nextCharacter:string = null;
 
-    constructor(private sourceCode:SourceCode, private ignoredZoneList:SourceCodeZone[]) {
+    constructor(private sourceCode:SourceCode, ignoredZoneList:SourceCodeZone[]) {
+        this.ignoredZoneList = SourceCodeZone.mergeZoneList(ignoredZoneList);
     }
 
     getIdentifier(): string {
