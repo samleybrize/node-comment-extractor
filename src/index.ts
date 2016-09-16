@@ -16,6 +16,9 @@ export * from './comment-retriever/parser-helper/comment/multi-line-slash-asteri
 export * from './comment-retriever/parser-helper/comment/single-line-double-slash';
 export * from './comment-retriever/parser-helper/comment/single-line-sharp';
 
+export * from './comment-retriever/parser-helper/context-detector/context-detector';
+export * from './comment-retriever/parser-helper/context-detector/php';
+
 export * from './comment-retriever/parser-helper/dead-zone/dead-zone';
 export * from './comment-retriever/parser-helper/dead-zone/dead-zone-collection';
 export * from './comment-retriever/parser-helper/dead-zone/double-quoted-string';
