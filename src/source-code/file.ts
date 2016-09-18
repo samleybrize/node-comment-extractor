@@ -14,7 +14,7 @@ export class SourceCodeFile implements SourceCode {
     private sourceCodeBufferSize = 0;
     private sourceCodeBufferIndex = 0;
     private sourceCodeIndex = 0;
-    private sourceCodeFileDescriptor:number;
+    private sourceCodeFileDescriptor:number = null;
     private sourceCodeEndOfFileReached = false;
     private bufferSize = 1000;
 

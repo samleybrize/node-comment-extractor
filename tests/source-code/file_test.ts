@@ -21,48 +21,48 @@ describe('source code: file', () => {
         let fixtureFilePath = path.join(__dirname, '../../../tests/fixtures/source-code/file-characters');
         let sourceCode      = new SourceCodeFile('tests/fixtures/source-code/file-characters', fixtureFilePath);
         sourceCode.setBufferSize(5);
-        expect(sourceCode.getNextCharacter()).to.equal('s');
-        expect(sourceCode.getNextCharacter()).to.equal('o');
-        expect(sourceCode.getNextCharacter()).to.equal('u');
-        expect(sourceCode.getNextCharacter()).to.equal('r');
-        expect(sourceCode.getNextCharacter()).to.equal('c');
-        expect(sourceCode.getNextCharacter()).to.equal('e');
-        expect(sourceCode.getNextCharacter()).to.equal(' ');
-        expect(sourceCode.getNextCharacter()).to.equal('\n');
-        expect(sourceCode.getNextCharacter()).to.equal('c');
-        expect(sourceCode.getNextCharacter()).to.equal('o');
-        expect(sourceCode.getNextCharacter()).to.equal('d');
-        expect(sourceCode.getNextCharacter()).to.equal('e');
-        expect(sourceCode.getNextCharacter()).to.equal('');
+
+        expect(sourceCode.getNextCharacter()).to.eventually.equal('s')
+            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('o'))
+            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('u'))
+            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('r'))
+            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('c'))
+            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('e'))
+            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal(' '))
+            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('\n'))
+            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('c'))
+            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('o'))
+            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('d'))
+            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('e'))
+            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal(''))
+        ;
     });
 
     it('should return true if there is no more characters', () => {
         let fixtureFilePath = path.join(__dirname, '../../../tests/fixtures/source-code/file-end-of-source-code');
         let sourceCode      = new SourceCodeFile('tests/fixtures/source-code/file-end-of-source-code', fixtureFilePath);
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
-        sourceCode.getNextCharacter();
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
-        sourceCode.getNextCharacter();
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
-        sourceCode.getNextCharacter();
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
-        sourceCode.getNextCharacter();
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
-        sourceCode.getNextCharacter();
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
-        sourceCode.getNextCharacter();
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
-        sourceCode.getNextCharacter();
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(true);
+
+        expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false)
+            .then(() => sourceCode.getNextCharacter())
+            .then(expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
+            .then(() => sourceCode.getNextCharacter())
+            .then(expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
+            .then(() => sourceCode.getNextCharacter())
+            .then(expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
+            .then(() => sourceCode.getNextCharacter())
+            .then(expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
+            .then(() => sourceCode.getNextCharacter())
+            .then(expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
+            .then(() => sourceCode.getNextCharacter())
+            .then(expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
+            .then(() => sourceCode.getNextCharacter())
+            .then(expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(true))
+        ;
     });
 
     it('should throw an error when file does not exists', () => {
-        let fn = () => {
-            /* tslint:disable */
-            new SourceCodeFile('tests/fixtures/source-code/file-that-does-not-exists', 'tests/fixtures/source-code/file-that-does-not-exists');
-            /* tslint:enable */
-        };
-        expect(fn).to.throw("no such file or directory, access 'tests/fixtures/source-code/file-that-does-not-exists'");
+        let sourceCode = new SourceCodeFile('tests/fixtures/source-code/file-that-does-not-exists', 'tests/fixtures/source-code/file-that-does-not-exists');
+        return expect(sourceCode.getNextCharacter()).to.eventually.be.rejectedWith("no such file or directory, access 'tests/fixtures/source-code/file-that-does-not-exists'");
     });
 
     it('should throw an error when buffer size is lower than 1', () => {
@@ -78,19 +78,18 @@ describe('source code: file', () => {
         let sourceCode      = new SourceCodeFile('tests/fixtures/source-code/file-reset', fixtureFilePath);
         sourceCode.setBufferSize(3);
 
-        sourceCode.getNextCharacter();
-        sourceCode.getNextCharacter();
-        sourceCode.getNextCharacter();
-        sourceCode.getNextCharacter();
-        sourceCode.getNextCharacter();
-        sourceCode.getNextCharacter();
-        sourceCode.getNextCharacter();
-
-        sourceCode.rewind();
-        let character = sourceCode.getNextCharacter();
-        expect(character).to.equal('s');
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
-        expect(sourceCode.getCurrentPosition()).to.equal(1);
+        sourceCode.getNextCharacter()
+            .then(() => sourceCode.getNextCharacter())
+            .then(() => sourceCode.getNextCharacter())
+            .then(() => sourceCode.getNextCharacter())
+            .then(() => sourceCode.getNextCharacter())
+            .then(() => sourceCode.getNextCharacter())
+            .then(() => sourceCode.getNextCharacter())
+            .then(() => sourceCode.rewind())
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('s'))
+            .then(() => expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
+            .then(() => expect(sourceCode.getCurrentPosition()).to.eventually.equal(1))
+        ;
     });
 
     it('should return the current position', () => {
@@ -99,10 +98,10 @@ describe('source code: file', () => {
 
         expect(sourceCode.getCurrentPosition()).to.equal(0);
 
-        sourceCode.getNextCharacter();
-        sourceCode.getNextCharacter();
-        sourceCode.getNextCharacter();
-
-        expect(sourceCode.getCurrentPosition()).to.equal(3);
+        sourceCode.getNextCharacter()
+            .then(() => sourceCode.getNextCharacter())
+            .then(() => sourceCode.getNextCharacter())
+            .then(() => expect(sourceCode.getCurrentPosition()).to.equal(3))
+        ;
     });
 });
