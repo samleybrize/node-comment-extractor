@@ -5,7 +5,7 @@
  * the project root for license information.
  */
 
-import * as fs from 'fs';
+import * as fs from 'mz/fs';
 
 import { SourceCode } from './source-code';
 
@@ -19,37 +19,73 @@ export class SourceCodeFile implements SourceCode {
     private bufferSize = 1000;
 
     constructor(private identifier:string, private filePath:string, private sourceCodeCharset = 'utf8') {
-        this.openFile();
-    }
-
-    private openFile() {
-        fs.accessSync(this.filePath, fs.constants.R_OK);
-
-        if (this.sourceCodeFileDescriptor) {
-            fs.closeSync(this.sourceCodeFileDescriptor);
-        }
-
-        this.sourceCodeFileDescriptor   = fs.openSync(this.filePath, 'r');
-        this.sourceCodeBuffer           = null;
-        this.sourceCodeBufferSize       = 0;
-        this.sourceCodeBufferIndex      = 0;
-        this.sourceCodeIndex            = 0;
-        this.sourceCodeEndOfFileReached = false;
     }
 
     getIdentifier(): string {
         return this.identifier;
     }
 
-    getNextCharacter(): string {
+    getNextCharacter(): Promise<string> {
+        if (!this.isSourceCodeFileOpened()) {
+            return this.openFile().then(this.getNextCharacter);
+        }
+
+        if (!this.hasReachedEndOfSourceCode() && this.isAllBufferReaded()) {
+            return this.readFileIntoBuffer().then(this.getNextCharacter);
+        }
+
         if (this.hasReachedEndOfSourceCode()) {
-            return '';
+            return Promise.resolve('');
         }
 
         let char = this.sourceCodeBuffer[this.sourceCodeBufferIndex];
         this.sourceCodeBufferIndex++;
         this.sourceCodeIndex++;
-        return char;
+        return Promise.resolve(char);
+    }
+
+    private isSourceCodeFileOpened() {
+        return null !== this.sourceCodeFileDescriptor;
+    }
+
+    private openFile(): Promise<void> {
+        return this.isFileExists().then(() => {
+            if (this.sourceCodeFileDescriptor) {
+                let oldFileDescriptor = this.sourceCodeFileDescriptor;
+                fs.close(oldFileDescriptor);
+                this.sourceCodeFileDescriptor = null;
+            }
+
+            return fs.open(this.filePath, 'r');
+        }).then((fileDescriptor) => {
+            this.sourceCodeFileDescriptor   = fileDescriptor;
+            this.sourceCodeBuffer           = null;
+            this.sourceCodeBufferSize       = 0;
+            this.sourceCodeBufferIndex      = 0;
+            this.sourceCodeIndex            = 0;
+            this.sourceCodeEndOfFileReached = false;
+        });
+    }
+
+    private isFileExists(): Promise<void> {
+        return fs.access(this.filePath, fs.R_OK);
+    }
+
+    private isAllBufferReaded() {
+        return this.sourceCodeBufferIndex >= this.sourceCodeBufferSize;
+    }
+
+    private readFileIntoBuffer(): Promise<void> {
+        let buffer = new Buffer(this.bufferSize);
+        return fs.read(this.sourceCodeFileDescriptor, buffer, 0, this.bufferSize, null).then((result) => {
+            this.sourceCodeBufferSize   = result[0];
+            this.sourceCodeBuffer       = buffer.toString(this.sourceCodeCharset);
+            this.sourceCodeBufferIndex  = 0;
+
+            if (0 == this.sourceCodeBufferSize) {
+                this.sourceCodeEndOfFileReached = true;
+            }
+        });
     }
 
     getCurrentPosition(): number {
@@ -64,21 +100,6 @@ export class SourceCodeFile implements SourceCode {
         return this.sourceCodeEndOfFileReached;
     }
 
-    private isAllBufferReaded() {
-        return this.sourceCodeBufferIndex >= this.sourceCodeBufferSize;
-    }
-
-    private readFileIntoBuffer() {
-        let buffer                  = new Buffer(this.bufferSize);
-        this.sourceCodeBufferSize   = fs.readSync(this.sourceCodeFileDescriptor, buffer, 0, this.bufferSize, null);
-        this.sourceCodeBuffer       = buffer.toString(this.sourceCodeCharset);
-        this.sourceCodeBufferIndex  = 0;
-
-        if (0 == this.sourceCodeBufferSize) {
-            this.sourceCodeEndOfFileReached = true;
-        }
-    }
-
     setBufferSize(bufferSize:number) {
         if (bufferSize < 1) {
             throw "Buffer size can't be lower than 1";
@@ -87,7 +108,7 @@ export class SourceCodeFile implements SourceCode {
         this.bufferSize = bufferSize;
     }
 
-    rewind() {
-        this.openFile();
+    rewind(): Promise<void> {
+        return this.openFile();
     }
 }

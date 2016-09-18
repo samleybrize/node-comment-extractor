@@ -7,8 +7,8 @@
 
 export interface SourceCode {
     getIdentifier(): string;
-    getNextCharacter(): string;
+    getNextCharacter(): Promise<string>;
     getCurrentPosition(): number;
     hasReachedEndOfSourceCode(): boolean;
-    rewind();
+    rewind(): Promise<void>;
 }

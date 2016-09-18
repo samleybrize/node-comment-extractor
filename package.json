@@ -19,6 +19,9 @@
         "tsc": "tsc",
         "pretsc": "rm -rf ./dist "
     },
+    "dependencies": {
+        "mz": "^2.4.0"
+    },
     "devDependencies": {
         "mocha": "^2.5.3",
         "chai": "^3.5.0",
