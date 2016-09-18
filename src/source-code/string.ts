@@ -18,7 +18,7 @@ export class SourceCodeString implements SourceCode {
     }
 
     getNextCharacter(): Promise<string> {
-        if (this.hasReachedEndOfSourceCode()) {
+        if (this.hasReachedEndOfSourceCodeSync()) {
             return Promise.resolve('');
         }
 
@@ -31,7 +31,11 @@ export class SourceCodeString implements SourceCode {
         return this.index;
     }
 
-    hasReachedEndOfSourceCode(): boolean {
+    hasReachedEndOfSourceCode(): Promise<boolean> {
+        return Promise.resolve(this.hasReachedEndOfSourceCodeSync());
+    }
+
+    private hasReachedEndOfSourceCodeSync(): boolean {
         return !this.sourceCodeString[this.index];
     }
 

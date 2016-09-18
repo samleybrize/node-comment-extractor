@@ -22,21 +22,18 @@ export class SourceCodePartial implements SourceCode {
         return this.sourceCode.getIdentifier();
     }
 
-    getNextCharacter(): string {
+    getNextCharacter(): Promise<string> {
         if (this.isNextCharacterPreFetched()) {
             let character           = this.nextCharacter;
             this.nextCharacter      = null;
             this.currentPosition    = null;
             this.hasReachedEnd      = null;
-            return character;
+            return Promise.resolve(character);
         }
 
         if (this.isNextPositionStartsAnIgnoredZone()) {
             let ignoredZone = this.getIgnoredZoneByStartPosition(this.getNextPosition());
-
-            do {
-                this.sourceCode.getNextCharacter();
-            } while (!this.isCurrentPositionEndsAnIgnoredZone(ignoredZone));
+            return this.getNextCharacterThatEndsAnIgnoredZone(ignoredZone);
         }
 
         return this.sourceCode.getNextCharacter();
@@ -74,32 +71,65 @@ export class SourceCodePartial implements SourceCode {
         return this.getCurrentPosition() === ignoredZone.endPosition;
     }
 
+    private getNextCharacterThatEndsAnIgnoredZone(ignoredZone:SourceCodeZone) {
+        return this.sourceCode.getNextCharacter().then((character) => {
+            if (this.isCurrentPositionEndsAnIgnoredZone(ignoredZone)) {
+                return this.sourceCode.getNextCharacter();
+            } else {
+                return this.getNextCharacterThatEndsAnIgnoredZone(ignoredZone);
+            }
+        });
+    }
+
     getCurrentPosition(): number {
         return (null !== this.currentPosition) ? this.currentPosition : this.sourceCode.getCurrentPosition();
     }
 
-    hasReachedEndOfSourceCode(): boolean {
-        if (!this.isNextCharacterPreFetched() && !this.sourceCode.hasReachedEndOfSourceCode()) {
-            this.preFetchNextCharacter();
+    hasReachedEndOfSourceCode(): Promise<boolean> {
+        if (this.isNextCharacterPreFetched()) {
+            return Promise.resolve(false);
+        } else if (this.hasReachedEnd) {
+            return Promise.resolve(true);
         }
 
-        return (null !== this.hasReachedEnd) ? this.hasReachedEnd : this.sourceCode.hasReachedEndOfSourceCode();
+        return this.sourceCode.hasReachedEndOfSourceCode().then((hasReachedEnd) => {
+            if (hasReachedEnd) {
+                return true;
+            }
+
+            return this.preFetchNextCharacter().then(() => {
+                if (this.hasReachedEnd) {
+                    return true;
+                } else {
+                    return this.sourceCode.hasReachedEndOfSourceCode();
+                }
+            });
+        });
     }
 
-    private preFetchNextCharacter() {
-        let currentPosition     = this.sourceCode.getCurrentPosition();
-        let hasReachedEnd       = this.sourceCode.hasReachedEndOfSourceCode();
+    private preFetchNextCharacter(): Promise<void> {
+        let currentHasReachedEnd;
+        let currentPosition;
 
-        this.nextCharacter      = this.getNextCharacter();
-        this.currentPosition    = currentPosition;
-        this.hasReachedEnd      = hasReachedEnd;
+        return this.sourceCode.hasReachedEndOfSourceCode().then((hasReachedEnd) => {
+            currentHasReachedEnd    = hasReachedEnd;
+            currentPosition         = this.sourceCode.getCurrentPosition();
+            return this.getNextCharacter();
+        }).then((character) => {
+            this.nextCharacter      = character;
+            this.currentPosition    = currentPosition;
+            this.hasReachedEnd      = currentHasReachedEnd;
 
-        if ('' === this.nextCharacter) {
-            this.hasReachedEnd = true;
-        }
+            if ('' === this.nextCharacter) {
+                this.hasReachedEnd = true;
+            }
+        });
     }
 
-    rewind() {
+    rewind(): Promise<void> {
+        this.nextCharacter      = null;
+        this.currentPosition    = null;
+        this.hasReachedEnd      = null;
         return this.sourceCode.rewind();
     }
 }

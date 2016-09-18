@@ -9,6 +9,6 @@ export interface SourceCode {
     getIdentifier(): string;
     getNextCharacter(): Promise<string>;
     getCurrentPosition(): number;
-    hasReachedEndOfSourceCode(): boolean;
+    hasReachedEndOfSourceCode(): Promise<boolean>;
     rewind(): Promise<void>;
 }

@@ -93,6 +93,7 @@ describe('source code: partial', () => {
         sourceCodePartial.getNextCharacter();
         sourceCodePartial.getNextCharacter();
         sourceCodePartial.getNextCharacter();
+        expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.equal(true);
 
         sourceCodePartial.rewind();
         expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.equal(false);

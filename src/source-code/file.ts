@@ -30,11 +30,11 @@ export class SourceCodeFile implements SourceCode {
             return this.openFile().then(this.getNextCharacter);
         }
 
-        if (!this.hasReachedEndOfSourceCode() && this.isAllBufferReaded()) {
+        if (!this.hasReachedEndOfSourceCodeSync() && this.isAllBufferReaded()) {
             return this.readFileIntoBuffer().then(this.getNextCharacter);
         }
 
-        if (this.hasReachedEndOfSourceCode()) {
+        if (this.hasReachedEndOfSourceCodeSync()) {
             return Promise.resolve('');
         }
 
@@ -92,7 +92,11 @@ export class SourceCodeFile implements SourceCode {
         return this.sourceCodeIndex;
     }
 
-    hasReachedEndOfSourceCode(): boolean {
+    hasReachedEndOfSourceCode(): Promise<boolean> {
+        return Promise.resolve(this.hasReachedEndOfSourceCodeSync());
+    }
+
+    private hasReachedEndOfSourceCodeSync(): boolean {
         if (!this.sourceCodeEndOfFileReached && this.isAllBufferReaded()) {
             this.readFileIntoBuffer();
         }
