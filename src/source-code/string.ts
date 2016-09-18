@@ -17,14 +17,14 @@ export class SourceCodeString implements SourceCode {
         return this.identifier;
     }
 
-    getNextCharacter(): string {
+    getNextCharacter(): Promise<string> {
         if (this.hasReachedEndOfSourceCode()) {
-            return '';
+            return Promise.resolve('');
         }
 
         let char = this.sourceCodeString[this.index];
         this.index++;
-        return char;
+        return Promise.resolve(char);
     }
 
     getCurrentPosition(): number {
@@ -35,7 +35,8 @@ export class SourceCodeString implements SourceCode {
         return !this.sourceCodeString[this.index];
     }
 
-    rewind() {
+    rewind(): Promise<void> {
         this.index = 0;
+        return Promise.resolve(null);
     }
 }
