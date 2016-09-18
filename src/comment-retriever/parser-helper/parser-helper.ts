@@ -18,55 +18,55 @@ export class ParserHelper {
         let commentList:Comment[]   = [];
         let commentLineStart        = null;
 
-        while (!sourceCode.hasReachedEndOfSourceCode()) {
-            let character = sourceCode.getNextCharacter();
-            lineCounter.addText(character);
+        // while (!sourceCode.hasReachedEndOfSourceCode()) {
+        //     let character = sourceCode.getNextCharacter();
+        //     lineCounter.addText(character);
 
-            if (contextDetector) {
-                contextDetector.addCharacter(character);
+        //     if (contextDetector) {
+        //         contextDetector.addCharacter(character);
 
-                if (!contextDetector.isInContext()) {
-                    continue;
-                }
-            }
+        //         if (!contextDetector.isInContext()) {
+        //             continue;
+        //         }
+        //     }
 
-            if (!parserHelperComment.isInComment()) {
-                let isInDeadZone = parserHelperDeadZone.isInDeadZone();
-                parserHelperDeadZone.addCharacter(character);
+        //     if (!parserHelperComment.isInComment()) {
+        //         let isInDeadZone = parserHelperDeadZone.isInDeadZone();
+        //         parserHelperDeadZone.addCharacter(character);
 
-                if (isInDeadZone && !parserHelperDeadZone.isInDeadZone()) {
-                    // just leaved a dead zone, we don't want to give the character to the comment parser helper
-                    continue;
-                }
-            }
+        //         if (isInDeadZone && !parserHelperDeadZone.isInDeadZone()) {
+        //             // just leaved a dead zone, we don't want to give the character to the comment parser helper
+        //             continue;
+        //         }
+        //     }
 
-            if (!parserHelperDeadZone.isInDeadZone()) {
-                let isInComment = parserHelperComment.isInComment();
-                parserHelperComment.addCharacter(character);
+        //     if (!parserHelperDeadZone.isInDeadZone()) {
+        //         let isInComment = parserHelperComment.isInComment();
+        //         parserHelperComment.addCharacter(character);
 
-                if (!isInComment && parserHelperComment.isInComment()) {
-                    // entered in a comment
-                    commentLineStart = lineCounter.getCurrentLineNumber();
-                } else if (isInComment && !parserHelperComment.isInComment()) {
-                    // leaved a comment
-                    commentList.push(new Comment(
-                        parserHelperComment.getLastCommentText(),
-                        commentLineStart + parserHelperComment.getLastCommentLineStart() - 1,
-                        sourceCode.getIdentifier()
-                    ));
-                    commentLineStart = null;
-                }
-            }
-        }
+        //         if (!isInComment && parserHelperComment.isInComment()) {
+        //             // entered in a comment
+        //             commentLineStart = lineCounter.getCurrentLineNumber();
+        //         } else if (isInComment && !parserHelperComment.isInComment()) {
+        //             // leaved a comment
+        //             commentList.push(new Comment(
+        //                 parserHelperComment.getLastCommentText(),
+        //                 commentLineStart + parserHelperComment.getLastCommentLineStart() - 1,
+        //                 sourceCode.getIdentifier()
+        //             ));
+        //             commentLineStart = null;
+        //         }
+        //     }
+        // }
 
-        if (parserHelperComment.isInComment()) {
-            parserHelperComment.noMoreCharacter();
-            commentList.push(new Comment(
-                parserHelperComment.getLastCommentText(),
-                commentLineStart + parserHelperComment.getLastCommentLineStart() - 1,
-                sourceCode.getIdentifier()
-            ));
-        }
+        // if (parserHelperComment.isInComment()) {
+        //     parserHelperComment.noMoreCharacter();
+        //     commentList.push(new Comment(
+        //         parserHelperComment.getLastCommentText(),
+        //         commentLineStart + parserHelperComment.getLastCommentLineStart() - 1,
+        //         sourceCode.getIdentifier()
+        //     ));
+        // }
 
         return commentList;
     }

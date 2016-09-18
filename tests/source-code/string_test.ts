@@ -5,9 +5,12 @@
  * the project root for license information.
  */
 
-import { expect } from 'chai';
+import { use as chaiUse, expect } from 'chai';
+import * as chaiAsPromised from 'chai-as-promised';
 
 import { SourceCodeString } from '../../src';
+
+chaiUse(chaiAsPromised);
 
 describe('source code: string', () => {
     it('should return the right identifier', () => {
@@ -17,55 +20,61 @@ describe('source code: string', () => {
 
     it('should return all characters in order', () => {
         let sourceCode = new SourceCodeString('the-identifier', 'source \ncode');
-        expect(sourceCode.getNextCharacter()).to.equal('s');
-        expect(sourceCode.getNextCharacter()).to.equal('o');
-        expect(sourceCode.getNextCharacter()).to.equal('u');
-        expect(sourceCode.getNextCharacter()).to.equal('r');
-        expect(sourceCode.getNextCharacter()).to.equal('c');
-        expect(sourceCode.getNextCharacter()).to.equal('e');
-        expect(sourceCode.getNextCharacter()).to.equal(' ');
-        expect(sourceCode.getNextCharacter()).to.equal('\n');
-        expect(sourceCode.getNextCharacter()).to.equal('c');
-        expect(sourceCode.getNextCharacter()).to.equal('o');
-        expect(sourceCode.getNextCharacter()).to.equal('d');
-        expect(sourceCode.getNextCharacter()).to.equal('e');
-        expect(sourceCode.getNextCharacter()).to.equal('');
+        return Promise.all([
+            expect(sourceCode.getNextCharacter()).to.eventually.equal('s'),
+            expect(sourceCode.getNextCharacter()).to.eventually.equal('o'),
+            expect(sourceCode.getNextCharacter()).to.eventually.equal('u'),
+            expect(sourceCode.getNextCharacter()).to.eventually.equal('r'),
+            expect(sourceCode.getNextCharacter()).to.eventually.equal('c'),
+            expect(sourceCode.getNextCharacter()).to.eventually.equal('e'),
+            expect(sourceCode.getNextCharacter()).to.eventually.equal(' '),
+            expect(sourceCode.getNextCharacter()).to.eventually.equal('\n'),
+            expect(sourceCode.getNextCharacter()).to.eventually.equal('c'),
+            expect(sourceCode.getNextCharacter()).to.eventually.equal('o'),
+            expect(sourceCode.getNextCharacter()).to.eventually.equal('d'),
+            expect(sourceCode.getNextCharacter()).to.eventually.equal('e'),
+            expect(sourceCode.getNextCharacter()).to.eventually.equal(''),
+        ]);
     });
 
     it('should return true if there is no more characters', () => {
         let sourceCode = new SourceCodeString('the-identifier', 'source\n');
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
-        sourceCode.getNextCharacter();
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
-        sourceCode.getNextCharacter();
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
-        sourceCode.getNextCharacter();
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
-        sourceCode.getNextCharacter();
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
-        sourceCode.getNextCharacter();
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
-        sourceCode.getNextCharacter();
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
-        sourceCode.getNextCharacter();
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(true);
+        return Promise.all([
+            expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false),
+            sourceCode.getNextCharacter(),
+            expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false),
+            sourceCode.getNextCharacter(),
+            expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false),
+            sourceCode.getNextCharacter(),
+            expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false),
+            sourceCode.getNextCharacter(),
+            expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false),
+            sourceCode.getNextCharacter(),
+            expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false),
+            sourceCode.getNextCharacter(),
+            expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false),
+            sourceCode.getNextCharacter(),
+            expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(true),
+        ]);
     });
 
     it('should reset its state', () => {
         let sourceCode = new SourceCodeString('the-identifier', 'source\n');
-        sourceCode.getNextCharacter();
-        sourceCode.getNextCharacter();
-        sourceCode.getNextCharacter();
-        sourceCode.getNextCharacter();
-        sourceCode.getNextCharacter();
-        sourceCode.getNextCharacter();
-        sourceCode.getNextCharacter();
+        Promise.all([
+            sourceCode.getNextCharacter(),
+            sourceCode.getNextCharacter(),
+            sourceCode.getNextCharacter(),
+            sourceCode.getNextCharacter(),
+            sourceCode.getNextCharacter(),
+            sourceCode.getNextCharacter(),
+            sourceCode.getNextCharacter(),
+            sourceCode.rewind(),
 
-        sourceCode.rewind();
-        let character = sourceCode.getNextCharacter();
-        expect(character).to.equal('s');
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.equal(false);
-        expect(sourceCode.getCurrentPosition()).to.equal(1);
+            expect(sourceCode.getNextCharacter()).to.eventually.equal('s'),
+            expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false),
+        ]).then(() => {
+            expect(sourceCode.getCurrentPosition()).to.equal(1);
+        });
     });
 
     it('should return the current position', () => {
@@ -73,10 +82,12 @@ describe('source code: string', () => {
 
         expect(sourceCode.getCurrentPosition()).to.equal(0);
 
-        sourceCode.getNextCharacter();
-        sourceCode.getNextCharacter();
-        sourceCode.getNextCharacter();
-
-        expect(sourceCode.getCurrentPosition()).to.equal(3);
+        Promise.all([
+            sourceCode.getNextCharacter(),
+            sourceCode.getNextCharacter(),
+            sourceCode.getNextCharacter(),
+        ]).then(() => {
+            expect(sourceCode.getCurrentPosition()).to.equal(3);
+        });
     });
 });
