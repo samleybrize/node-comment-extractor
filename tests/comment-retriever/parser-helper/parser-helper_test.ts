@@ -25,17 +25,18 @@ describe('parser helper', () => {
         parserHelperComment.addCommentPosition(6, 10);
         parserHelperDeadZone.addDeadZonePosition(4, 5);
         parserHelperDeadZone.addDeadZonePosition(6, 10);
-        let commentList             = parserHelper.getCommentList(sourceCode, parserHelperDeadZone, parserHelperComment);
 
-        expect(commentList).to.be.an('array').that.have.lengthOf(2);
+        parserHelper.getCommentList(sourceCode, parserHelperDeadZone, parserHelperComment).then((commentList) => {
+            expect(commentList).to.be.an('array').that.have.lengthOf(2);
 
-        expect(commentList[0].text).to.equal('ZE');
-        expect(commentList[0].lineStart).to.equal(2);
-        expect(commentList[0].sourceIdentifier).to.equal('parser-helper');
+            expect(commentList[0].text).to.equal('ZE');
+            expect(commentList[0].lineStart).to.equal(2);
+            expect(commentList[0].sourceIdentifier).to.equal('parser-helper');
 
-        expect(commentList[1].text).to.equal('WERT');
-        expect(commentList[1].lineStart).to.equal(3);
-        expect(commentList[1].sourceIdentifier).to.equal('parser-helper');
+            expect(commentList[1].text).to.equal('WERT');
+            expect(commentList[1].lineStart).to.equal(3);
+            expect(commentList[1].sourceIdentifier).to.equal('parser-helper');
+        });
     });
 
     it('should be able to handle multiple files', () => {
@@ -50,26 +51,36 @@ describe('parser helper', () => {
         parserHelperComment.addCommentPosition(3, 5);
         parserHelperComment.addCommentPosition(6, 10);
         parserHelperDeadZone.addDeadZonePosition(4, 8);
-        let commentList1            = parserHelper.getCommentList(sourceCode1, parserHelperDeadZone, parserHelperComment);
-        parserHelperComment.reset();
-        parserHelperDeadZone.reset();
-        parserHelperComment.addCommentPosition(2, 6);
-        parserHelperDeadZone.addDeadZonePosition(2, 6);
-        let commentList2            = parserHelper.getCommentList(sourceCode2, parserHelperDeadZone, parserHelperComment);
 
-        expect(commentList1).to.be.an('array').that.have.lengthOf(2);
-        expect(commentList2).to.be.an('array').that.have.lengthOf(1);
+        let commentList1;
+        let commentList2;
+        parserHelper.getCommentList(sourceCode1, parserHelperDeadZone, parserHelperComment)
+            .then((commentList) => {
+                commentList1 = commentList;
+                parserHelperComment.reset();
+                parserHelperDeadZone.reset();
+                parserHelperComment.addCommentPosition(2, 6);
+                parserHelperDeadZone.addDeadZonePosition(2, 6);
+                return parserHelper.getCommentList(sourceCode2, parserHelperDeadZone, parserHelperComment);
+            })
+            .then((commentList) => {
+                commentList2 = commentList;
 
-        expect(commentList1[0].text).to.equal('ZE');
-        expect(commentList1[0].lineStart).to.equal(2);
-        expect(commentList1[0].sourceIdentifier).to.equal('parser-helper1');
-        expect(commentList1[1].text).to.equal('WERT');
-        expect(commentList1[1].lineStart).to.equal(3);
-        expect(commentList1[1].sourceIdentifier).to.equal('parser-helper1');
+                expect(commentList1).to.be.an('array').that.have.lengthOf(2);
+                expect(commentList2).to.be.an('array').that.have.lengthOf(1);
 
-        expect(commentList2[0].text).to.equal('ZERT');
-        expect(commentList2[0].lineStart).to.equal(4);
-        expect(commentList2[0].sourceIdentifier).to.equal('parser-helper2');
+                expect(commentList1[0].text).to.equal('ZE');
+                expect(commentList1[0].lineStart).to.equal(2);
+                expect(commentList1[0].sourceIdentifier).to.equal('parser-helper1');
+                expect(commentList1[1].text).to.equal('WERT');
+                expect(commentList1[1].lineStart).to.equal(3);
+                expect(commentList1[1].sourceIdentifier).to.equal('parser-helper1');
+
+                expect(commentList2[0].text).to.equal('ZERT');
+                expect(commentList2[0].lineStart).to.equal(4);
+                expect(commentList2[0].sourceIdentifier).to.equal('parser-helper2');
+            })
+        ;
     });
 
     it('should add a non-ended comment when reached the end of the source code', () => {
@@ -80,12 +91,13 @@ describe('parser helper', () => {
         let parserHelperDeadZone    = new ParserHelperDeadZoneMockPosition();
 
         parserHelperComment.addCommentPosition(3, 20);
-        let commentList             = parserHelper.getCommentList(sourceCode, parserHelperDeadZone, parserHelperComment);
 
-        expect(commentList).to.be.an('array').that.have.lengthOf(1);
-        expect(commentList[0].text).to.equal('ZE');
-        expect(commentList[0].lineStart).to.equal(1);
-        expect(commentList[0].sourceIdentifier).to.equal('parser-helper');
+        parserHelper.getCommentList(sourceCode, parserHelperDeadZone, parserHelperComment).then((commentList) => {
+            expect(commentList).to.be.an('array').that.have.lengthOf(1);
+            expect(commentList[0].text).to.equal('ZE');
+            expect(commentList[0].lineStart).to.equal(1);
+            expect(commentList[0].sourceIdentifier).to.equal('parser-helper');
+        });
     });
 
     it('should return comments in zones allowed by the context detector', () => {
@@ -99,11 +111,12 @@ describe('parser helper', () => {
         contextDetector.addContextRange(3, 6);
         parserHelperComment.addCommentPosition(1, 3);
         parserHelperComment.addCommentPosition(4, 6);
-        let commentList             = parserHelper.getCommentList(sourceCode, parserHelperDeadZone, parserHelperComment, contextDetector);
 
-        expect(commentList).to.be.an('array').that.have.lengthOf(1);
-        expect(commentList[0].text).to.equal('ZE');
-        expect(commentList[0].lineStart).to.equal(1);
-        expect(commentList[0].sourceIdentifier).to.equal('parser-helper');
+        parserHelper.getCommentList(sourceCode, parserHelperDeadZone, parserHelperComment, contextDetector).then((commentList) => {
+            expect(commentList).to.be.an('array').that.have.lengthOf(1);
+            expect(commentList[0].text).to.equal('ZE');
+            expect(commentList[0].lineStart).to.equal(1);
+            expect(commentList[0].sourceIdentifier).to.equal('parser-helper');
+        });
     });
 });
