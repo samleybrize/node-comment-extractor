@@ -20,19 +20,18 @@ import { ParserHelperCommentSingleLineSharp } from './parser-helper/comment/sing
 import { SourceCode } from '../source-code/source-code';
 
 export class CommentRetrieverPhp implements CommentRetriever {
-    getCommentList(sourceCode:SourceCode): Comment[] {
-        return [];
-        // let contextDetector         = new ContextDetectorPhp();
-        // let parserHelper            = new ParserHelper();
-        // let parserHelperDeadZone    = new ParserHelperDeadZoneCollection();
-        // parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneDoubleQuotedString());
-        // parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneSingleQuotedString());
-        // parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneHeredocString());
-        // let parserHelperComment     = new ParserHelperCommentCollection();
-        // parserHelperComment.addParserHelper(new ParserHelperCommentMultiLineSlashAsterisk());
-        // parserHelperComment.addParserHelper(new ParserHelperCommentSingleLineDoubleSlash());
-        // parserHelperComment.addParserHelper(new ParserHelperCommentSingleLineSharp());
+    getCommentList(sourceCode:SourceCode): Promise<Comment[]> {
+        let contextDetector         = new ContextDetectorPhp();
+        let parserHelperDeadZone    = new ParserHelperDeadZoneCollection();
+        parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneDoubleQuotedString());
+        parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneSingleQuotedString());
+        parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneHeredocString());
+        let parserHelperComment     = new ParserHelperCommentCollection();
+        parserHelperComment.addParserHelper(new ParserHelperCommentMultiLineSlashAsterisk());
+        parserHelperComment.addParserHelper(new ParserHelperCommentSingleLineDoubleSlash());
+        parserHelperComment.addParserHelper(new ParserHelperCommentSingleLineSharp());
+        let parserHelper            = new ParserHelper(sourceCode, parserHelperDeadZone, parserHelperComment, contextDetector);
 
-        // return parserHelper.getCommentList(sourceCode, parserHelperDeadZone, parserHelperComment, contextDetector);
+        return parserHelper.getCommentList();
     }
 }
