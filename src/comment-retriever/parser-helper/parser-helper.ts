@@ -13,61 +13,99 @@ import { ParserHelperComment } from './comment/comment';
 import { SourceCode } from '../../source-code/source-code';
 
 export class ParserHelper {
-    getCommentList(sourceCode:SourceCode, parserHelperDeadZone:ParserHelperDeadZone, parserHelperComment:ParserHelperComment, contextDetector?:ContextDetector): Comment[] {
-        let lineCounter             = new LineCounter();
-        let commentList:Comment[]   = [];
-        let commentLineStart        = null;
+    private lineCounter = new LineCounter();
+    private commentList:Comment[] = null;
+    private commentLineStart:number = null;
 
-        // while (!sourceCode.hasReachedEndOfSourceCode()) {
-        //     let character = sourceCode.getNextCharacter();
-        //     lineCounter.addText(character);
+    constructor(
+        private sourceCode:SourceCode,
+        private parserHelperDeadZone:ParserHelperDeadZone,
+        private parserHelperComment:ParserHelperComment,
+        private contextDetector?:ContextDetector
+    ) {
+    }
 
-        //     if (contextDetector) {
-        //         contextDetector.addCharacter(character);
+    getCommentList(): Promise<Comment[]> {
+        if (null === this.commentList) {
+            this.commentList = [];
+            return this.retrieveCommentListFromSourceCode();
+        } else {
+            return Promise.resolve(this.commentList);
+        }
+    }
 
-        //         if (!contextDetector.isInContext()) {
-        //             continue;
-        //         }
-        //     }
+    private retrieveCommentListFromSourceCode(): Promise<Comment[]> {
+        return this.readSourceCode()
+            .then(() => {
+                if (this.parserHelperComment.isInComment()) {
+                    this.parserHelperComment.noMoreCharacter();
+                    this.commentList.push(new Comment(
+                        this.parserHelperComment.getLastCommentText(),
+                        this.commentLineStart + this.parserHelperComment.getLastCommentLineStart() - 1,
+                        this.sourceCode.getIdentifier()
+                    ));
+                }
+            })
+            .then(() => this.commentList)
+        ;
+    }
 
-        //     if (!parserHelperComment.isInComment()) {
-        //         let isInDeadZone = parserHelperDeadZone.isInDeadZone();
-        //         parserHelperDeadZone.addCharacter(character);
+    private readSourceCode() {
+        return this.retrieveNextCharacterFromSourceCode();
+    }
 
-        //         if (isInDeadZone && !parserHelperDeadZone.isInDeadZone()) {
-        //             // just leaved a dead zone, we don't want to give the character to the comment parser helper
-        //             continue;
-        //         }
-        //     }
+    private retrieveNextCharacterFromSourceCode(): Promise<void> {
+        return this.sourceCode.hasReachedEndOfSourceCode()
+            .then((hasReachedEndOfSourceCode) => {
+                if (hasReachedEndOfSourceCode) {
+                    return;
+                }
 
-        //     if (!parserHelperDeadZone.isInDeadZone()) {
-        //         let isInComment = parserHelperComment.isInComment();
-        //         parserHelperComment.addCharacter(character);
+                return this.sourceCode.getNextCharacter()
+                    .then((character) => this.addCharacter(character))
+                    .then(() => this.retrieveNextCharacterFromSourceCode())
+                ;
+            })
+        ;
+    }
 
-        //         if (!isInComment && parserHelperComment.isInComment()) {
-        //             // entered in a comment
-        //             commentLineStart = lineCounter.getCurrentLineNumber();
-        //         } else if (isInComment && !parserHelperComment.isInComment()) {
-        //             // leaved a comment
-        //             commentList.push(new Comment(
-        //                 parserHelperComment.getLastCommentText(),
-        //                 commentLineStart + parserHelperComment.getLastCommentLineStart() - 1,
-        //                 sourceCode.getIdentifier()
-        //             ));
-        //             commentLineStart = null;
-        //         }
-        //     }
-        // }
+    private addCharacter(character:string) {
+        this.lineCounter.addText(character);
 
-        // if (parserHelperComment.isInComment()) {
-        //     parserHelperComment.noMoreCharacter();
-        //     commentList.push(new Comment(
-        //         parserHelperComment.getLastCommentText(),
-        //         commentLineStart + parserHelperComment.getLastCommentLineStart() - 1,
-        //         sourceCode.getIdentifier()
-        //     ));
-        // }
+        if (this.contextDetector) {
+            this.contextDetector.addCharacter(character);
 
-        return commentList;
+            if (!this.contextDetector.isInContext()) {
+                return;
+            }
+        }
+
+        if (!this.parserHelperComment.isInComment()) {
+            let isInDeadZone = this.parserHelperDeadZone.isInDeadZone();
+            this.parserHelperDeadZone.addCharacter(character);
+
+            if (isInDeadZone && !this.parserHelperDeadZone.isInDeadZone()) {
+                // just leaved a dead zone, we don't want to give the character to the comment parser helper
+                return;
+            }
+        }
+
+        if (!this.parserHelperDeadZone.isInDeadZone()) {
+            let isInComment = this.parserHelperComment.isInComment();
+            this.parserHelperComment.addCharacter(character);
+
+            if (!isInComment && this.parserHelperComment.isInComment()) {
+                // entered in a comment
+                this.commentLineStart = this.lineCounter.getCurrentLineNumber();
+            } else if (isInComment && !this.parserHelperComment.isInComment()) {
+                // leaved a comment
+                this.commentList.push(new Comment(
+                    this.parserHelperComment.getLastCommentText(),
+                    this.commentLineStart + this.parserHelperComment.getLastCommentLineStart() - 1,
+                    this.sourceCode.getIdentifier()
+                ));
+                this.commentLineStart = null;
+            }
+        }
     }
 }

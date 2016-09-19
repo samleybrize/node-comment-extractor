@@ -17,16 +17,16 @@ describe('parser helper', () => {
     it('should return all comments', () => {
         let sourceCodeContent       = '..\nZEddddddd\nWERT';
         let sourceCode              = new SourceCodeString('parser-helper', sourceCodeContent);
-        let parserHelper            = new ParserHelper();
         let parserHelperComment     = new ParserHelperCommentMockPosition();
         let parserHelperDeadZone    = new ParserHelperDeadZoneMockPosition();
+        let parserHelper            = new ParserHelper(sourceCode, parserHelperDeadZone, parserHelperComment);
 
         parserHelperComment.addCommentPosition(3, 5);
         parserHelperComment.addCommentPosition(6, 10);
         parserHelperDeadZone.addDeadZonePosition(4, 5);
         parserHelperDeadZone.addDeadZonePosition(6, 10);
 
-        parserHelper.getCommentList(sourceCode, parserHelperDeadZone, parserHelperComment).then((commentList) => {
+        return parserHelper.getCommentList().then((commentList) => {
             expect(commentList).to.be.an('array').that.have.lengthOf(2);
 
             expect(commentList[0].text).to.equal('ZE');
@@ -39,14 +39,12 @@ describe('parser helper', () => {
         });
     });
 
-    it('should be able to handle multiple files', () => {
-        let sourceCodeContent1      = '..\nZEddddd\nWERT';
-        let sourceCodeContent2      = '...\n\n\n!ZERT';
-        let sourceCode1             = new SourceCodeString('parser-helper1', sourceCodeContent1);
-        let sourceCode2             = new SourceCodeString('parser-helper2', sourceCodeContent2);
-        let parserHelper            = new ParserHelper();
+    it('should return the same comment list on subsequent calls to getCommentList()', () => {
+        let sourceCodeContent       = '..\nZEddddd\nWERT';
+        let sourceCode              = new SourceCodeString('parser-helper1', sourceCodeContent);
         let parserHelperComment     = new ParserHelperCommentMockPosition();
         let parserHelperDeadZone    = new ParserHelperDeadZoneMockPosition();
+        let parserHelper            = new ParserHelper(sourceCode, parserHelperDeadZone, parserHelperComment);
 
         parserHelperComment.addCommentPosition(3, 5);
         parserHelperComment.addCommentPosition(6, 10);
@@ -54,20 +52,16 @@ describe('parser helper', () => {
 
         let commentList1;
         let commentList2;
-        parserHelper.getCommentList(sourceCode1, parserHelperDeadZone, parserHelperComment)
+        parserHelper.getCommentList()
             .then((commentList) => {
                 commentList1 = commentList;
-                parserHelperComment.reset();
-                parserHelperDeadZone.reset();
-                parserHelperComment.addCommentPosition(2, 6);
-                parserHelperDeadZone.addDeadZonePosition(2, 6);
-                return parserHelper.getCommentList(sourceCode2, parserHelperDeadZone, parserHelperComment);
+                return parserHelper.getCommentList();
             })
             .then((commentList) => {
                 commentList2 = commentList;
 
                 expect(commentList1).to.be.an('array').that.have.lengthOf(2);
-                expect(commentList2).to.be.an('array').that.have.lengthOf(1);
+                expect(commentList2).to.be.an('array').that.have.lengthOf(2);
 
                 expect(commentList1[0].text).to.equal('ZE');
                 expect(commentList1[0].lineStart).to.equal(2);
@@ -76,9 +70,12 @@ describe('parser helper', () => {
                 expect(commentList1[1].lineStart).to.equal(3);
                 expect(commentList1[1].sourceIdentifier).to.equal('parser-helper1');
 
-                expect(commentList2[0].text).to.equal('ZERT');
-                expect(commentList2[0].lineStart).to.equal(4);
-                expect(commentList2[0].sourceIdentifier).to.equal('parser-helper2');
+                expect(commentList2[0].text).to.equal('ZE');
+                expect(commentList2[0].lineStart).to.equal(2);
+                expect(commentList2[0].sourceIdentifier).to.equal('parser-helper1');
+                expect(commentList2[1].text).to.equal('WERT');
+                expect(commentList2[1].lineStart).to.equal(3);
+                expect(commentList2[1].sourceIdentifier).to.equal('parser-helper1');
             })
         ;
     });
@@ -86,13 +83,13 @@ describe('parser helper', () => {
     it('should add a non-ended comment when reached the end of the source code', () => {
         let sourceCodeContent       = '..!ZE';
         let sourceCode              = new SourceCodeString('parser-helper', sourceCodeContent);
-        let parserHelper            = new ParserHelper();
         let parserHelperComment     = new ParserHelperCommentMockPosition();
         let parserHelperDeadZone    = new ParserHelperDeadZoneMockPosition();
+        let parserHelper            = new ParserHelper(sourceCode, parserHelperDeadZone, parserHelperComment);
 
         parserHelperComment.addCommentPosition(3, 20);
 
-        parserHelper.getCommentList(sourceCode, parserHelperDeadZone, parserHelperComment).then((commentList) => {
+        return parserHelper.getCommentList().then((commentList) => {
             expect(commentList).to.be.an('array').that.have.lengthOf(1);
             expect(commentList[0].text).to.equal('ZE');
             expect(commentList[0].lineStart).to.equal(1);
@@ -103,16 +100,16 @@ describe('parser helper', () => {
     it('should return comments in zones allowed by the context detector', () => {
         let sourceCodeContent       = '..!ZE!..';
         let sourceCode              = new SourceCodeString('parser-helper', sourceCodeContent);
-        let parserHelper            = new ParserHelper();
         let parserHelperComment     = new ParserHelperCommentMockPosition();
         let parserHelperDeadZone    = new ParserHelperDeadZoneMockPosition();
         let contextDetector         = new ContextDetectorMock();
+        let parserHelper            = new ParserHelper(sourceCode, parserHelperDeadZone, parserHelperComment, contextDetector);
 
         contextDetector.addContextRange(3, 6);
         parserHelperComment.addCommentPosition(1, 3);
         parserHelperComment.addCommentPosition(4, 6);
 
-        parserHelper.getCommentList(sourceCode, parserHelperDeadZone, parserHelperComment, contextDetector).then((commentList) => {
+        return parserHelper.getCommentList().then((commentList) => {
             expect(commentList).to.be.an('array').that.have.lengthOf(1);
             expect(commentList[0].text).to.equal('ZE');
             expect(commentList[0].lineStart).to.equal(1);
