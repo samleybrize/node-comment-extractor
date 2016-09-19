@@ -21,18 +21,18 @@ describe('source code: string', () => {
     it('should return all characters in order', () => {
         let sourceCode = new SourceCodeString('the-identifier', 'source \ncode');
         return expect(sourceCode.getNextCharacter()).to.eventually.equal('s')
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('o'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('u'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('r'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('c'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('e'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal(' '))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('\n'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('c'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('o'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('d'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('e'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal(''))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('o'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('u'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('r'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('c'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('e'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal(' '))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('\n'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('c'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('o'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('d'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('e'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal(''))
         ;
     });
 

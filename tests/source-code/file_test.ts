@@ -23,18 +23,18 @@ describe('source code: file', () => {
         sourceCode.setBufferSize(5);
 
         expect(sourceCode.getNextCharacter()).to.eventually.equal('s')
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('o'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('u'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('r'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('c'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('e'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal(' '))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('\n'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('c'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('o'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('d'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal('e'))
-            .then(expect(sourceCode.getNextCharacter()).to.eventually.equal(''))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('o'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('u'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('r'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('c'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('e'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal(' '))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('\n'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('c'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('o'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('d'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('e'))
+            .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal(''))
         ;
     });
 
@@ -44,19 +44,19 @@ describe('source code: file', () => {
 
         expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false)
             .then(() => sourceCode.getNextCharacter())
-            .then(expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
+            .then(() => expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
             .then(() => sourceCode.getNextCharacter())
-            .then(expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
+            .then(() => expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
             .then(() => sourceCode.getNextCharacter())
-            .then(expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
+            .then(() => expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
             .then(() => sourceCode.getNextCharacter())
-            .then(expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
+            .then(() => expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
             .then(() => sourceCode.getNextCharacter())
-            .then(expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
+            .then(() => expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
             .then(() => sourceCode.getNextCharacter())
-            .then(expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
+            .then(() => expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
             .then(() => sourceCode.getNextCharacter())
-            .then(expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(true))
+            .then(() => expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(true))
         ;
     });
 

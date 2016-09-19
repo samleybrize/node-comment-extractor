@@ -22,15 +22,16 @@ describe('source code: partial', () => {
             new SourceCodeZone(4, 6),
             new SourceCodeZone(10, 10),
         ]);
-        expect(sourceCodePartial.getNextCharacter()).to.equal('s');
-        expect(sourceCodePartial.getNextCharacter()).to.equal('o');
-        expect(sourceCodePartial.getNextCharacter()).to.equal('u');
-        expect(sourceCodePartial.getNextCharacter()).to.equal(' ');
-        expect(sourceCodePartial.getNextCharacter()).to.equal('\n');
-        expect(sourceCodePartial.getNextCharacter()).to.equal('c');
-        expect(sourceCodePartial.getNextCharacter()).to.equal('d');
-        expect(sourceCodePartial.getNextCharacter()).to.equal('e');
-        expect(sourceCodePartial.getNextCharacter()).to.equal('');
+        return expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('s')
+            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('o'))
+            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('u'))
+            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal(' '))
+            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('\n'))
+            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('c'))
+            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('d'))
+            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('e'))
+            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal(''))
+        ;
     });
 
     it('should return all non-ignored characters when there are ignored position collisions', () => {
@@ -40,13 +41,14 @@ describe('source code: partial', () => {
             new SourceCodeZone(3, 5),
             new SourceCodeZone(5, 8),
         ]);
-        expect(sourceCodePartial.getNextCharacter()).to.equal('s');
-        expect(sourceCodePartial.getNextCharacter()).to.equal('o');
-        expect(sourceCodePartial.getNextCharacter()).to.equal('c');
-        expect(sourceCodePartial.getNextCharacter()).to.equal('o');
-        expect(sourceCodePartial.getNextCharacter()).to.equal('d');
-        expect(sourceCodePartial.getNextCharacter()).to.equal('e');
-        expect(sourceCodePartial.getNextCharacter()).to.equal('');
+        return expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('s')
+            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('o'))
+            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('c'))
+            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('o'))
+            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('d'))
+            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('e'))
+            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal(''))
+        ;
     });
 
     it('should return true if there is no more characters', () => {
@@ -54,15 +56,16 @@ describe('source code: partial', () => {
         let sourceCodePartial   = new SourceCodePartial(sourceCodeString, [
             new SourceCodeZone(4, 6),
         ]);
-        expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.equal(false);
-        sourceCodePartial.getNextCharacter();
-        expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.equal(false);
-        sourceCodePartial.getNextCharacter();
-        expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.equal(false);
-        sourceCodePartial.getNextCharacter();
-        expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.equal(false);
-        sourceCodePartial.getNextCharacter();
-        expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.equal(true);
+        return expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.eventually.equal(false)
+            .then(() => sourceCodePartial.getNextCharacter())
+            .then(() => expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.eventually.equal(false))
+            .then(() => sourceCodePartial.getNextCharacter())
+            .then(() => expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.eventually.equal(false))
+            .then(() => sourceCodePartial.getNextCharacter())
+            .then(() => expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.eventually.equal(false))
+            .then(() => sourceCodePartial.getNextCharacter())
+            .then(() => expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.eventually.equal(true))
+        ;
     });
 
     it('should return true if there is no more non-ignored characters', () => {
@@ -70,10 +73,11 @@ describe('source code: partial', () => {
         let sourceCodePartial   = new SourceCodePartial(sourceCodeString, [
             new SourceCodeZone(4, 6),
         ]);
-        sourceCodePartial.getNextCharacter();
-        sourceCodePartial.getNextCharacter();
-        sourceCodePartial.getNextCharacter();
-        expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.equal(true);
+        return sourceCodePartial.getNextCharacter()
+            .then(() => sourceCodePartial.getNextCharacter())
+            .then(() => sourceCodePartial.getNextCharacter())
+            .then(() => expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.eventually.equal(true))
+        ;
     });
 
     it('should return true if source code is empty', () => {
@@ -81,7 +85,7 @@ describe('source code: partial', () => {
         let sourceCodePartial   = new SourceCodePartial(sourceCodeString, [
             new SourceCodeZone(4, 6),
         ]);
-        expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.equal(true);
+        return expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.eventually.equal(true);
     });
 
     it('should reset its state', () => {
@@ -89,19 +93,19 @@ describe('source code: partial', () => {
         let sourceCodePartial   = new SourceCodePartial(sourceCodeString, [
             new SourceCodeZone(4, 6),
         ]);
-        sourceCodePartial.getNextCharacter();
-        sourceCodePartial.getNextCharacter();
-        sourceCodePartial.getNextCharacter();
-        sourceCodePartial.getNextCharacter();
-        expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.equal(true);
-
-        sourceCodePartial.rewind();
-        expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.equal(false);
-        expect(sourceCodePartial.getCurrentPosition()).to.equal(0);
-        expect(sourceCodePartial.getNextCharacter()).to.equal('s');
-        expect(sourceCodePartial.getNextCharacter()).to.equal('o');
-        expect(sourceCodePartial.getNextCharacter()).to.equal('u');
-        expect(sourceCodePartial.getNextCharacter()).to.equal('\n');
+        return sourceCodePartial.getNextCharacter()
+            .then(() => sourceCodePartial.getNextCharacter())
+            .then(() => sourceCodePartial.getNextCharacter())
+            .then(() => sourceCodePartial.getNextCharacter())
+            .then(() => expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.eventually.equal(true))
+            .then(() => sourceCodePartial.rewind())
+            .then(() => expect(sourceCodePartial.hasReachedEndOfSourceCode()).to.eventually.equal(false))
+            .then(() => expect(sourceCodePartial.getCurrentPosition()).to.equal(0))
+            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('s'))
+            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('o'))
+            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('u'))
+            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('\n'))
+        ;
     });
 
     it('should return the current position', () => {
@@ -111,10 +115,12 @@ describe('source code: partial', () => {
         ]);
 
         expect(sourceCodePartial.getCurrentPosition()).to.equal(0);
-        sourceCodePartial.getNextCharacter();
-        sourceCodePartial.getNextCharacter();
-        expect(sourceCodePartial.getCurrentPosition()).to.equal(2);
-        sourceCodePartial.getNextCharacter();
-        expect(sourceCodePartial.getCurrentPosition()).to.equal(6);
+
+        return sourceCodePartial.getNextCharacter()
+            .then(() => sourceCodePartial.getNextCharacter())
+            .then(() => expect(sourceCodePartial.getCurrentPosition()).to.equal(2))
+            .then(() => sourceCodePartial.getNextCharacter())
+            .then(() => expect(sourceCodePartial.getCurrentPosition()).to.equal(6))
+        ;
     });
 });

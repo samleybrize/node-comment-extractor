@@ -98,11 +98,7 @@ export class SourceCodePartial implements SourceCode {
             }
 
             return this.preFetchNextCharacter().then(() => {
-                if (this.hasReachedEnd) {
-                    return true;
-                } else {
-                    return this.sourceCode.hasReachedEndOfSourceCode();
-                }
+                return this.hasReachedEnd;
             });
         });
     }
