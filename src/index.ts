@@ -33,5 +33,6 @@ export * from './source-code/string';
 export * from './source-code/zone';
 
 export * from './comment';
+export * from './file-extension-matcher';
 export * from './functions';
 export * from './line-counter';

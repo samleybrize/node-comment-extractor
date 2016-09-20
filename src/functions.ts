@@ -7,9 +7,13 @@
 
 import { Comment } from './comment';
 import { CommentRetrieverFactory } from './comment-retriever/factory';
+import { FileExtensionMatcher } from './file-extension-matcher';
 import { SourceCode } from './source-code/source-code';
 import { SourceCodeFile } from './source-code/file';
 import { SourceCodeString } from './source-code/string';
+
+export let commentRetrieverFactory  = new CommentRetrieverFactory();
+export let fileExtensionMatcher     = new FileExtensionMatcher();
 
 export interface ExtractCommentsOptions {
     language?:string;
@@ -23,6 +27,10 @@ export function extractCommentsFromFile(filePath:string, options?:ExtractComment
     let sourceCodeIdentifier    = options.identifier ? options.identifier : filePath;
     let sourceCode              = new SourceCodeFile(sourceCodeIdentifier, filePath, options.charset);
 
+    if (!options.language) {
+        options.language = fileExtensionMatcher.getLanguageFromFilePath(filePath);
+    }
+
     return extractCommentsFromSourceCode(sourceCode, options);
 }
 
@@ -34,8 +42,7 @@ export function extractCommentsFromString(sourceCodeText:string, options?:Extrac
 }
 
 function extractCommentsFromSourceCode(sourceCode:SourceCode, options?:ExtractCommentsOptions): Promise<Comment[]> {
-    let sourceCodeLanguage      = options.language ? options.language : 'php'; // TODO
-    let commentRetrieverFactory = new CommentRetrieverFactory();
+    let sourceCodeLanguage      = options.language;
     let commentRetriever        = commentRetrieverFactory.getNewCommentRetriever(sourceCodeLanguage);
     return commentRetriever.getCommentList(sourceCode);
 }
