@@ -57,8 +57,14 @@ describe('functions', () => {
             
         });
 
-        it.skip('should throw an error when language does not exists', () => {
-            
+        it('should throw an error when file does not exists', () => {
+            let fixtureFilePath = 'file-that-does-not-exists.php';
+            return expect(extractCommentsFromFile(fixtureFilePath)).to.eventually.be.rejectedWith("no such file or directory, access 'file-that-does-not-exists.php'");
+        });
+
+        it('should throw an error when language does not exists', () => {
+            let fixtureFilePath = path.join(__dirname, '../../tests/fixtures/sample.php');
+            return expect(extractCommentsFromFile(fixtureFilePath, {language: 'unknown-language'})).to.eventually.be.rejectedWith('Unknown language "unknown-language"');
         });
     });
 
@@ -105,8 +111,8 @@ describe('functions', () => {
             
         });
 
-        it.skip('should throw an error when language does not exists', () => {
-            
+        it('should throw an error when language does not exists', () => {
+            return expect(extractCommentsFromString('', {language: 'unknown-language'})).to.eventually.be.rejectedWith('Unknown language "unknown-language"');
         });
     });
 });

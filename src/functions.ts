@@ -24,22 +24,30 @@ export interface ExtractCommentsFromFileOptions extends ExtractCommentsOptions {
 };
 
 export let extractCommentsFromFile = (filePath:string, options:ExtractCommentsFromFileOptions = {}): Promise<Comment[]> => {
-    let sourceCodeIdentifier    = options.identifier ? options.identifier : filePath;
-    let sourceCodeCharset       = options.charset ? options.charset : null;
-    let sourceCode              = new SourceCodeFile(sourceCodeIdentifier, filePath, sourceCodeCharset);
+    try {
+        let sourceCodeIdentifier    = options.identifier ? options.identifier : filePath;
+        let sourceCodeCharset       = options.charset ? options.charset : null;
+        let sourceCode              = new SourceCodeFile(sourceCodeIdentifier, filePath, sourceCodeCharset);
 
-    if (!options.language) {
-        options.language = fileExtensionMatcher.getLanguageFromFilePath(filePath);
+        if (!options.language) {
+            options.language = fileExtensionMatcher.getLanguageFromFilePath(filePath);
+        }
+
+        return extractCommentsFromSourceCode(sourceCode, options);
+    } catch (error) {
+        return Promise.reject(error);
     }
-
-    return extractCommentsFromSourceCode(sourceCode, options);
 };
 
 export let extractCommentsFromString = (sourceCodeText:string, options:ExtractCommentsFromFileOptions = {}): Promise<Comment[]> => {
-    let sourceCodeIdentifier    = options.identifier ? options.identifier : 'unknown';
-    let sourceCode              = new SourceCodeString(sourceCodeIdentifier, sourceCodeText);
+    try {
+        let sourceCodeIdentifier    = options.identifier ? options.identifier : 'unknown';
+        let sourceCode              = new SourceCodeString(sourceCodeIdentifier, sourceCodeText);
 
-    return extractCommentsFromSourceCode(sourceCode, options);
+        return extractCommentsFromSourceCode(sourceCode, options);
+    } catch (error) {
+        return Promise.reject(error);
+    }
 };
 
 let extractCommentsFromSourceCode = (sourceCode:SourceCode, options?:ExtractCommentsOptions): Promise<Comment[]> => {
