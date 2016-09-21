@@ -8,7 +8,13 @@
 import { Comment, CommentRetriever, SourceCode } from '../../../src';
 
 export class CommentRetrieverMock implements CommentRetriever {
+    private commentList:Comment[] = [];
+
     getCommentList(sourceCode:SourceCode): Promise<Comment[]> {
-        return;
+        return Promise.resolve(this.commentList);
+    }
+
+    setCommentList(commentList:Comment[]) {
+        this.commentList = commentList;
     }
 }
