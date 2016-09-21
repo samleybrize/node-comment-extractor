@@ -52,7 +52,7 @@ describe('parser helper', () => {
 
         let commentList1;
         let commentList2;
-        parserHelper.getCommentList()
+        return parserHelper.getCommentList()
             .then((commentList) => {
                 commentList1 = commentList;
                 return parserHelper.getCommentList();

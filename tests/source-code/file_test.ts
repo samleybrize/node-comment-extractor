@@ -22,7 +22,7 @@ describe('source code: file', () => {
         let sourceCode      = new SourceCodeFile('tests/fixtures/source-code/file-characters', fixtureFilePath);
         sourceCode.setBufferSize(5);
 
-        expect(sourceCode.getNextCharacter()).to.eventually.equal('s')
+        return expect(sourceCode.getNextCharacter()).to.eventually.equal('s')
             .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('o'))
             .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('u'))
             .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('r'))
@@ -42,7 +42,7 @@ describe('source code: file', () => {
         let fixtureFilePath = path.join(__dirname, '../../../tests/fixtures/source-code/file-end-of-source-code');
         let sourceCode      = new SourceCodeFile('tests/fixtures/source-code/file-end-of-source-code', fixtureFilePath);
 
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false)
+        return expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false)
             .then(() => sourceCode.getNextCharacter())
             .then(() => expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
             .then(() => sourceCode.getNextCharacter())
@@ -78,7 +78,7 @@ describe('source code: file', () => {
         let sourceCode      = new SourceCodeFile('tests/fixtures/source-code/file-reset', fixtureFilePath);
         sourceCode.setBufferSize(3);
 
-        sourceCode.getNextCharacter()
+        return sourceCode.getNextCharacter()
             .then(() => sourceCode.getNextCharacter())
             .then(() => sourceCode.getNextCharacter())
             .then(() => sourceCode.getNextCharacter())
@@ -88,7 +88,7 @@ describe('source code: file', () => {
             .then(() => sourceCode.rewind())
             .then(() => expect(sourceCode.getNextCharacter()).to.eventually.equal('s'))
             .then(() => expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
-            .then(() => expect(sourceCode.getCurrentPosition()).to.eventually.equal(1))
+            .then(() => expect(sourceCode.getCurrentPosition()).to.equal(1))
         ;
     });
 
@@ -98,7 +98,7 @@ describe('source code: file', () => {
 
         expect(sourceCode.getCurrentPosition()).to.equal(0);
 
-        sourceCode.getNextCharacter()
+        return sourceCode.getNextCharacter()
             .then(() => sourceCode.getNextCharacter())
             .then(() => sourceCode.getNextCharacter())
             .then(() => expect(sourceCode.getCurrentPosition()).to.equal(3))

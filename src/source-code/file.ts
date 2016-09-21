@@ -26,12 +26,8 @@ export class SourceCodeFile implements SourceCode {
     }
 
     getNextCharacter(): Promise<string> {
-        if (!this.isSourceCodeFileOpened()) {
-            return this.openFile().then(this.getNextCharacter);
-        }
-
         if (!this.hasReachedEndOfSourceCodeSync() && this.isAllBufferReaded()) {
-            return this.readFileIntoBuffer().then(this.getNextCharacter);
+            return this.readFileIntoBuffer().then(() => this.getNextCharacter());
         }
 
         if (this.hasReachedEndOfSourceCodeSync()) {
@@ -76,6 +72,10 @@ export class SourceCodeFile implements SourceCode {
     }
 
     private readFileIntoBuffer(): Promise<void> {
+        if (!this.isSourceCodeFileOpened()) {
+            return this.openFile().then(() => this.readFileIntoBuffer());
+        }
+
         let buffer = new Buffer(this.bufferSize);
         return fs.read(this.sourceCodeFileDescriptor, buffer, 0, this.bufferSize, null).then((result) => {
             this.sourceCodeBufferSize   = result[0];
@@ -93,14 +93,14 @@ export class SourceCodeFile implements SourceCode {
     }
 
     hasReachedEndOfSourceCode(): Promise<boolean> {
+        if (!this.sourceCodeEndOfFileReached && this.isAllBufferReaded()) {
+            return this.readFileIntoBuffer().then(() => this.hasReachedEndOfSourceCode());
+        }
+
         return Promise.resolve(this.hasReachedEndOfSourceCodeSync());
     }
 
     private hasReachedEndOfSourceCodeSync(): boolean {
-        if (!this.sourceCodeEndOfFileReached && this.isAllBufferReaded()) {
-            this.readFileIntoBuffer();
-        }
-
         return this.sourceCodeEndOfFileReached;
     }
 

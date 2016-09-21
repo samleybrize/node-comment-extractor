@@ -38,7 +38,7 @@ describe('source code: string', () => {
 
     it('should return true if there is no more characters', () => {
         let sourceCode = new SourceCodeString('the-identifier', 'source\n');
-        expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false)
+        return expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false)
             .then(() => sourceCode.getNextCharacter())
             .then(() => expect(sourceCode.hasReachedEndOfSourceCode()).to.eventually.equal(false))
             .then(() => sourceCode.getNextCharacter())
