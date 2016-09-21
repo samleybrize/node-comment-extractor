@@ -37,3 +37,5 @@ export * from './comment';
 export * from './file-extension-matcher';
 export * from './functions';
 export * from './line-counter';
+export * from './todo';
+export * from './todo-retriever';
