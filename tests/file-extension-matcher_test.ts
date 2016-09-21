@@ -34,4 +34,9 @@ describe('file extension matcher', () => {
         expect(fileExtensionMatcher.getLanguageFromFileExtension('php3')).to.equal('php');
         expect(fileExtensionMatcher.getLanguageFromFileExtension('php5')).to.equal('php');
     });
+
+    it('should return css', () => {
+        let fileExtensionMatcher = new FileExtensionMatcher();
+        expect(fileExtensionMatcher.getLanguageFromFileExtension('css')).to.equal('css');
+    });
 });

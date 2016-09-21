@@ -34,14 +34,14 @@ describe('functions', () => {
             ;
         });
 
-        it.skip('should use the language provided as option', () => {
+        it('should use the language provided as option', () => {
             let fixtureFilePath = path.join(__dirname, '../../tests/fixtures/functions/sample.css.php');
             return extractCommentsFromFile(fixtureFilePath, {language: 'css'})
                 .then((commentList) => {
                     expect(commentList).to.be.an('array').that.have.lengthOf(1);
                     expect(commentList[0].sourceIdentifier).to.equal(fixtureFilePath);
                     expect(commentList[0].text).to.equal('css comment 1');
-                    expect(commentList[0].lineStart).to.equal(3);
+                    expect(commentList[0].lineStart).to.equal(1);
                 })
             ;
         });

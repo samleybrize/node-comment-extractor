@@ -10,6 +10,7 @@ import * as path from 'path';
 export class FileExtensionMatcher {
     private userDefinedAssociations = {};
     private defaultAssociations = {
+        css: 'css',
         php: 'php',
         phtml: 'php',
         php3: 'php',

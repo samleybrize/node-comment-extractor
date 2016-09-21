@@ -7,7 +7,7 @@
 
 import { expect } from 'chai';
 
-import { CommentRetrieverFactory, CommentRetrieverPhp } from '../../src';
+import { CommentRetrieverFactory, CommentRetrieverCss, CommentRetrieverPhp } from '../../src';
 import { CommentRetrieverMock } from '../mock/comment-retriever/comment-retriever-mock';
 
 describe('comment retriever: factory', () => {
@@ -29,6 +29,12 @@ describe('comment retriever: factory', () => {
         let factory             = new CommentRetrieverFactory();
         let commentRetriever    = factory.getNewCommentRetriever('php');
         expect(commentRetriever).to.be.an.instanceof(CommentRetrieverPhp);
+    });
+
+    it('should return the CSS comment retriever', () => {
+        let factory             = new CommentRetrieverFactory();
+        let commentRetriever    = factory.getNewCommentRetriever('css');
+        expect(commentRetriever).to.be.an.instanceof(CommentRetrieverCss);
     });
 
     it('should throw an error when requested language is unknown', () => {

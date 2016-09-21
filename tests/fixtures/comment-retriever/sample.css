@@ -1,0 +1,13 @@
+/* should appear 1 */
+
+body {
+    /** should appear 2 */
+    background: url('/* should not appear 1 */');
+    background: url("/* should not appear 2 */"); /** should appear 3 */
+}
+
+/**
+text
+ * should 'appear 4'
+ * text
+ */
