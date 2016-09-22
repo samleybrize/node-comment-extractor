@@ -14,9 +14,8 @@ export class TodoRetriever {
     constructor(tagList?:string[]) {
         if (tagList) {
             this.validateTagList(tagList);
+            this.tagList = tagList;
         }
-
-        this.tagList = tagList;
     }
 
     private validateTagList(tagList:string[]) {
@@ -28,6 +27,36 @@ export class TodoRetriever {
     }
 
     getTodoList(commentList:Comment[]): Todo[] {
-        return [];
+        let todoList:Todo[] = [];
+
+        for (let comment of commentList) {
+            let commentText         = comment.text.replace(/(\r\n|\r)/g, '\n');
+            let commentTextLineList = commentText.split('\n');
+
+            for (let lineIndex in commentTextLineList) {
+                let line        = commentTextLineList[lineIndex];
+                let foundOffset = -1;
+
+                for (let tag of this.tagList) {
+                    let tagOffset = line.indexOf(tag);
+
+                    if (tagOffset > foundOffset) {
+                        foundOffset = tagOffset;
+                    }
+                }
+
+                if (foundOffset >= 0) {
+                    let todoText    = line.substr(foundOffset).trim();
+                    let todoLine    = comment.lineStart + lineIndex;
+                    todoList.push(new Todo(
+                        todoText,
+                        todoLine,
+                        comment.sourceIdentifier
+                    ));
+                }
+            }
+        }
+
+        return todoList;
     }
 }
