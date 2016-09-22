@@ -17,6 +17,7 @@ describe('todo retriever', () => {
             new Comment('text before\n @todo text 3\r\ntext after', 12, 'id3'),
             new Comment('text before\r @todo TODO text 4\r\nFIXME text 5', 124, 'id4'),
             new Comment('text before\n TODO text 6 TODO text 7', 145, 'id4'),
+            new Comment('text', 165, 'id5'),
         ];
         let todoRetriever   = new TodoRetriever();
         let todoList        = todoRetriever.getTodoList(commentList);

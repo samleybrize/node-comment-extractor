@@ -30,33 +30,56 @@ export class TodoRetriever {
         let todoList:Todo[] = [];
 
         for (let comment of commentList) {
-            let commentText         = comment.text.replace(/(\r\n|\r)/g, '\n');
-            let commentTextLineList = commentText.split('\n');
+            todoList = todoList.concat(this.getTodoListInComment(comment));
+        }
 
-            for (let lineIndex in commentTextLineList) {
-                let line        = commentTextLineList[lineIndex];
-                let foundOffset = -1;
+        return todoList;
+    }
 
-                for (let tag of this.tagList) {
-                    let tagOffset = line.indexOf(tag);
+    private getTodoListInComment(comment:Comment): Todo[] {
+        let todoList:Todo[]     = [];
+        let commentText         = comment.text.replace(/(\r\n|\r)/g, '\n');
+        let commentTextLineList = commentText.split('\n');
 
-                    if (tagOffset > foundOffset) {
-                        foundOffset = tagOffset;
-                    }
-                }
+        for (let lineIndex in commentTextLineList) {
+            let line        = commentTextLineList[lineIndex];
+            let todoText    = this.getTodoTextInCommentLine(line);
 
-                if (foundOffset >= 0) {
-                    let todoText    = line.substr(foundOffset).trim();
-                    let todoLine    = comment.lineStart + lineIndex;
-                    todoList.push(new Todo(
-                        todoText,
-                        todoLine,
-                        comment.sourceIdentifier
-                    ));
-                }
+            if (todoText) {
+                let todoLine = comment.lineStart + (+lineIndex);
+                todoList.push(this.createTodo(todoText, todoLine, comment.sourceIdentifier));
             }
         }
 
         return todoList;
+    }
+
+    private createTodo(todoText:string, todoLine:number, sourceIdentifier:string) {
+        return new Todo(
+            todoText,
+            todoLine,
+            sourceIdentifier
+        );
+    }
+
+    private getTodoTextInCommentLine(commentLineText:string): string {
+        let foundOffset = null;
+
+        for (let tag of this.tagList) {
+            let tagOffset = commentLineText.indexOf(tag);
+
+            if (this.isTagOffsetBeforeFoundOffset(tagOffset, foundOffset)) {
+                foundOffset = tagOffset;
+            }
+        }
+
+        if (null !== foundOffset) {
+            let todoText = commentLineText.substr(foundOffset).trim();
+            return todoText;
+        }
+    }
+
+    private isTagOffsetBeforeFoundOffset(tagOffset:number, foundOffset:number) {
+        return tagOffset >= 0 && (null === foundOffset || tagOffset < foundOffset);
     }
 }
