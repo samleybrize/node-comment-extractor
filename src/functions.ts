@@ -11,6 +11,8 @@ import { FileExtensionMatcher } from './file-extension-matcher';
 import { SourceCode } from './source-code/source-code';
 import { SourceCodeFile } from './source-code/file';
 import { SourceCodeString } from './source-code/string';
+import { Todo } from './todo';
+import { TodoRetriever } from './todo-retriever';
 
 export let commentRetrieverFactory  = new CommentRetrieverFactory();
 export let fileExtensionMatcher     = new FileExtensionMatcher();
@@ -54,4 +56,9 @@ let extractCommentsFromSourceCode = (sourceCode:SourceCode, options?:ExtractComm
     let sourceCodeLanguage      = options.language;
     let commentRetriever        = commentRetrieverFactory.getNewCommentRetriever(sourceCodeLanguage);
     return commentRetriever.getCommentList(sourceCode);
+};
+
+export let extractTodosFromComments = (commentList:Comment[], todoTagList?:string[]): Todo[] => {
+    let todoRetriever = new TodoRetriever(todoTagList);
+    return todoRetriever.getTodoList(commentList);
 };

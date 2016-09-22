@@ -156,4 +156,8 @@ describe('functions', () => {
             return expect(extractCommentsFromString('', {language: 'unknown-language'})).to.eventually.be.rejectedWith('Unknown language "unknown-language"');
         });
     });
+
+    describe('extractTodosFromComments', () => {
+        it.skip('todo');
+    });
 });
