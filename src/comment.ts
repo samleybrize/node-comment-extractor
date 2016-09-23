@@ -6,6 +6,6 @@
  */
 
 export class Comment {
-    constructor(public text:string, public lineStart:number, public sourceIdentifier:string) {
+    constructor(public readonly text:string, public readonly lineStart:number, public readonly sourceIdentifier:string) {
     }
 }

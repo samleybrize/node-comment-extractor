@@ -6,6 +6,6 @@
  */
 
 export class Todo {
-    constructor(public text:string, public line:number, public sourceIdentifier:string) {
+    constructor(public readonly text:string, public readonly line:number, public readonly sourceIdentifier:string) {
     }
 }
