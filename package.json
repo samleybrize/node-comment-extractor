@@ -7,8 +7,9 @@
         "parser",
         "todo"
     ],
-    "version": "0.0.0",
+    "version": "0.8.0",
     "author": "Stephen Berquet",
+    "license": "MIT",
     "private": true,
     "main": "src/index.js",
     "scripts": {
@@ -17,7 +18,8 @@
         "test": "mocha ./dist/tests --recursive --require source-map-support/register",
         "pretest": "npm run tsc",
         "tsc": "tsc",
-        "pretsc": "rm -rf ./dist "
+        "pretsc": "rm -rf ./dist ",
+        "prepublish": "npm run tsc"
     },
     "dependencies": {
         "mz": "^2.4.0"

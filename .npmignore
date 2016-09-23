@@ -1,0 +1,14 @@
+/.vscode
+/dist/tests
+/node_modules
+/src
+/tests
+/typings
+/.editorconfig
+/.gitignore
+/tsconfig.json
+/tslint.json
+/typings.json
+
+*.log
+*.tgz
