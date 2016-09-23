@@ -9,7 +9,7 @@ import { expect } from 'chai';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { Comment, commentRetrieverFactory, extractCommentsFromFile, extractCommentsFromString, fileExtensionMatcher } from '../src';
+import { Comment, commentRetrieverFactory, extractCommentsFromFile, extractCommentsFromString, extractTodosFromComments, fileExtensionMatcher } from '../src';
 import { CommentRetrieverMock } from './mock/comment-retriever/comment-retriever-mock';
 
 describe('functions', () => {
@@ -158,6 +158,48 @@ describe('functions', () => {
     });
 
     describe('extractTodosFromComments', () => {
-        it.skip('todo');
+        it('should return all todos', () => {
+            let commentList = [
+                new Comment('TODO text 1', 3, 'id'),
+                new Comment('text before\n TODO text 6 TODO text 7', 145, 'id4'),
+            ];
+            let todoList = extractTodosFromComments(commentList);
+
+            expect(todoList).to.be.an('array').that.have.lengthOf(2);
+
+            expect(todoList[0].text).to.equal('TODO text 1');
+            expect(todoList[0].line).to.equal(3);
+            expect(todoList[0].sourceIdentifier).to.equal('id');
+
+            expect(todoList[1].text).to.equal('TODO text 6 TODO text 7');
+            expect(todoList[1].line).to.equal(146);
+            expect(todoList[1].sourceIdentifier).to.equal('id4');
+        });
+
+        it('should interpret user defined tags', () => {
+            let commentList = [
+                new Comment('text before custom_tag text 1', 6, 'id1'),
+                new Comment('text before\n OTHER-TAG text 2\r\ntext after', 9, 'id2'),
+                new Comment('TODO should not appear', 56, 'id3'),
+            ];
+            let todoList = extractTodosFromComments(commentList, ['custom_tag', 'OTHER-TAG']);
+
+            expect(todoList).to.be.an('array').that.have.lengthOf(2);
+
+            expect(todoList[0].text).to.equal('custom_tag text 1');
+            expect(todoList[0].line).to.equal(6);
+            expect(todoList[0].sourceIdentifier).to.equal('id1');
+
+            expect(todoList[1].text).to.equal('OTHER-TAG text 2');
+            expect(todoList[1].line).to.equal(10);
+            expect(todoList[1].sourceIdentifier).to.equal('id2');
+        });
+
+        it('should throw an error when an invalid tag is detected', () => {
+            let fn = () => {
+                extractTodosFromComments([], ['valid_tag', 'invalid tag']);
+            };
+            expect(fn).to.throw('White spaces are not allowed');
+        });
     });
 });
