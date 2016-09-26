@@ -27,16 +27,21 @@ describe('file extension matcher', () => {
         expect(fileExtensionMatcher.getLanguageFromFilePath('/az/er/ty.php5')).to.equal('newlang');
     });
 
+    it('should return css', () => {
+        let fileExtensionMatcher = new FileExtensionMatcher();
+        expect(fileExtensionMatcher.getLanguageFromFileExtension('css')).to.equal('css');
+    });
+
+    it('should return js', () => {
+        let fileExtensionMatcher = new FileExtensionMatcher();
+        expect(fileExtensionMatcher.getLanguageFromFileExtension('js')).to.equal('js');
+    });
+
     it('should return php', () => {
         let fileExtensionMatcher = new FileExtensionMatcher();
         expect(fileExtensionMatcher.getLanguageFromFileExtension('php')).to.equal('php');
         expect(fileExtensionMatcher.getLanguageFromFileExtension('phtml')).to.equal('php');
         expect(fileExtensionMatcher.getLanguageFromFileExtension('php3')).to.equal('php');
         expect(fileExtensionMatcher.getLanguageFromFileExtension('php5')).to.equal('php');
-    });
-
-    it('should return css', () => {
-        let fileExtensionMatcher = new FileExtensionMatcher();
-        expect(fileExtensionMatcher.getLanguageFromFileExtension('css')).to.equal('css');
     });
 });

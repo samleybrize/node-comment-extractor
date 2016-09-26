@@ -8,6 +8,7 @@
 export * from './comment-retriever/comment-retriever';
 export * from './comment-retriever/factory';
 export * from './comment-retriever/css';
+export * from './comment-retriever/javascript';
 export * from './comment-retriever/php';
 
 export * from './comment-retriever/parser-helper/parser-helper';

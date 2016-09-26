@@ -11,6 +11,7 @@ export class FileExtensionMatcher {
     private userDefinedAssociations = {};
     private defaultAssociations = {
         css: 'css',
+        js: 'js',
         php: 'php',
         phtml: 'php',
         php3: 'php',

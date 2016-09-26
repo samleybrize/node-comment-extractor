@@ -171,7 +171,7 @@ console.log(todoList);
 
 ## Supported languages
 
-Currently, supported languages are : CSS, PHP. More coming soon.
+Currently, supported languages are : CSS, JavaScript, PHP. More coming soon.
 
 Any PR to add languages are welcome.
 

@@ -7,6 +7,7 @@
 
 import { CommentRetriever } from './comment-retriever';
 import { CommentRetrieverCss } from './css';
+import { CommentRetrieverJavascript } from './javascript';
 import { CommentRetrieverPhp } from './php';
 
 export type CommentRetrieverBuilder = () => CommentRetriever;
@@ -50,19 +51,26 @@ export class CommentRetrieverFactory {
 
     private getDefaultBuilder(languageName:string): CommentRetrieverBuilder {
         switch (languageName) {
-            case 'php':
-                return this.getDefaultBuilderPhp;
-
             case 'css':
                 return this.getDefaultBuilderCss;
-        }
-    }
 
-    private getDefaultBuilderPhp(): CommentRetrieverPhp {
-        return new CommentRetrieverPhp();
+            case 'js':
+                return this.getDefaultBuilderJs;
+
+            case 'php':
+                return this.getDefaultBuilderPhp;
+        }
     }
 
     private getDefaultBuilderCss(): CommentRetrieverCss {
         return new CommentRetrieverCss();
+    }
+
+    private getDefaultBuilderJs(): CommentRetrieverJavascript {
+        return new CommentRetrieverJavascript();
+    }
+
+    private getDefaultBuilderPhp(): CommentRetrieverPhp {
+        return new CommentRetrieverPhp();
     }
 }
