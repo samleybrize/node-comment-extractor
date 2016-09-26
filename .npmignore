@@ -6,6 +6,7 @@
 /typings
 /.editorconfig
 /.gitignore
+/.travis.yml
 /tsconfig.json
 /tslint.json
 /typings.json
