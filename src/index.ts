@@ -22,6 +22,7 @@ export * from './comment-retriever/parser-helper/context-detector/context-detect
 export * from './comment-retriever/parser-helper/context-detector/php';
 
 export * from './comment-retriever/parser-helper/dead-zone/dead-zone';
+export * from './comment-retriever/parser-helper/dead-zone/backticked-string';
 export * from './comment-retriever/parser-helper/dead-zone/dead-zone-collection';
 export * from './comment-retriever/parser-helper/dead-zone/double-quoted-string';
 export * from './comment-retriever/parser-helper/dead-zone/heredoc-string';
