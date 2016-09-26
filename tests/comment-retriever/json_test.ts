@@ -11,7 +11,7 @@ import * as path from 'path';
 
 import { CommentRetrieverJson, SourceCodeString } from '../../src';
 
-describe('comment retriever: js', () => {
+describe('comment retriever: json', () => {
     it('should return all comments', () => {
         let fixtureFilePath     = path.join(__dirname, '../../../tests/fixtures/comment-retriever/sample.json');
         let sourceCodeContent   = fs.readFileSync(fixtureFilePath, 'utf8');

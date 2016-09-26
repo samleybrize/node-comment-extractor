@@ -7,7 +7,7 @@
 
 import { expect } from 'chai';
 
-import { CommentRetrieverFactory, CommentRetrieverCss, CommentRetrieverJavascript, CommentRetrieverJson, CommentRetrieverPhp } from '../../src';
+import { CommentRetrieverFactory, CommentRetrieverCss, CommentRetrieverJavascript, CommentRetrieverJson, CommentRetrieverTypescript, CommentRetrieverPhp } from '../../src';
 import { CommentRetrieverMock } from '../mock/comment-retriever/comment-retriever-mock';
 
 describe('comment retriever: factory', () => {
@@ -33,13 +33,19 @@ describe('comment retriever: factory', () => {
 
     it('should return the JS comment retriever', () => {
         let factory             = new CommentRetrieverFactory();
-        let commentRetriever    = factory.getNewCommentRetriever('js');
+        let commentRetriever    = factory.getNewCommentRetriever('javascript');
         expect(commentRetriever).to.be.an.instanceof(CommentRetrieverJavascript);
     });
 
     it('should return the JSON comment retriever', () => {
         let factory             = new CommentRetrieverFactory();
         let commentRetriever    = factory.getNewCommentRetriever('json');
+        expect(commentRetriever).to.be.an.instanceof(CommentRetrieverJson);
+    });
+
+    it('should return the Typescript comment retriever', () => {
+        let factory             = new CommentRetrieverFactory();
+        let commentRetriever    = factory.getNewCommentRetriever('typescript');
         expect(commentRetriever).to.be.an.instanceof(CommentRetrieverJson);
     });
 

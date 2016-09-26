@@ -34,12 +34,17 @@ describe('file extension matcher', () => {
 
     it('should return js', () => {
         let fileExtensionMatcher = new FileExtensionMatcher();
-        expect(fileExtensionMatcher.getLanguageFromFileExtension('js')).to.equal('js');
+        expect(fileExtensionMatcher.getLanguageFromFileExtension('js')).to.equal('javascript');
     });
 
     it('should return json', () => {
         let fileExtensionMatcher = new FileExtensionMatcher();
         expect(fileExtensionMatcher.getLanguageFromFileExtension('json')).to.equal('json');
+    });
+
+    it('should return ts', () => {
+        let fileExtensionMatcher = new FileExtensionMatcher();
+        expect(fileExtensionMatcher.getLanguageFromFileExtension('ts')).to.equal('ts');
     });
 
     it('should return php', () => {

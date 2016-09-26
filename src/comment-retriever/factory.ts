@@ -9,6 +9,7 @@ import { CommentRetriever } from './comment-retriever';
 import { CommentRetrieverCss } from './css';
 import { CommentRetrieverJavascript } from './javascript';
 import { CommentRetrieverJson } from './json';
+import { CommentRetrieverTypescript } from './typescript';
 import { CommentRetrieverPhp } from './php';
 
 export type CommentRetrieverBuilder = () => CommentRetriever;
@@ -55,11 +56,14 @@ export class CommentRetrieverFactory {
             case 'css':
                 return this.getDefaultBuilderCss;
 
-            case 'js':
-                return this.getDefaultBuilderJs;
+            case 'javascript':
+                return this.getDefaultBuilderJavascript;
 
             case 'json':
                 return this.getDefaultBuilderJson;
+
+            case 'typescript':
+                return this.getDefaultBuilderTypescript;
 
             case 'php':
                 return this.getDefaultBuilderPhp;
@@ -70,12 +74,16 @@ export class CommentRetrieverFactory {
         return new CommentRetrieverCss();
     }
 
-    private getDefaultBuilderJs(): CommentRetrieverJavascript {
+    private getDefaultBuilderJavascript(): CommentRetrieverJavascript {
         return new CommentRetrieverJavascript();
     }
 
     private getDefaultBuilderJson(): CommentRetrieverJson {
         return new CommentRetrieverJson();
+    }
+
+    private getDefaultBuilderTypescript(): CommentRetrieverTypescript {
+        return new CommentRetrieverTypescript();
     }
 
     private getDefaultBuilderPhp(): CommentRetrieverPhp {

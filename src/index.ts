@@ -10,6 +10,7 @@ export * from './comment-retriever/factory';
 export * from './comment-retriever/css';
 export * from './comment-retriever/javascript';
 export * from './comment-retriever/json';
+export * from './comment-retriever/typescript';
 export * from './comment-retriever/php';
 
 export * from './comment-retriever/parser-helper/parser-helper';
