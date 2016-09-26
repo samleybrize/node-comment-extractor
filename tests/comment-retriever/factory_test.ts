@@ -46,7 +46,7 @@ describe('comment retriever: factory', () => {
     it('should return the Typescript comment retriever', () => {
         let factory             = new CommentRetrieverFactory();
         let commentRetriever    = factory.getNewCommentRetriever('typescript');
-        expect(commentRetriever).to.be.an.instanceof(CommentRetrieverJson);
+        expect(commentRetriever).to.be.an.instanceof(CommentRetrieverTypescript);
     });
 
     it('should return the PHP comment retriever', () => {

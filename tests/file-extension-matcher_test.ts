@@ -44,7 +44,7 @@ describe('file extension matcher', () => {
 
     it('should return ts', () => {
         let fileExtensionMatcher = new FileExtensionMatcher();
-        expect(fileExtensionMatcher.getLanguageFromFileExtension('ts')).to.equal('ts');
+        expect(fileExtensionMatcher.getLanguageFromFileExtension('ts')).to.equal('typescript');
     });
 
     it('should return php', () => {
