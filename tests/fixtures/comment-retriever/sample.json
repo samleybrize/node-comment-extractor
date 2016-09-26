@@ -1,0 +1,26 @@
+
+// should appear1
+
+{
+/*
+text
+should appear2
+ * text
+*/
+
+/*
+ * should appear3
+ */
+
+/** should appear4 */
+
+    "t1": 4, // should appear5
+
+    "t2": 4, /* should appear6 */
+
+    "t3": "\"// should not appear1",
+
+    "t4": "/** should not appear2 */",
+
+    "t5": 4 /* should "appear7" */
+}

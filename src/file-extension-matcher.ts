@@ -12,6 +12,7 @@ export class FileExtensionMatcher {
     private defaultAssociations = {
         css: 'css',
         js: 'js',
+        json: 'json',
         php: 'php',
         phtml: 'php',
         php3: 'php',

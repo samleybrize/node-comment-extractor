@@ -37,6 +37,11 @@ describe('file extension matcher', () => {
         expect(fileExtensionMatcher.getLanguageFromFileExtension('js')).to.equal('js');
     });
 
+    it('should return json', () => {
+        let fileExtensionMatcher = new FileExtensionMatcher();
+        expect(fileExtensionMatcher.getLanguageFromFileExtension('json')).to.equal('json');
+    });
+
     it('should return php', () => {
         let fileExtensionMatcher = new FileExtensionMatcher();
         expect(fileExtensionMatcher.getLanguageFromFileExtension('php')).to.equal('php');
