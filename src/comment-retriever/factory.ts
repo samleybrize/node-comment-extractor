@@ -7,6 +7,7 @@
 
 import { CommentRetriever } from './comment-retriever';
 import { CommentRetrieverCss } from './css';
+import { CommentRetrieverHtml } from './html';
 import { CommentRetrieverJavascript } from './javascript';
 import { CommentRetrieverJson } from './json';
 import { CommentRetrieverTypescript } from './typescript';
@@ -56,6 +57,9 @@ export class CommentRetrieverFactory {
             case 'css':
                 return this.getDefaultBuilderCss;
 
+            case 'html':
+                return this.getDefaultBuilderHtml;
+
             case 'javascript':
                 return this.getDefaultBuilderJavascript;
 
@@ -72,6 +76,10 @@ export class CommentRetrieverFactory {
 
     private getDefaultBuilderCss(): CommentRetrieverCss {
         return new CommentRetrieverCss();
+    }
+
+    private getDefaultBuilderHtml(): CommentRetrieverHtml {
+        return new CommentRetrieverHtml();
     }
 
     private getDefaultBuilderJavascript(): CommentRetrieverJavascript {

@@ -32,6 +32,11 @@ describe('file extension matcher', () => {
         expect(fileExtensionMatcher.getLanguageFromFileExtension('css')).to.equal('css');
     });
 
+    it('should return html', () => {
+        let fileExtensionMatcher = new FileExtensionMatcher();
+        expect(fileExtensionMatcher.getLanguageFromFileExtension('html')).to.equal('html');
+    });
+
     it('should return js', () => {
         let fileExtensionMatcher = new FileExtensionMatcher();
         expect(fileExtensionMatcher.getLanguageFromFileExtension('js')).to.equal('javascript');
