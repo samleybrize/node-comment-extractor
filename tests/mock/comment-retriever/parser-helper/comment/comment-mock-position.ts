@@ -67,17 +67,18 @@ export class ParserHelperCommentMockPosition implements ParserHelperComment {
     }
 
     reset() {
-        this.characterCounter           = 0;
         this.lastCommentText            = null;
         this.isInCommentProperty        = false;
         this.isNoMoreCharacter          = false;
         this.commentTextBuffer          = '';
-        this.enterInCommentAtCharacter  = [];
-        this.leaveCommentAtCharacter    = [];
     }
 
     addCommentPosition(characterStart:number, characterEnd:number) {
         this.enterInCommentAtCharacter.push(characterStart);
         this.leaveCommentAtCharacter.push(characterEnd);
+    }
+
+    setLastCommentText(lastCommentText:string) {
+        this.lastCommentText = lastCommentText;
     }
 }

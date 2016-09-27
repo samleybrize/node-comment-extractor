@@ -7,7 +7,7 @@
 
 import { expect } from 'chai';
 
-import { CommentRetrieverFactory, CommentRetrieverCss, CommentRetrieverHtml, CommentRetrieverJavascript, CommentRetrieverJson, CommentRetrieverTypescript, CommentRetrieverPhp } from '../../src';
+import { CommentRetrieverFactory, CommentRetrieverCss, CommentRetrieverHtml, CommentRetrieverJavascript, CommentRetrieverJson, CommentRetrieverTypescript, CommentRetrieverPhp, CommentRetrieverXml } from '../../src';
 import { CommentRetrieverMock } from '../mock/comment-retriever/comment-retriever-mock';
 
 describe('comment retriever: factory', () => {
@@ -59,6 +59,12 @@ describe('comment retriever: factory', () => {
         let factory             = new CommentRetrieverFactory();
         let commentRetriever    = factory.getNewCommentRetriever('php');
         expect(commentRetriever).to.be.an.instanceof(CommentRetrieverPhp);
+    });
+
+    it('should return the XML comment retriever', () => {
+        let factory             = new CommentRetrieverFactory();
+        let commentRetriever    = factory.getNewCommentRetriever('xml');
+        expect(commentRetriever).to.be.an.instanceof(CommentRetrieverXml);
     });
 
     it('should throw an error when requested language is unknown', () => {

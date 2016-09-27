@@ -12,6 +12,7 @@ import { CommentRetrieverJavascript } from './javascript';
 import { CommentRetrieverJson } from './json';
 import { CommentRetrieverTypescript } from './typescript';
 import { CommentRetrieverPhp } from './php';
+import { CommentRetrieverXml } from './xml';
 
 export type CommentRetrieverBuilder = () => CommentRetriever;
 
@@ -71,6 +72,9 @@ export class CommentRetrieverFactory {
 
             case 'php':
                 return this.getDefaultBuilderPhp;
+
+            case 'xml':
+                return this.getDefaultBuilderXml;
         }
     }
 
@@ -96,5 +100,9 @@ export class CommentRetrieverFactory {
 
     private getDefaultBuilderPhp(): CommentRetrieverPhp {
         return new CommentRetrieverPhp();
+    }
+
+    private getDefaultBuilderXml(): CommentRetrieverXml {
+        return new CommentRetrieverXml();
     }
 }

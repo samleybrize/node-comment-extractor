@@ -34,6 +34,8 @@ describe('parser helper: dead zone: xml tag', () => {
         parserHelper.addCharacter(sourceCodeString[6]);
         expect(parserHelper.isInDeadZone()).to.equal(false);
         parserHelper.addCharacter(sourceCodeString[7]);
+        expect(parserHelper.isInDeadZone()).to.equal(false);
+        parserHelper.addCharacter(sourceCodeString[8]);
         expect(parserHelper.isInDeadZone()).to.equal(true);
     });
 

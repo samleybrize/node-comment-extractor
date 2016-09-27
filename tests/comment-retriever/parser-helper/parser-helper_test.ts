@@ -116,4 +116,19 @@ describe('parser helper', () => {
             expect(commentList[0].sourceIdentifier).to.equal('parser-helper');
         });
     });
+
+    it('should reset last comment text when enter in dead zone', () => {
+        let sourceCodeContent       = '........';
+        let sourceCode              = new SourceCodeString('parser-helper', sourceCodeContent);
+        let parserHelperComment     = new ParserHelperCommentMockPosition();
+        let parserHelperDeadZone    = new ParserHelperDeadZoneMockPosition();
+        let parserHelper            = new ParserHelper(sourceCode, parserHelperDeadZone, parserHelperComment);
+
+        parserHelperComment.setLastCommentText('text');
+        parserHelperDeadZone.addDeadZonePosition(1, 3);
+
+        return parserHelper.getCommentList().then((commentList) => {
+            expect(parserHelperComment.getLastCommentText()).to.equal(null);
+        });
+    });
 });

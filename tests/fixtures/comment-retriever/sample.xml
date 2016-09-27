@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root:azerty>
+    <node>
+        <subnode attr="<!-- should not appear 1 -->"></subnode>
+        <!-- should appear 1 --><!--
+            // should appear 2
+        -->
+    </node>
+</root:azerty>

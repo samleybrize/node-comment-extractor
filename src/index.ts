@@ -13,6 +13,7 @@ export * from './comment-retriever/javascript';
 export * from './comment-retriever/json';
 export * from './comment-retriever/typescript';
 export * from './comment-retriever/php';
+export * from './comment-retriever/xml';
 
 export * from './comment-retriever/parser-helper/parser-helper';
 

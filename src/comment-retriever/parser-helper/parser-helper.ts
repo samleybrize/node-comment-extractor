@@ -87,6 +87,9 @@ export class ParserHelper {
             if (isInDeadZone && !this.parserHelperDeadZone.isInDeadZone()) {
                 // just leaved a dead zone, we don't want to give the character to the comment parser helper
                 return;
+            } else if (!isInDeadZone && this.parserHelperDeadZone.isInDeadZone()) {
+                // just entered in a dead zone, we reset comment helper
+                this.parserHelperComment.reset();
             }
         }
 

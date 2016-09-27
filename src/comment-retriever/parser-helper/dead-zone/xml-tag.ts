@@ -10,30 +10,33 @@ import { ParserHelperDeadZone } from './dead-zone';
 export class ParserHelperDeadZoneXmlTag implements ParserHelperDeadZone {
     private isInTag = false;
     private isInString = false;
-    private stringStartChar:string;
+    private stringStartCharacter:string;
+    private lastCharacter;
 
     addCharacter(character:string) {
         if (this.isInString) {
-            if ('"' == character && '"' == this.stringStartChar) {
+            if ('"' == character && '"' == this.stringStartCharacter) {
                 this.isInString         = false;
-                this.stringStartChar    = null;
-            } else if ("'" == character && "'" == this.stringStartChar) {
+                this.stringStartCharacter    = null;
+            } else if ("'" == character && "'" == this.stringStartCharacter) {
                 this.isInString         = false;
-                this.stringStartChar    = null;
+                this.stringStartCharacter    = null;
             }
         } else if (this.isInTag) {
             if ('"' == character) {
                 this.isInString         = true;
-                this.stringStartChar    = '"';
+                this.stringStartCharacter    = '"';
             } else if ("'" == character) {
                 this.isInString         = true;
-                this.stringStartChar    = "'";
+                this.stringStartCharacter    = "'";
             } else if ('>' == character) {
                 this.isInTag = false;
             }
-        } else if (!this.isInDeadZone() && '<' == character) {
+        } else if (!this.isInDeadZone() && '<' == this.lastCharacter && '!' != character) {
             this.isInTag = true;
         }
+
+        this.lastCharacter = character;
     }
 
     isInDeadZone(): boolean {
@@ -41,8 +44,9 @@ export class ParserHelperDeadZoneXmlTag implements ParserHelperDeadZone {
     }
 
     reset() {
-        this.isInString         = false;
-        this.isInTag            = false;
-        this.stringStartChar    = null;
+        this.isInString             = false;
+        this.isInTag                = false;
+        this.stringStartCharacter   = null;
+        this.lastCharacter          = null;
     }
 }

@@ -19,7 +19,7 @@ describe('comment retriever: php', () => {
         let commentRetriever    = new CommentRetrieverPhp();
 
         return commentRetriever.getCommentList(sourceCode).then((commentList) => {
-            expect(commentList).to.be.an('array').that.have.lengthOf(9);
+            expect(commentList).to.be.an('array').that.have.lengthOf(11);
 
             expect(commentList[0].text).to.equal('should appear1');
             expect(commentList[0].lineStart).to.equal(3);
@@ -76,7 +76,7 @@ describe('comment retriever: php', () => {
 
         return commentRetriever.getCommentList(sourceCode1)
             .then((commentList) => {
-                expect(commentList).to.be.an('array').that.have.lengthOf(9);
+                expect(commentList).to.be.an('array').that.have.lengthOf(11);
                 expect(commentList[0].lineStart).to.equal(3);
                 expect(commentList[1].lineStart).to.equal(5);
                 expect(commentList[2].lineStart).to.equal(8);
@@ -92,7 +92,7 @@ describe('comment retriever: php', () => {
                 return commentRetriever.getCommentList(sourceCode2);
             })
             .then((commentList) => {
-                expect(commentList).to.be.an('array').that.have.lengthOf(9);
+                expect(commentList).to.be.an('array').that.have.lengthOf(11);
                 expect(commentList[0].lineStart).to.equal(3);
                 expect(commentList[1].lineStart).to.equal(5);
                 expect(commentList[2].lineStart).to.equal(8);

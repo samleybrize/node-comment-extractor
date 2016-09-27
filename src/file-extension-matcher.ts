@@ -20,6 +20,7 @@ export class FileExtensionMatcher {
         phtml: 'php',
         php3: 'php',
         php5: 'php',
+        xml: 'xml',
     };
 
     getLanguageFromFileExtension(fileExtension:string): string {

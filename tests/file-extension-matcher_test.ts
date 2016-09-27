@@ -37,7 +37,7 @@ describe('file extension matcher', () => {
         expect(fileExtensionMatcher.getLanguageFromFileExtension('html')).to.equal('html');
     });
 
-    it('should return js', () => {
+    it('should return javascript', () => {
         let fileExtensionMatcher = new FileExtensionMatcher();
         expect(fileExtensionMatcher.getLanguageFromFileExtension('js')).to.equal('javascript');
     });
@@ -47,7 +47,7 @@ describe('file extension matcher', () => {
         expect(fileExtensionMatcher.getLanguageFromFileExtension('json')).to.equal('json');
     });
 
-    it('should return ts', () => {
+    it('should return typescript', () => {
         let fileExtensionMatcher = new FileExtensionMatcher();
         expect(fileExtensionMatcher.getLanguageFromFileExtension('ts')).to.equal('typescript');
     });
@@ -58,5 +58,10 @@ describe('file extension matcher', () => {
         expect(fileExtensionMatcher.getLanguageFromFileExtension('phtml')).to.equal('php');
         expect(fileExtensionMatcher.getLanguageFromFileExtension('php3')).to.equal('php');
         expect(fileExtensionMatcher.getLanguageFromFileExtension('php5')).to.equal('php');
+    });
+
+    it('should return xml', () => {
+        let fileExtensionMatcher = new FileExtensionMatcher();
+        expect(fileExtensionMatcher.getLanguageFromFileExtension('xml')).to.equal('xml');
     });
 });
