@@ -19,6 +19,7 @@ export * from './comment-retriever/parser-helper/parser-helper';
 export * from './comment-retriever/parser-helper/comment/comment';
 export * from './comment-retriever/parser-helper/comment/comment-collection';
 export * from './comment-retriever/parser-helper/comment/multi-line-slash-asterisk';
+export * from './comment-retriever/parser-helper/comment/multi-line-xml';
 export * from './comment-retriever/parser-helper/comment/single-line-double-slash';
 export * from './comment-retriever/parser-helper/comment/single-line-sharp';
 
