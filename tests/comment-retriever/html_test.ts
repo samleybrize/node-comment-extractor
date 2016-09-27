@@ -26,7 +26,7 @@ describe('comment retriever: html', () => {
             expect(commentList[0].sourceIdentifier).to.equal('html-sample');
 
             expect(commentList[1].text).to.equal('// should appear 2');
-            expect(commentList[1].lineStart).to.equal(23);
+            expect(commentList[1].lineStart).to.equal(24);
             expect(commentList[1].sourceIdentifier).to.equal('html-sample');
 
             expect(commentList[2].text).to.equal('should appear 3');
@@ -54,7 +54,7 @@ describe('comment retriever: html', () => {
             .then((commentList) => {
                 expect(commentList).to.be.an('array').that.have.lengthOf(5);
                 expect(commentList[0].lineStart).to.equal(23);
-                expect(commentList[1].lineStart).to.equal(23);
+                expect(commentList[1].lineStart).to.equal(24);
                 expect(commentList[2].lineStart).to.equal(5);
                 expect(commentList[3].lineStart).to.equal(9);
                 expect(commentList[4].lineStart).to.equal(13);
@@ -64,7 +64,7 @@ describe('comment retriever: html', () => {
             .then((commentList) => {
                 expect(commentList).to.be.an('array').that.have.lengthOf(5);
                 expect(commentList[0].lineStart).to.equal(23);
-                expect(commentList[1].lineStart).to.equal(23);
+                expect(commentList[1].lineStart).to.equal(24);
                 expect(commentList[2].lineStart).to.equal(5);
                 expect(commentList[3].lineStart).to.equal(9);
                 expect(commentList[4].lineStart).to.equal(13);
