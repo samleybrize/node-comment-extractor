@@ -7,6 +7,7 @@
 
 import { Comment } from '../comment';
 import { CommentRetriever } from './comment-retriever';
+import { CommentRetrieverFactory } from './factory';
 import { ParserHelper } from './parser-helper/parser-helper';
 import { ParserHelperDeadZoneXmlTag } from './parser-helper/dead-zone/xml-tag';
 import { ParserHelperCommentMultiLineXml } from './parser-helper/comment/multi-line-xml';
@@ -19,5 +20,9 @@ export class CommentRetrieverHtml implements CommentRetriever {
         let parserHelper            = new ParserHelper(sourceCode, parserHelperDeadZone, parserHelperComment);
 
         return parserHelper.getCommentList();
+    }
+
+    setCommentRetrieverFactory(commentRetrieverFactory:CommentRetrieverFactory) {
+        //
     }
 }

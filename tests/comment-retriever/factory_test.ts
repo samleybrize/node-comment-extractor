@@ -16,6 +16,7 @@ describe('comment retriever: factory', () => {
         factory.addBuilder('custom', () => new CommentRetrieverMock());
         let commentRetriever    = factory.getNewCommentRetriever('custom');
         expect(commentRetriever).to.be.an.instanceof(CommentRetrieverMock);
+        expect((<CommentRetrieverMock> commentRetriever).getCommentRetrieverFactory()).to.equal(factory);
     });
 
     it('should return the user defined comment retriever instead of the default one', () => {

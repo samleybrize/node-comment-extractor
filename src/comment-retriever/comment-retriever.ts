@@ -6,8 +6,10 @@
  */
 
 import { Comment } from '../comment';
+import { CommentRetrieverFactory } from './factory';
 import { SourceCode } from '../source-code/source-code';
 
 export interface CommentRetriever {
     getCommentList(sourceCode:SourceCode): Promise<Comment[]>;
+    setCommentRetrieverFactory(commentRetrieverFactory:CommentRetrieverFactory);
 }

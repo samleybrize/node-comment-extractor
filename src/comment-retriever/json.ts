@@ -7,6 +7,7 @@
 
 import { Comment } from '../comment';
 import { CommentRetriever } from './comment-retriever';
+import { CommentRetrieverFactory } from './factory';
 import { ParserHelper } from './parser-helper/parser-helper';
 import { ParserHelperDeadZoneDoubleQuotedString } from './parser-helper/dead-zone/double-quoted-string';
 import { ParserHelperCommentCollection } from './parser-helper/comment/comment-collection';
@@ -23,5 +24,9 @@ export class CommentRetrieverJson implements CommentRetriever {
         let parserHelper            = new ParserHelper(sourceCode, parserHelperDeadZone, parserHelperComment);
 
         return parserHelper.getCommentList();
+    }
+
+    setCommentRetrieverFactory(commentRetrieverFactory:CommentRetrieverFactory) {
+        //
     }
 }

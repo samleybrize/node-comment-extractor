@@ -30,7 +30,9 @@ export class CommentRetrieverFactory {
             throw `Unknown language "${languageName}"`;
         }
 
-        return commentRetrieverBuilder();
+        let commentRetriever = commentRetrieverBuilder();
+        commentRetriever.setCommentRetrieverFactory(this);
+        return commentRetriever;
     }
 
     private getBuilder(languageName:string): CommentRetrieverBuilder {

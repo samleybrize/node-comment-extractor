@@ -7,6 +7,7 @@
 
 import { Comment } from '../comment';
 import { CommentRetriever } from './comment-retriever';
+import { CommentRetrieverFactory } from './factory';
 import { ContextDetectorPhp } from './parser-helper/context-detector/php';
 import { ParserHelper } from './parser-helper/parser-helper';
 import { ParserHelperDeadZoneCollection } from './parser-helper/dead-zone/dead-zone-collection';
@@ -18,8 +19,11 @@ import { ParserHelperCommentMultiLineSlashAsterisk } from './parser-helper/comme
 import { ParserHelperCommentSingleLineDoubleSlash } from './parser-helper/comment/single-line-double-slash';
 import { ParserHelperCommentSingleLineSharp } from './parser-helper/comment/single-line-sharp';
 import { SourceCode } from '../source-code/source-code';
+import { SourceCodePartial } from '../source-code/partial';
 
 export class CommentRetrieverPhp implements CommentRetriever {
+    private commentRetrieverFactory:CommentRetrieverFactory;
+
     getCommentList(sourceCode:SourceCode): Promise<Comment[]> {
         let contextDetector         = new ContextDetectorPhp();
         let parserHelperDeadZone    = new ParserHelperDeadZoneCollection();
@@ -32,6 +36,33 @@ export class CommentRetrieverPhp implements CommentRetriever {
         parserHelperComment.addParserHelper(new ParserHelperCommentSingleLineSharp());
         let parserHelper            = new ParserHelper(sourceCode, parserHelperDeadZone, parserHelperComment, contextDetector);
 
-        return parserHelper.getCommentList();
+        let commentListPhp:Comment[];
+
+        return parserHelper.getCommentList()
+            .then((commentList): Promise<Comment[]> => {
+                commentListPhp              = commentList;
+                let processedZoneList       = contextDetector.getProcessedZones();
+                let sourceCodePartial       = new SourceCodePartial(sourceCode, processedZoneList);
+                let commentRetrieverHtml    = this.getCommentRetrieverFactory().getNewCommentRetriever('html');
+                sourceCode.rewind();
+
+                return commentRetrieverHtml.getCommentList(sourceCodePartial);
+            })
+            .then((commentListHtml): Comment[] => {
+                return commentListPhp.concat(commentListHtml);
+            })
+        ;
+    }
+
+    setCommentRetrieverFactory(commentRetrieverFactory:CommentRetrieverFactory) {
+        this.commentRetrieverFactory = commentRetrieverFactory;
+    }
+
+    private getCommentRetrieverFactory(): CommentRetrieverFactory {
+        if (!this.commentRetrieverFactory) {
+            this.commentRetrieverFactory = new CommentRetrieverFactory();
+        }
+
+        return this.commentRetrieverFactory;
     }
 }

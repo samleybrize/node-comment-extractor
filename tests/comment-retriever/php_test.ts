@@ -57,11 +57,11 @@ describe('comment retriever: php', () => {
             expect(commentList[8].lineStart).to.equal(70);
             expect(commentList[8].sourceIdentifier).to.equal('php-sample');
 
-            expect(commentList[9].text).to.equal('should appear10');
+            expect(commentList[9].text).to.equal('should appear 10');
             expect(commentList[9].lineStart).to.equal(78);
             expect(commentList[9].sourceIdentifier).to.equal('php-sample');
 
-            expect(commentList[10].text).to.equal('// should appear11');
+            expect(commentList[10].text).to.equal('// should appear 11');
             expect(commentList[10].lineStart).to.equal(78);
             expect(commentList[10].sourceIdentifier).to.equal('php-sample');
         });
