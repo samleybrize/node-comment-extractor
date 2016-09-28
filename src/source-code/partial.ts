@@ -13,6 +13,8 @@ export class SourceCodePartial implements SourceCode {
     private currentPosition:number = null;
     private hasReachedEnd:boolean = null;
     private nextCharacter:string = null;
+    private isInIgnoredZone = false;
+    private currentIgnoredZone:SourceCodeZone = null;
 
     constructor(private sourceCode:SourceCode, ignoredZoneList:SourceCodeZone[]) {
         this.ignoredZoneList = SourceCodeZone.mergeZoneList(ignoredZoneList);
@@ -31,9 +33,14 @@ export class SourceCodePartial implements SourceCode {
             return Promise.resolve(character);
         }
 
-        if (this.isNextPositionStartsAnIgnoredZone()) {
-            let ignoredZone = this.getIgnoredZoneByStartPosition(this.getNextPosition());
-            return this.getNextCharacterThatEndsAnIgnoredZone(ignoredZone);
+        if (this.isInIgnoredZone || this.isNextPositionStartsAnIgnoredZone()) {
+            this.isInIgnoredZone = true;
+
+            if (null == this.currentIgnoredZone) {
+                this.currentIgnoredZone = this.getIgnoredZoneByStartPosition(this.getNextPosition());
+            }
+
+            return this.getNextCharacterThatEndsAnIgnoredZone(this.currentIgnoredZone);
         }
 
         return this.sourceCode.getNextCharacter();
@@ -73,12 +80,24 @@ export class SourceCodePartial implements SourceCode {
 
     private getNextCharacterThatEndsAnIgnoredZone(ignoredZone:SourceCodeZone) {
         return this.sourceCode.getNextCharacter().then((character) => {
-            if (this.isCurrentPositionEndsAnIgnoredZone(ignoredZone)) {
+            if ('\r' == character || '\n' == character) {
+                if (this.isCurrentPositionEndsAnIgnoredZone(ignoredZone)) {
+                    this.leaveIgnoredZone();
+                }
+
+                return character;
+            } else if (this.isCurrentPositionEndsAnIgnoredZone(ignoredZone)) {
+                this.leaveIgnoredZone();
                 return this.sourceCode.getNextCharacter();
             } else {
                 return this.getNextCharacterThatEndsAnIgnoredZone(ignoredZone);
             }
         });
+    }
+
+    private leaveIgnoredZone() {
+        this.isInIgnoredZone    = false;
+        this.currentIgnoredZone = null;
     }
 
     getCurrentPosition(): number {
