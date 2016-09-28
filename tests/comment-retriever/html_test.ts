@@ -84,4 +84,8 @@ describe('comment retriever: html', () => {
             expect(commentList[0].sourceIdentifier).to.equal('html-sample');
         });
     });
+
+    it.skip('should use the given factory', () => {
+        //
+    });
 });

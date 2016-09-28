@@ -9,7 +9,8 @@ import { expect } from 'chai';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { CommentRetrieverPhp, SourceCodeString } from '../../src';
+import { Comment, CommentRetrieverFactory, CommentRetrieverPhp, SourceCodeString } from '../../src';
+import { CommentRetrieverMock } from '../mock/comment-retriever/comment-retriever-mock';
 
 describe('comment retriever: php', () => {
     it('should return all comments', () => {
@@ -118,6 +119,30 @@ describe('comment retriever: php', () => {
             expect(commentList[0].text).to.equal('comment');
             expect(commentList[0].lineStart).to.equal(2);
             expect(commentList[0].sourceIdentifier).to.equal('php-sample');
+        });
+    });
+
+    it('should use the given factory', () => {
+        let commentRetrieverMock    = new CommentRetrieverMock();
+        commentRetrieverMock.setCommentList([
+            new Comment('mock comment', 128, 'mock'),
+        ]);
+        let commentRetrieverFactory = new CommentRetrieverFactory();
+        commentRetrieverFactory.addBuilder('html', () => commentRetrieverMock);
+        let commentRetriever        = new CommentRetrieverPhp();
+        commentRetriever.setCommentRetrieverFactory(commentRetrieverFactory);
+        let sourceCodeContent       = '<?php\n// comment\n';
+        let sourceCode              = new SourceCodeString('php-sample', sourceCodeContent);
+
+        return commentRetriever.getCommentList(sourceCode).then((commentList) => {
+            expect(commentList).to.be.an('array').that.have.lengthOf(2);
+            expect(commentList[0].text).to.equal('comment');
+            expect(commentList[0].lineStart).to.equal(2);
+            expect(commentList[0].sourceIdentifier).to.equal('php-sample');
+
+            expect(commentList[1].text).to.equal('mock comment');
+            expect(commentList[1].lineStart).to.equal(128);
+            expect(commentList[1].sourceIdentifier).to.equal('mock');
         });
     });
 });
