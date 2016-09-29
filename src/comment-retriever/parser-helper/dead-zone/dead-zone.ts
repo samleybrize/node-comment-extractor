@@ -7,6 +7,7 @@
 
 export interface ParserHelperDeadZone {
     addCharacter(character:string);
+    nextCharacterIsIgnored();
     isInDeadZone(): boolean;
     reset();
 }

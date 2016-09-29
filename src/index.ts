@@ -32,6 +32,7 @@ export * from './comment-retriever/parser-helper/dead-zone/backticked-string';
 export * from './comment-retriever/parser-helper/dead-zone/dead-zone-collection';
 export * from './comment-retriever/parser-helper/dead-zone/double-quoted-string';
 export * from './comment-retriever/parser-helper/dead-zone/heredoc-string';
+export * from './comment-retriever/parser-helper/dead-zone/ignored-zone';
 export * from './comment-retriever/parser-helper/dead-zone/single-quoted-string';
 export * from './comment-retriever/parser-helper/dead-zone/xml-tag';
 
