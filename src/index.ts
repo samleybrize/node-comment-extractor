@@ -25,6 +25,7 @@ export * from './comment-retriever/parser-helper/comment/single-line-double-slas
 export * from './comment-retriever/parser-helper/comment/single-line-sharp';
 
 export * from './comment-retriever/parser-helper/context-detector/context-detector';
+export * from './comment-retriever/parser-helper/context-detector/html';
 export * from './comment-retriever/parser-helper/context-detector/php';
 
 export * from './comment-retriever/parser-helper/dead-zone/dead-zone';
