@@ -19,9 +19,14 @@ export class ParserHelperDeadZoneCollection implements ParserHelperDeadZone {
         if (this.inDeadZoneParserHelper) {
             this.inDeadZoneParserHelper.addCharacter(character);
 
+            for (let i in this.parserHelperList) {
+                if (this.parserHelperList[i] != this.inDeadZoneParserHelper) {
+                    this.parserHelperList[i].nextCharacterIsIgnored();
+                }
+            }
+
             if (!this.inDeadZoneParserHelper.isInDeadZone()) {
                 this.inDeadZoneParserHelper = null;
-                this.reset();
             }
 
             return;

@@ -49,8 +49,10 @@ describe('parser helper: dead zone: collection', () => {
         parserHelperCollection.addCharacter('a');
         parserHelperCollection.addCharacter('b');
 
-        expect(parserHelperMock1.getLastCharacter()).to.equal('a');
+        expect(parserHelperMock1.getLastCharacter()).to.equal('');
         expect(parserHelperMock2.getLastCharacter()).to.equal('b');
+        expect(parserHelperMock1.getCharacterCounter()).to.equal(2);
+        expect(parserHelperMock2.getCharacterCounter()).to.equal(2);
     });
 
     it('should reset all of its parser helpers', () => {
@@ -67,7 +69,7 @@ describe('parser helper: dead zone: collection', () => {
         expect(parserHelperMock2.getLastCharacter()).to.equal('');
     });
 
-    it('should reset all of its parser helpers when one of them leaves dead zone', () => {
+    it('should not reset its parser helpers when one of them leaves dead zone', () => {
         let parserHelperMock1       = new ParserHelperDeadZoneMock();
         let parserHelperMock2       = new ParserHelperDeadZoneMock();
         let parserHelperCollection  = new ParserHelperDeadZoneCollection();
@@ -80,10 +82,21 @@ describe('parser helper: dead zone: collection', () => {
         parserHelperMock2.setWillLeaveDeadZoneOnNextCharacter(true);
         parserHelperCollection.addCharacter('c');
         expect(parserHelperMock1.getLastCharacter()).to.equal('');
-        expect(parserHelperMock2.getLastCharacter()).to.equal('');
+        expect(parserHelperMock2.getLastCharacter()).to.equal('c');
+        expect(parserHelperMock1.getCharacterCounter()).to.equal(3);
+        expect(parserHelperMock2.getCharacterCounter()).to.equal(3);
     });
 
-    it.skip('should tell to all of its parser helpers to ignore the next character', () => {
-        //
+    it('should tell to all of its parser helpers to ignore the next character', () => {
+        let parserHelperMock1       = new ParserHelperDeadZoneMock();
+        let parserHelperMock2       = new ParserHelperDeadZoneMock();
+        let parserHelperCollection  = new ParserHelperDeadZoneCollection();
+        parserHelperCollection.addParserHelper(parserHelperMock1);
+        parserHelperCollection.addParserHelper(parserHelperMock2);
+
+        parserHelperCollection.nextCharacterIsIgnored();
+        parserHelperCollection.nextCharacterIsIgnored();
+        expect(parserHelperMock1.getCharacterCounter()).to.equal(2);
+        expect(parserHelperMock2.getCharacterCounter()).to.equal(2);
     });
 });

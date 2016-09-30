@@ -140,4 +140,10 @@ describe('parser helper: dead zone: heredoc string', () => {
         parserHelper.addCharacter(sourceCodeString[13]);
         expect(parserHelper.isInDeadZone()).to.equal(true);
     });
+
+    it.skip('should reset its last character when it leaves dead zone', () => {
+    });
+
+    it.skip('should reset its last character when nextCharacterIsIgnored() is called', () => {
+    });
 });

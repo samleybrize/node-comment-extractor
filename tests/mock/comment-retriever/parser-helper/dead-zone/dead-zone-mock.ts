@@ -12,9 +12,11 @@ export class ParserHelperDeadZoneMock implements ParserHelperDeadZone {
     private willBeInDeadZoneOnNextCharacter = false;
     private willLeaveDeadZoneOnNextCharacter = false;
     private lastCharacter = '';
+    private characterCounter = 0;
 
     addCharacter(character:string) {
         this.lastCharacter = character;
+        this.characterCounter++;
 
         if (this.willBeInDeadZoneOnNextCharacter) {
             this.setIsInDeadZone(true);
@@ -26,7 +28,7 @@ export class ParserHelperDeadZoneMock implements ParserHelperDeadZone {
     }
 
     nextCharacterIsIgnored() {
-        //
+        this.addCharacter('');
     }
 
     isInDeadZone(): boolean {
@@ -34,6 +36,7 @@ export class ParserHelperDeadZoneMock implements ParserHelperDeadZone {
     }
 
     reset() {
+        this.characterCounter                   = 0;
         this.isInDeadZoneProperty               = false;
         this.lastCharacter                      = '';
         this.willBeInDeadZoneOnNextCharacter    = false;
@@ -54,5 +57,9 @@ export class ParserHelperDeadZoneMock implements ParserHelperDeadZone {
 
     getLastCharacter(): string {
         return this.lastCharacter;
+    }
+
+    getCharacterCounter(): number {
+        return this.characterCounter;
     }
 }

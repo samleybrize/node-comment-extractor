@@ -81,4 +81,10 @@ describe('parser helper: dead zone: single quoted string', () => {
         parserHelper.addCharacter(sourceCodeString[3]);
         expect(parserHelper.isInDeadZone()).to.equal(true);
     });
+
+    it.skip('should reset its last character when it leaves dead zone', () => {
+    });
+
+    it.skip('should reset its last character when nextCharacterIsIgnored() is called', () => {
+    });
 });
