@@ -86,9 +86,13 @@ describe('parser helper: dead zone: xml tag', () => {
         expect(parserHelper.isInDeadZone()).to.equal(true);
     });
 
-    it.skip('should reset its last character when it leaves dead zone', () => {
-    });
+    it('should reset its last character when nextCharacterIsIgnored() is called', () => {
+        let sourceCodeString    = '<tag>';
+        let parserHelper        = new ParserHelperDeadZoneXmlTag();
 
-    it.skip('should reset its last character when nextCharacterIsIgnored() is called', () => {
+        parserHelper.addCharacter(sourceCodeString[0]);
+        parserHelper.nextCharacterIsIgnored();
+        parserHelper.addCharacter(sourceCodeString[1]);
+        expect(parserHelper.isInDeadZone()).to.equal(false);
     });
 });

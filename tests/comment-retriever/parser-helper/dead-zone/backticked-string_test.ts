@@ -82,9 +82,15 @@ describe('parser helper: dead zone: backticked string', () => {
         expect(parserHelper.isInDeadZone()).to.equal(true);
     });
 
-    it.skip('should reset its last character when it leaves dead zone', () => {
-    });
+    it('should reset its last character when nextCharacterIsIgnored() is called', () => {
+        let sourceCodeString    = '`s\\`tr`;';
+        let parserHelper        = new ParserHelperDeadZoneBacktickedString();
 
-    it.skip('should reset its last character when nextCharacterIsIgnored() is called', () => {
+        parserHelper.addCharacter(sourceCodeString[0]);
+        parserHelper.addCharacter(sourceCodeString[1]);
+        parserHelper.addCharacter(sourceCodeString[2]);
+        parserHelper.nextCharacterIsIgnored();
+        parserHelper.addCharacter(sourceCodeString[3]);
+        expect(parserHelper.isInDeadZone()).to.equal(false);
     });
 });

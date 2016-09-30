@@ -22,7 +22,7 @@ export class ParserHelperDeadZoneSingleQuotedString implements ParserHelperDeadZ
     }
 
     nextCharacterIsIgnored() {
-        //
+        this.addCharacter('');
     }
 
     isInDeadZone(): boolean {

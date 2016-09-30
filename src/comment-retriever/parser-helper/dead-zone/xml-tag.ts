@@ -40,7 +40,8 @@ export class ParserHelperDeadZoneXmlTag implements ParserHelperDeadZone {
     }
 
     nextCharacterIsIgnored() {
-        //
+        this.lastCharacter  = null;
+        this.isInTag        = false;
     }
 
     isInDeadZone(): boolean {

@@ -22,7 +22,7 @@ export class ParserHelperDeadZoneBacktickedString implements ParserHelperDeadZon
     }
 
     nextCharacterIsIgnored() {
-        //
+        this.addCharacter('');
     }
 
     isInDeadZone(): boolean {

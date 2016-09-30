@@ -51,7 +51,7 @@ export class ParserHelperDeadZoneHeredocString implements ParserHelperDeadZone {
     }
 
     nextCharacterIsIgnored() {
-        //
+        this.addCharacter(' ');
     }
 
     isInDeadZone(): boolean {

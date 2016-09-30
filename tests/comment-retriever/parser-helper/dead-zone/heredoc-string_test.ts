@@ -141,9 +141,26 @@ describe('parser helper: dead zone: heredoc string', () => {
         expect(parserHelper.isInDeadZone()).to.equal(true);
     });
 
-    it.skip('should reset its last character when it leaves dead zone', () => {
-    });
+    it('should reset its last character when nextCharacterIsIgnored() is called', () => {
+        let sourceCodeString    = '<<<TAG\n.\nTAG;\n';
+        let parserHelper        = new ParserHelperDeadZoneHeredocString();
 
-    it.skip('should reset its last character when nextCharacterIsIgnored() is called', () => {
+        parserHelper.addCharacter(sourceCodeString[0]);
+        parserHelper.addCharacter(sourceCodeString[1]);
+        parserHelper.addCharacter(sourceCodeString[2]);
+        parserHelper.addCharacter(sourceCodeString[3]);
+        parserHelper.addCharacter(sourceCodeString[4]);
+        parserHelper.addCharacter(sourceCodeString[5]);
+        parserHelper.addCharacter(sourceCodeString[6]);
+        parserHelper.addCharacter(sourceCodeString[7]);
+        parserHelper.addCharacter(sourceCodeString[8]);
+        parserHelper.addCharacter(sourceCodeString[9]);
+        parserHelper.addCharacter(sourceCodeString[10]);
+        parserHelper.addCharacter(sourceCodeString[11]);
+        parserHelper.nextCharacterIsIgnored();
+        parserHelper.addCharacter(sourceCodeString[12]);
+        parserHelper.addCharacter(sourceCodeString[13]);
+
+        expect(parserHelper.isInDeadZone()).to.equal(true);
     });
 });
