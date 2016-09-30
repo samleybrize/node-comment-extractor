@@ -8,8 +8,9 @@
 import { Comment } from '../comment';
 import { CommentRetrieverFactory } from './factory';
 import { SourceCode } from '../source-code/source-code';
+import { SourceCodeZone } from '../source-code/zone';
 
 export interface CommentRetriever {
-    getCommentList(sourceCode:SourceCode): Promise<Comment[]>;
+    getCommentList(sourceCode:SourceCode, ignoredZoneList?:SourceCodeZone[]): Promise<Comment[]>;
     setCommentRetrieverFactory(commentRetrieverFactory:CommentRetrieverFactory);
 }

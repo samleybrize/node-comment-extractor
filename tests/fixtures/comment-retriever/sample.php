@@ -1,5 +1,7 @@
 <?php
 
+><!-- should not appear 12 -->
+
 // should appear1
 
 # should appear2
@@ -73,8 +75,8 @@ $t = 4; /* should 'appear9' */
 <html>
     <head></head>
     <body>
-        // should not appear 12
-        <div class="<!-- should not appear 13 -->"></div>
+        // should not appear 13
+        <div class="<!-- should not appear 14 -->"></div>
         <!-- should appear 10 --><!-- // should appear 11 -->
     </body>
 </html>
