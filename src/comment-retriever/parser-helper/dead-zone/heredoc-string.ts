@@ -50,6 +50,10 @@ export class ParserHelperDeadZoneHeredocString implements ParserHelperDeadZone {
         }
     }
 
+    nextCharacterIsIgnored() {
+        //
+    }
+
     isInDeadZone(): boolean {
         return this.isInString || this.isInTagName;
     }

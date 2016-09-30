@@ -21,6 +21,10 @@ export class ParserHelperDeadZoneSingleQuotedString implements ParserHelperDeadZ
         this.lastCharacter = character;
     }
 
+    nextCharacterIsIgnored() {
+        //
+    }
+
     isInDeadZone(): boolean {
         return this.isInString;
     }

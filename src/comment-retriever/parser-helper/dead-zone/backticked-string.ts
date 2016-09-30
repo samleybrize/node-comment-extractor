@@ -21,6 +21,10 @@ export class ParserHelperDeadZoneBacktickedString implements ParserHelperDeadZon
         this.lastCharacter = character;
     }
 
+    nextCharacterIsIgnored() {
+        //
+    }
+
     isInDeadZone(): boolean {
         return this.isInString;
     }

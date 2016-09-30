@@ -82,4 +82,8 @@ describe('parser helper: dead zone: collection', () => {
         expect(parserHelperMock1.getLastCharacter()).to.equal('');
         expect(parserHelperMock2.getLastCharacter()).to.equal('');
     });
+
+    it.skip('should tell to all of its parser helpers to ignore the next character', () => {
+        //
+    });
 });

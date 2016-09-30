@@ -37,6 +37,12 @@ export class ParserHelperDeadZoneCollection implements ParserHelperDeadZone {
         }
     }
 
+    nextCharacterIsIgnored() {
+        for (let i in this.parserHelperList) {
+            this.parserHelperList[i].nextCharacterIsIgnored();
+        }
+    }
+
     isInDeadZone(): boolean {
         for (let i in this.parserHelperList) {
             if (this.parserHelperList[i].isInDeadZone()) {

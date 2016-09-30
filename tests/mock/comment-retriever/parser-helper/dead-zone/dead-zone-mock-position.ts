@@ -23,6 +23,10 @@ export class ParserHelperDeadZoneMockPosition implements ParserHelperDeadZone {
         }
     }
 
+    nextCharacterIsIgnored() {
+        //
+    }
+
     isInDeadZone(): boolean {
         return this.isInDeadZoneProperty;
     }
