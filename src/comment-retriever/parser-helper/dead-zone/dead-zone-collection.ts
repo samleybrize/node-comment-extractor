@@ -18,39 +18,44 @@ export class ParserHelperDeadZoneCollection implements ParserHelperDeadZone {
     addCharacter(character:string) {
         if (this.inDeadZoneParserHelper) {
             this.inDeadZoneParserHelper.addCharacter(character);
-
-            for (let i in this.parserHelperList) {
-                if (this.parserHelperList[i] != this.inDeadZoneParserHelper) {
-                    this.parserHelperList[i].nextCharacterIsIgnored();
-                }
-            }
+            this.ignoreNextCharacterOnAllHelpersButCurrentHelper();
 
             if (!this.inDeadZoneParserHelper.isInDeadZone()) {
                 this.inDeadZoneParserHelper = null;
             }
-
-            return;
+        } else {
+            this.addCharacterToAllHelpers(character);
         }
+    }
 
-        for (let i in this.parserHelperList) {
-            this.parserHelperList[i].addCharacter(character);
+    private ignoreNextCharacterOnAllHelpersButCurrentHelper() {
+        for (let parserHelper of this.parserHelperList) {
+            if (parserHelper != this.inDeadZoneParserHelper) {
+                parserHelper.nextCharacterIsIgnored();
+            }
+        }
+    }
 
-            if (this.parserHelperList[i].isInDeadZone()) {
-                this.inDeadZoneParserHelper = this.parserHelperList[i];
+    private addCharacterToAllHelpers(character:string) {
+        for (let parserHelper of this.parserHelperList) {
+            parserHelper.addCharacter(character);
+
+            if (parserHelper.isInDeadZone()) {
+                this.inDeadZoneParserHelper = parserHelper;
                 break;
             }
         }
     }
 
     nextCharacterIsIgnored() {
-        for (let i in this.parserHelperList) {
-            this.parserHelperList[i].nextCharacterIsIgnored();
+        for (let parserHelper of this.parserHelperList) {
+            parserHelper.nextCharacterIsIgnored();
         }
     }
 
     isInDeadZone(): boolean {
-        for (let i in this.parserHelperList) {
-            if (this.parserHelperList[i].isInDeadZone()) {
+        for (let parserHelper of this.parserHelperList) {
+            if (parserHelper.isInDeadZone()) {
                 return true;
             }
         }
@@ -59,8 +64,8 @@ export class ParserHelperDeadZoneCollection implements ParserHelperDeadZone {
     }
 
     reset() {
-        for (let i in this.parserHelperList) {
-            this.parserHelperList[i].reset();
+        for (let parserHelper of this.parserHelperList) {
+            parserHelper.reset();
         }
     }
 }
