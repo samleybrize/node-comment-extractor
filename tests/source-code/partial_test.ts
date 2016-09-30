@@ -35,31 +35,14 @@ describe('source code: partial', () => {
     });
 
     it('should return all non-ignored characters when there are ignored position collisions', () => {
-        let sourceCodeString    = new SourceCodeString('the-identifier', 'source \r\ncode');
+        let sourceCodeString    = new SourceCodeString('the-identifier', 'source \ncode');
         let sourceCodePartial   = new SourceCodePartial(sourceCodeString, [
             new SourceCodeZone(4, 6),
             new SourceCodeZone(3, 5),
-            new SourceCodeZone(5, 10),
+            new SourceCodeZone(5, 8),
         ]);
         return expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('s')
             .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('o'))
-            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('\r'))
-            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('\n'))
-            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('o'))
-            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('d'))
-            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('e'))
-            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal(''))
-        ;
-    });
-
-    it('should return all non-ignored characters when an ignored zone ends on a newline', () => {
-        let sourceCodeString    = new SourceCodeString('the-identifier', 'source \ncode');
-        let sourceCodePartial   = new SourceCodePartial(sourceCodeString, [
-            new SourceCodeZone(3, 8),
-        ]);
-        return expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('s')
-            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('o'))
-            .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('\n'))
             .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('c'))
             .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('o'))
             .then(() => expect(sourceCodePartial.getNextCharacter()).to.eventually.equal('d'))
