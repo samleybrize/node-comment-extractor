@@ -25,6 +25,7 @@ describe('parser helper: context detector: html', () => {
         contextDetector.addCharacter(sourceCode[3]);
         contextDetector.addCharacter(sourceCode[4]);
         contextDetector.addCharacter(sourceCode[5]);
+        expect(contextDetector.isInContext()).to.equal(true);
         contextDetector.addCharacter(sourceCode[6]);
         contextDetector.addCharacter(sourceCode[7]);
         contextDetector.addCharacter(sourceCode[8]);
