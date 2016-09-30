@@ -131,4 +131,21 @@ describe('parser helper', () => {
             expect(parserHelperComment.getLastCommentText()).to.equal(null);
         });
     });
+
+    it('should count all characters', () => {
+        let sourceCodeContent       = '..\nZEddddddd\nWERT';
+        let sourceCode              = new SourceCodeString('parser-helper', sourceCodeContent);
+        let parserHelperComment     = new ParserHelperCommentMockPosition();
+        let parserHelperDeadZone    = new ParserHelperDeadZoneMockPosition();
+        let parserHelper            = new ParserHelper(sourceCode, parserHelperDeadZone, parserHelperComment);
+
+        parserHelperComment.addCommentPosition(3, 5);
+        parserHelperComment.addCommentPosition(6, 10);
+        parserHelperDeadZone.addDeadZonePosition(4, 5);
+        parserHelperDeadZone.addDeadZonePosition(6, 10);
+
+        return parserHelper.getCommentList().then((commentList) => {
+            expect(parserHelperDeadZone.getCharacterCounter()).to.equal(17);
+        });
+    });
 });

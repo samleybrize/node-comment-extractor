@@ -91,6 +91,8 @@ export class ParserHelper {
                 // just entered in a dead zone, we reset comment helper
                 this.parserHelperComment.reset();
             }
+        } else {
+            this.parserHelperDeadZone.nextCharacterIsIgnored();
         }
 
         if (!this.parserHelperDeadZone.isInDeadZone()) {
