@@ -9,7 +9,7 @@ import { expect } from 'chai';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { CommentRetrieverJson, SourceCodeString } from '../../src';
+import { CommentRetrieverJson, SourceCodeString, SourceCodeZone } from '../../src';
 
 describe('comment retriever: json', () => {
     it('should return all comments', () => {
@@ -90,6 +90,22 @@ describe('comment retriever: json', () => {
         let commentRetriever    = new CommentRetrieverJson();
 
         return commentRetriever.getCommentList(sourceCode).then((commentList) => {
+            expect(commentList).to.be.an('array').that.have.lengthOf(1);
+            expect(commentList[0].text).to.equal('comment');
+            expect(commentList[0].lineStart).to.equal(2);
+            expect(commentList[0].sourceIdentifier).to.equal('json-sample');
+        });
+    });
+
+    it('should ignore ignored zones', () => {
+        let sourceCodeContent   = '/* ignored */ \n /* comment */';
+        let sourceCode          = new SourceCodeString('json-sample', sourceCodeContent);
+        let commentRetriever    = new CommentRetrieverJson();
+        let ignoredZoneList     = [
+            new SourceCodeZone(1, 13),
+        ];
+
+        return commentRetriever.getCommentList(sourceCode, ignoredZoneList).then((commentList) => {
             expect(commentList).to.be.an('array').that.have.lengthOf(1);
             expect(commentList[0].text).to.equal('comment');
             expect(commentList[0].lineStart).to.equal(2);
