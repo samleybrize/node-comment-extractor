@@ -9,7 +9,7 @@ import { expect } from 'chai';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { CommentRetrieverHtml, SourceCodeString } from '../../src';
+import { CommentRetrieverHtml, SourceCodeString, SourceCodeZone } from '../../src';
 
 describe('comment retriever: html', () => {
     it('should return all comments', () => {
@@ -87,5 +87,21 @@ describe('comment retriever: html', () => {
 
     it.skip('should use the given factory', () => {
         //
+    });
+
+    it('should ignore ignored zones', () => {
+        let sourceCodeContent   = '<!-- ignored --> \n <!-- comment -->';
+        let sourceCode          = new SourceCodeString('html-sample', sourceCodeContent);
+        let commentRetriever    = new CommentRetrieverHtml();
+        let ignoredZoneList     = [
+            new SourceCodeZone(1, 16),
+        ];
+
+        return commentRetriever.getCommentList(sourceCode, ignoredZoneList).then((commentList) => {
+            expect(commentList).to.be.an('array').that.have.lengthOf(1);
+            expect(commentList[0].text).to.equal('comment');
+            expect(commentList[0].lineStart).to.equal(2);
+            expect(commentList[0].sourceIdentifier).to.equal('html-sample');
+        });
     });
 });
