@@ -10,6 +10,7 @@ import { SourceCodeZone } from '../../../source-code/zone';
 
 // TODO if script with no type attribute: default to javascript
 // TODO if style with no type attribute: default to css
+// TODO handle html comments
 
 export class SourceCodeLanguageZoneList {
     constructor(public readonly languageName:string, public readonly zoneList:SourceCodeZone[]) {
@@ -38,18 +39,13 @@ export class ContextDetectorHtml implements ContextDetector {
     private currentAttributeList:HtmlAttribute[];
 
     addCharacter(character:string) {
-        // TODO if char = '<' : tag start
-        // TODO     until blank space : tag name
-        // TODO         if tagname != 'script' & 'style' : dead zone until '>'
-        // TODO     attr 'type' mandatory?
-        // TODO     if 'type' = 'script', attr 'src' must not exist
         if (this.isInTagName) {
             this.addCharacterToTagName(character);
-        } else if (this.isCurrentTagDiscarded && this.isInAttributeName) {
+        } else if (!this.isCurrentTagDiscarded && this.isInAttributeName) {
             this.addCharacterToAttributeName(character);
-        } else if (this.isCurrentTagDiscarded && this.isInAttributeValue) {
+        } else if (!this.isCurrentTagDiscarded && this.isInAttributeValue) {
             this.addCharacterToAttributeValue(character);
-        } else if (this.isCurrentTagDiscarded && this.isInTag && this.isBlankSpace(character)) {
+        } else if (!this.isCurrentTagDiscarded && this.isInTag && this.isBlankSpace(character)) {
             this.startAttributeName();
         } else if (this.isInTag && '>' == character) {
             this.endTag();
@@ -100,6 +96,7 @@ export class ContextDetectorHtml implements ContextDetector {
     }
 
     private endTagNameAndDiscard() {
+        this.isInTagName            = false;
         this.bufferTagName          = null;
         this.isCurrentTagDiscarded  = true;
     }
@@ -165,7 +162,26 @@ export class ContextDetectorHtml implements ContextDetector {
     }
 
     private endTag() {
-        
+        console.log(this.currentTagName);
+        console.log(this.currentAttributeList);
+        console.log('-----');
+        this.resetState();
+    }
+
+    private resetState() {
+        this.bufferAttributeName                    = null;
+        this.bufferAttributeValue                   = null;
+        this.bufferTagName                          = null;
+        this.currentAttributeList                   = [];
+        this.currentAttributeName                   = null;
+        this.currentAttributeValueStartCharacter    = null;
+        this.currentTagName                         = null;
+        this.isCurrentTagDiscarded                  = false;
+        this.isInAttributeName                      = false;
+        this.isInAttributeValue                     = false;
+        this.isInTag                                = false;
+        this.isInTagName                            = false;
+        this.lastCharacter                          = null;
     }
 
     isInContext(): boolean {

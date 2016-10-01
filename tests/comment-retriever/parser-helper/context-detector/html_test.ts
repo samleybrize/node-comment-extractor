@@ -61,6 +61,15 @@ describe('parser helper: context detector: html', () => {
         expect(contextDetector.isInContext()).to.equal(false);
     });
 
+    it.skip('without type defaults to javascript', () => {
+    });
+    it.skip('without type defaults to css', () => {
+    });
+    it.skip('script tag in a html comment', () => {
+    });
+    it.skip('script end tag in a html comment', () => {
+    });
+
     it('should enter context when "script" end tag is encountered', () => {
         let contextDetector = new ContextDetectorHtml();
         let sourceCode      = '<html>\n<script type="text/javascript">..\n.</script>';
@@ -260,7 +269,7 @@ describe('parser helper: context detector: html', () => {
 
     it('should return languages zones', () => {
         let contextDetector = new ContextDetectorHtml();
-        let sourceCode      = '<script type="text/javascript">..</script>.<style="text/css">..</style>.<script type="text/javascript">..</script>';
+        let sourceCode      = '<script type="text/javascript">..</script>.<style type="text/css">..</style>.<script type="text/javascript">..</script>';
 
         contextDetector.addCharacter(sourceCode[0]);
         contextDetector.addCharacter(sourceCode[1]);
@@ -376,6 +385,11 @@ describe('parser helper: context detector: html', () => {
         contextDetector.addCharacter(sourceCode[111]);
         contextDetector.addCharacter(sourceCode[112]);
         contextDetector.addCharacter(sourceCode[113]);
+        contextDetector.addCharacter(sourceCode[114]);
+        contextDetector.addCharacter(sourceCode[115]);
+        contextDetector.addCharacter(sourceCode[116]);
+        contextDetector.addCharacter(sourceCode[117]);
+        contextDetector.addCharacter(sourceCode[118]);
 
         let languageZoneList = contextDetector.getLanguageZoneList();
         expect(languageZoneList).to.be.an('array').that.have.lengthOf(2);
