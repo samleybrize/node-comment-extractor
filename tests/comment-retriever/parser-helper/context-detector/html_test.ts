@@ -10,6 +10,36 @@ import { expect } from 'chai';
 import { ContextDetectorHtml } from '../../../../src';
 
 describe('parser helper: context detector: html', () => {
+    // TODO todel
+    it('test context detector html', () => {
+        let contextDetector = new ContextDetectorHtml();
+        let sourceCode  = '<script type="text/javascript">11';
+        sourceCode     += '</script>2';
+        sourceCode     += '<style type="text/css">33';
+        sourceCode     += '</style>4';
+        sourceCode     += '<script>55';
+        sourceCode     += '<!--</script>-->';
+        sourceCode     += '</script>6';
+        sourceCode     += '<style type="</style>">77';
+        sourceCode     += '<ul>';
+        sourceCode     += '</li>';
+        sourceCode     += '</style>8';
+        sourceCode     += '<!--<script type="text/javascript">99';
+        sourceCode     += '</script>-->10';
+        sourceCode     += '<script type="text/javascript" src="..">11';
+        sourceCode     += '</script>12';
+
+        for (let char of sourceCode) {
+            contextDetector.addCharacter(char);
+        }
+
+        console.log('======');
+        console.log(sourceCode.substr(31, 2));
+        console.log(sourceCode.substr(66, 2));
+        console.log(sourceCode.substr(108, 18));
+        console.log(sourceCode.substr(159, 11));
+    });
+
     it('should be in context by default', () => {
         let contextDetector = new ContextDetectorHtml();
         expect(contextDetector.isInContext()).to.equal(true);

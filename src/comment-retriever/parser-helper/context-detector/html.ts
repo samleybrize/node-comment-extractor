@@ -6,18 +6,22 @@
  */
 
 import { ContextDetector } from './context-detector';
+import { ParserHelperCommentMultiLineXml } from '../comment/multi-line-xml';
 import { SourceCodeZone } from '../../../source-code/zone';
 
 // TODO if script with no type attribute: default to javascript
 // TODO if style with no type attribute: default to css
+
 // TODO handle html comments + test
+// TODO test end tag in an attribute
+// TODO when a handled start tag has been retrieved, only its end tag should be handled, other tags are ignored
 
 export class SourceCodeLanguageZoneList {
     constructor(public readonly languageName:string, public readonly zoneList:SourceCodeZone[]) {
     }
 }
 
-interface HtmlAttribute {
+class HtmlAttribute {
     name:string;
     value:string;
 }
@@ -26,15 +30,85 @@ export class ContextDetectorHtml implements ContextDetector {
     private languageZoneList:SourceCodeLanguageZoneList[];
     private startTagParser:StartTagParser;
     private endTagParser:EndTagParser;
+    private commentParser:CommentTagParser;
+    private currentTagParser:TagParser;
+    private isStartTagParserEnabled = true;
+    private isCurrentTagIsStartTag = false;
+    private isCurrentTagIsEndTag = false;
+    private currentLanguageZoneStartPosition:number = null;
+    private currentLanguageZoneEndPosition:number = null;
+    private characterCounter:number = 0;
 
     constructor() {
         this.startTagParser = new StartTagParser();
         this.endTagParser   = new EndTagParser();
+        this.commentParser  = new CommentTagParser();
     }
 
     addCharacter(character:string) {
-        this.startTagParser.addCharacter(character);
+        this.characterCounter++;
+
+        if (this.currentTagParser) {
+            this.addCharacterToCurrentTagParser(character);
+        } else {
+            this.addCharacterToAllTagParsers(character);
+        }
+    }
+
+    private addCharacterToCurrentTagParser(character:string) {
+        this.currentTagParser.addCharacter(character);
+
+        if (!this.currentTagParser.isInTag()) {
+            this.endCurrentTag();
+        }
+    }
+
+    private addCharacterToAllTagParsers(character:string) {
+        if (this.isStartTagParserEnabled) {
+            this.startTagParser.addCharacter(character);
+        }
+
         this.endTagParser.addCharacter(character);
+        this.commentParser.addCharacter(character);
+
+        if (this.startTagParser.isInTag()) {
+            this.currentTagParser       = this.startTagParser;
+            this.isCurrentTagIsStartTag = true;
+            this.endTagParser.resetState();
+            this.commentParser.resetState();
+        } else if (this.endTagParser.isInTag()) {
+            this.currentTagParser               = this.endTagParser;
+            this.isCurrentTagIsEndTag           = true;
+            this.currentLanguageZoneEndPosition = this.characterCounter - 2;
+            this.startTagParser.resetState();
+            this.commentParser.resetState();
+        } else if (this.commentParser.isInTag()) {
+            this.currentTagParser = this.commentParser;
+            this.startTagParser.resetState();
+            this.endTagParser.resetState();
+        }
+    }
+
+    private endCurrentTag() {
+        if (this.isCurrentTagIsStartTag && null != this.startTagParser.getLastTagName()) {
+            this.isStartTagParserEnabled            = false;
+            this.isCurrentTagIsStartTag             = false;
+            this.currentLanguageZoneStartPosition   = this.characterCounter + 1;
+            this.currentLanguageZoneEndPosition     = null;
+        } else if (this.isCurrentTagIsEndTag && this.endTagParser.getLastTagName() == this.startTagParser.getLastTagName()) {
+            // TODO create language zone
+            this.isStartTagParserEnabled            = true;
+            this.isCurrentTagIsEndTag               = false;
+            console.log('language: ' + this.startTagParser.getLastTagLanguage());
+            console.log('start:    ' + this.currentLanguageZoneStartPosition);
+            console.log('end:      ' + this.currentLanguageZoneEndPosition);
+
+            this.currentLanguageZoneStartPosition   = null;
+            this.currentLanguageZoneEndPosition   = null;
+        }
+
+        this.currentTagParser.resetState();
+        this.currentTagParser = null;
     }
 
     isInContext(): boolean {
@@ -46,7 +120,7 @@ export class ContextDetectorHtml implements ContextDetector {
     }
 
     reset() {
-        
+        this.characterCounter = 0;
     }
 
     getLanguageZoneList(): SourceCodeLanguageZoneList[] {
@@ -54,13 +128,19 @@ export class ContextDetectorHtml implements ContextDetector {
     }
 }
 
-class StartTagParser {
+interface TagParser {
+    addCharacter(character:string);
+    isInTag(): boolean;
+    resetState();
+}
+
+class StartTagParser implements TagParser {
     private readonly OPEN_TAG_CHARACTER = '<';
     private readonly CLOSE_TAG_CHARACTER = '>';
     private readonly END_TAG_CHARACTER = '/';
     private readonly COMMENT_TAG_CHARACTER = '!';
 
-    private isInStartTagProperty = false;
+    private isInStartTag = false;
     private lastCharacter:string;
     private isInTagName = false;
     private isInAttributeName = false;
@@ -73,6 +153,8 @@ class StartTagParser {
     private currentAttributeName = null;
     private currentAttributeValueStartCharacter = null;
     private currentAttributeList:HtmlAttribute[];
+    private lastTagName:string = null;
+    private lastTagLanguage:string = null;
 
     addCharacter(character:string) {
         if (this.isInTagName) {
@@ -81,11 +163,11 @@ class StartTagParser {
             this.addCharacterToAttributeName(character);
         } else if (!this.isCurrentTagDiscarded && this.isInAttributeValue) {
             this.addCharacterToAttributeValue(character);
-        } else if (!this.isCurrentTagDiscarded && this.isInStartTagProperty && this.isBlankSpace(character)) {
+        } else if (!this.isCurrentTagDiscarded && this.isInStartTag && this.isBlankSpace(character)) {
             this.startAttributeName();
-        } else if (this.isInStartTagProperty && this.CLOSE_TAG_CHARACTER == character) {
-            this.endTag();
-        } else if (!this.isInStartTagProperty && this.OPEN_TAG_CHARACTER == this.lastCharacter && this.COMMENT_TAG_CHARACTER != character && this.END_TAG_CHARACTER != character) {
+        } else if (this.isInStartTag && this.CLOSE_TAG_CHARACTER == character) {
+            this.closeTag();
+        } else if (!this.isInStartTag && this.OPEN_TAG_CHARACTER == this.lastCharacter && this.COMMENT_TAG_CHARACTER != character && this.END_TAG_CHARACTER != character) {
             this.startTagName(character);
         }
 
@@ -95,8 +177,9 @@ class StartTagParser {
     private addCharacterToTagName(character:string) {
         if (this.isBlankSpace(character)) {
             this.endTagName();
-        } else if ('>' == character) {
-            this.endTag();
+        } else if (this.CLOSE_TAG_CHARACTER == character) {
+            this.endTagName();
+            this.closeTag();
         } else {
             this.bufferTagName += character;
         }
@@ -111,11 +194,13 @@ class StartTagParser {
     }
 
     private startTagName(firstCharacter:string) {
-        this.isInStartTagProperty   = true;
+        this.isInStartTag           = true;
         this.isInTagName            = true;
         this.currentTagName         = null;
         this.bufferTagName          = firstCharacter;
         this.isCurrentTagDiscarded  = false;
+        this.lastTagName            = null;
+        this.lastTagLanguage        = null;
     }
 
     private endTagName() {
@@ -142,7 +227,7 @@ class StartTagParser {
         let isBufferAttributeNameEmpty  = (0 == this.bufferAttributeName.length);
 
         if ('>' == character && isBufferAttributeNameEmpty) {
-            this.endTag();
+            this.closeTag();
         } else if (isBlankSpace && !isBufferAttributeNameEmpty) {
             this.endAttributeNameAndDiscard();
         } else if ('=' == character && !isBufferAttributeNameEmpty) {
@@ -197,11 +282,59 @@ class StartTagParser {
         this.currentAttributeName                   = null;
     }
 
-    private endTag() {
+    private closeTag() {
+        console.log('-----');
         console.log(this.currentTagName);
         console.log(this.currentAttributeList);
-        console.log('-----');
+        // TODO if script tag has a 'src' attribute, ignore it
+        if (this.currentTagName && this.hasAttribute('src')) {
+            this.resetState();
+            return;
+        }
+
+        this.lastTagName        = this.currentTagName;
+        this.lastTagLanguage    = this.getLanguageNameFromTagNameAndAttributeList();
         this.resetState();
+    }
+
+    private hasAttribute(attributeName:string) {
+        for (let attribute of this.currentAttributeList) {
+            if (attributeName == attribute.name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private getAttributeValue(attributeName:string): string {
+        for (let attribute of this.currentAttributeList) {
+            if (attributeName == attribute.name) {
+                return attribute.value;
+            }
+        }
+
+        return null;
+    }
+
+    private getLanguageNameFromTagNameAndAttributeList(): string {
+        let type = this.getAttributeValue('type');
+
+        if (type) {
+            let index = type.lastIndexOf('/') + 1;
+            return type.substr(index);
+        } else {
+            // TODO default
+            return this.getDefaultLanguageName();
+        }
+    }
+
+    private getDefaultLanguageName(): string {
+        if ('script' == this.currentTagName) {
+            return 'javascript';
+        } else if ('style' == this.currentTagName) {
+            return 'css';
+        }
     }
 
     resetState() {
@@ -215,33 +348,42 @@ class StartTagParser {
         this.isCurrentTagDiscarded                  = false;
         this.isInAttributeName                      = false;
         this.isInAttributeValue                     = false;
-        this.isInStartTagProperty                   = false;
+        this.isInStartTag                           = false;
         this.isInTagName                            = false;
         this.lastCharacter                          = null;
     }
 
-    isInStartTag() {
-        return this.isInStartTagProperty;
+    isInTag(): boolean {
+        return this.isInStartTag;
+    }
+
+    getLastTagName(): string {
+        return this.lastTagName;
+    }
+
+    getLastTagLanguage(): string {
+        return this.lastTagLanguage;
     }
 }
 
-class EndTagParser {
+class EndTagParser implements TagParser {
     private readonly OPEN_TAG_CHARACTER = '<';
     private readonly CLOSE_TAG_CHARACTER = '>';
     private readonly END_TAG_CHARACTER = '/';
 
-    private isInEndTagProperty = false;
+    private isInEndTag = false;
     private lastCharacter:string;
     private isInTagName = false;
     private bufferTagName = null;
     private currentTagName = null;
+    private lastTagName:string = null;
 
     addCharacter(character:string) {
         if (this.isInTagName) {
             this.addCharacterToTagName(character);
-        } else if (this.isInEndTagProperty && this.CLOSE_TAG_CHARACTER == character) {
+        } else if (this.isInEndTag && this.CLOSE_TAG_CHARACTER == character) {
             this.endTag();
-        } else if (!this.isInEndTagProperty && this.OPEN_TAG_CHARACTER == this.lastCharacter && this.END_TAG_CHARACTER == character) {
+        } else if (!this.isInEndTag && this.OPEN_TAG_CHARACTER == this.lastCharacter && this.END_TAG_CHARACTER == character) {
             this.startTagName();
         }
 
@@ -263,10 +405,11 @@ class EndTagParser {
     }
 
     private startTagName() {
-        this.isInEndTagProperty = true;
+        this.isInEndTag         = true;
         this.isInTagName        = true;
         this.currentTagName     = null;
         this.bufferTagName      = '';
+        this.lastTagName        = null;
     }
 
     private endTagName() {
@@ -281,20 +424,45 @@ class EndTagParser {
     }
 
     private endTag() {
-        console.log("end " + this.currentTagName);
         console.log('-----');
+        console.log("end " + this.currentTagName);
+        this.lastTagName = this.currentTagName;
         this.resetState();
     }
 
     resetState() {
         this.bufferTagName      = null;
         this.currentTagName     = null;
-        this.isInEndTagProperty = false;
+        this.isInEndTag         = false;
         this.isInTagName        = false;
         this.lastCharacter      = null;
     }
 
-    isInStartTag() {
-        return this.isInEndTagProperty;
+    isInTag(): boolean {
+        return this.isInEndTag;
+    }
+
+    getLastTagName(): string {
+        return this.lastTagName;
+    }
+}
+
+class CommentTagParser implements TagParser {
+    private parserHelperComment:ParserHelperCommentMultiLineXml;
+
+    constructor() {
+        this.parserHelperComment = new ParserHelperCommentMultiLineXml();
+    }
+
+    addCharacter(character:string) {
+        this.parserHelperComment.addCharacter(character);
+    }
+
+    isInTag(): boolean {
+        return this.parserHelperComment.isInComment();
+    }
+
+    resetState() {
+        this.parserHelperComment.reset();
     }
 }
