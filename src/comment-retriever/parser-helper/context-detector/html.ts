@@ -38,6 +38,7 @@ export class ContextDetectorHtml implements ContextDetector {
     private endTagParser:EndTagParser;
     private commentParser:CommentTagParser;
     private currentTagParser:TagParser;
+    private isInContextProperty = true;
     private isStartTagParserEnabled = true;
     private isCurrentTagIsStartTag = false;
     private isCurrentTagIsEndTag = false;
@@ -99,11 +100,13 @@ export class ContextDetectorHtml implements ContextDetector {
         if (this.isCurrentTagIsStartTag && null != this.startTagParser.getLastTagName()) {
             this.isStartTagParserEnabled            = false;
             this.isCurrentTagIsStartTag             = false;
+            this.isInContextProperty                = false;
             this.currentLanguageZoneStartPosition   = this.characterCounter + 1;
             this.currentLanguageZoneEndPosition     = null;
         } else if (this.isCurrentTagIsEndTag && this.endTagParser.getLastTagName() == this.startTagParser.getLastTagName()) {
             this.isStartTagParserEnabled            = true;
             this.isCurrentTagIsEndTag               = false;
+            this.isInContextProperty                = true;
             this.addToLanguageZoneList(
                 this.startTagParser.getLastTagLanguage(),
                 this.currentLanguageZoneStartPosition,
@@ -128,7 +131,7 @@ export class ContextDetectorHtml implements ContextDetector {
     }
 
     isInContext(): boolean {
-        return null;
+        return this.isInContextProperty;
     }
 
     noMoreCharacter() {
@@ -189,7 +192,7 @@ class StartTagParser implements TagParser {
     private currentTagName = null;
     private currentAttributeName = null;
     private currentAttributeValueStartCharacter = null;
-    private currentAttributeList:HtmlAttribute[];
+    private currentAttributeList:HtmlAttribute[] = [];
     private lastTagName:string = null;
     private lastTagLanguage:string = null;
 
