@@ -34,10 +34,11 @@ describe('parser helper: context detector: html', () => {
         }
 
         console.log('======');
-        console.log(sourceCode.substr(31, 2));
-        console.log(sourceCode.substr(66, 2));
-        console.log(sourceCode.substr(108, 18));
-        console.log(sourceCode.substr(159, 11));
+        console.log(contextDetector.getLanguageZoneList());
+        // console.log(sourceCode.substr(31, 2));
+        // console.log(sourceCode.substr(66, 2));
+        // console.log(sourceCode.substr(108, 18));
+        // console.log(sourceCode.substr(159, 11));
     });
 
     it('should be in context by default', () => {
@@ -89,15 +90,6 @@ describe('parser helper: context detector: html', () => {
         contextDetector.addCharacter(sourceCode[36]);
         contextDetector.addCharacter(sourceCode[37]);
         expect(contextDetector.isInContext()).to.equal(false);
-    });
-
-    it.skip('without type defaults to javascript', () => {
-    });
-    it.skip('without type defaults to css', () => {
-    });
-    it.skip('script tag in a html comment', () => {
-    });
-    it.skip('script end tag in a html comment', () => {
     });
 
     it('should enter context when "script" end tag is encountered', () => {
@@ -433,6 +425,22 @@ describe('parser helper: context detector: html', () => {
         expect(languageZoneList[1].zoneList).to.be.an('array').that.have.lengthOf(1);
         expect(languageZoneList[1].zoneList[0].startPosition).to.equal(61);
         expect(languageZoneList[1].zoneList[0].endPosition).to.equal(63);
+    });
+
+    it.skip('should defaults to javascript when no type specified in script tag', () => {
+    });
+
+    it.skip('should defaults to css when no type specified in style tag', () => {
+    });
+
+    it.skip('should ignore script tags in html comments', () => {
+    });
+
+    it.skip('should ignore script end tags in html comments', () => {
+    });
+
+    it.skip('should ignore html comments in returned languages zones', () => {
+        // <script>...<!-- -->...</script> should return 2 zones
     });
 
     it('should register the last zone as processed if it is at the end of the source code', () => {

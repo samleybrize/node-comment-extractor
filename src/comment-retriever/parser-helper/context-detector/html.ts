@@ -21,13 +21,19 @@ export class SourceCodeLanguageZoneList {
     }
 }
 
+interface RawLanguageZoneList {
+    languageName:string;
+    startPosition:number;
+    endPosition:number;
+}
+
 class HtmlAttribute {
     name:string;
     value:string;
 }
 
 export class ContextDetectorHtml implements ContextDetector {
-    private languageZoneList:SourceCodeLanguageZoneList[];
+    private rawLanguageZoneList:RawLanguageZoneList[] = [];
     private startTagParser:StartTagParser;
     private endTagParser:EndTagParser;
     private commentParser:CommentTagParser;
@@ -96,19 +102,29 @@ export class ContextDetectorHtml implements ContextDetector {
             this.currentLanguageZoneStartPosition   = this.characterCounter + 1;
             this.currentLanguageZoneEndPosition     = null;
         } else if (this.isCurrentTagIsEndTag && this.endTagParser.getLastTagName() == this.startTagParser.getLastTagName()) {
-            // TODO create language zone
             this.isStartTagParserEnabled            = true;
             this.isCurrentTagIsEndTag               = false;
+            this.addToLanguageZoneList(
+                this.startTagParser.getLastTagLanguage(),
+                this.currentLanguageZoneStartPosition,
+                this.currentLanguageZoneEndPosition
+            );
             console.log('language: ' + this.startTagParser.getLastTagLanguage());
             console.log('start:    ' + this.currentLanguageZoneStartPosition);
             console.log('end:      ' + this.currentLanguageZoneEndPosition);
 
             this.currentLanguageZoneStartPosition   = null;
-            this.currentLanguageZoneEndPosition   = null;
+            this.currentLanguageZoneEndPosition     = null;
         }
 
         this.currentTagParser.resetState();
         this.currentTagParser = null;
+    }
+
+    private addToLanguageZoneList(languageName:string, startPosition:number, endPosition:number) {
+        if (!this.rawLanguageZoneList[languageName]) {
+            this.rawLanguageZoneList.push({languageName, startPosition, endPosition});
+        }
     }
 
     isInContext(): boolean {
@@ -124,7 +140,28 @@ export class ContextDetectorHtml implements ContextDetector {
     }
 
     getLanguageZoneList(): SourceCodeLanguageZoneList[] {
-        return this.languageZoneList;
+        let languageZoneList:SourceCodeLanguageZoneList[] = [];
+        let temporaryLanguageZoneList = this.getLanguageZoneListGroupedByLanguage();
+
+        for (let languageName in temporaryLanguageZoneList) {
+            languageZoneList.push(new SourceCodeLanguageZoneList(languageName, temporaryLanguageZoneList[languageName]));
+        }
+
+        return languageZoneList;
+    }
+
+    private getLanguageZoneListGroupedByLanguage(): SourceCodeZone[][] {
+        let languageZoneList:SourceCodeZone[][] = [];
+
+        for (let languageZone of this.rawLanguageZoneList) {
+            if (!languageZoneList[languageZone.languageName]) {
+                languageZoneList[languageZone.languageName] = [];
+            }
+
+            languageZoneList[languageZone.languageName].push(new SourceCodeZone(languageZone.startPosition, languageZone.endPosition));
+        }
+
+        return languageZoneList;
     }
 }
 
