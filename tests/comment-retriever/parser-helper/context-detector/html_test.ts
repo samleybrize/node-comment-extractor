@@ -57,6 +57,7 @@ describe('parser helper: context detector: html', () => {
         contextDetector.addCharacter(sourceCode[4]);
         contextDetector.addCharacter(sourceCode[5]);
         expect(contextDetector.isInContext()).to.equal(true);
+
         contextDetector.addCharacter(sourceCode[6]);
         contextDetector.addCharacter(sourceCode[7]);
         contextDetector.addCharacter(sourceCode[8]);
@@ -197,7 +198,6 @@ describe('parser helper: context detector: html', () => {
         contextDetector.addCharacter(sourceCode[38]);
         contextDetector.addCharacter(sourceCode[39]);
         contextDetector.addCharacter(sourceCode[41]);
-        contextDetector.addCharacter(sourceCode[42]);
         expect(contextDetector.isInContext()).to.equal(true);
     });
 
@@ -211,6 +211,8 @@ describe('parser helper: context detector: html', () => {
         contextDetector.addCharacter(sourceCode[3]);
         contextDetector.addCharacter(sourceCode[4]);
         contextDetector.addCharacter(sourceCode[5]);
+        expect(contextDetector.isInContext()).to.equal(true);
+
         contextDetector.addCharacter(sourceCode[6]);
         contextDetector.addCharacter(sourceCode[7]);
         contextDetector.addCharacter(sourceCode[8]);
@@ -285,7 +287,6 @@ describe('parser helper: context detector: html', () => {
         contextDetector.addCharacter(sourceCode[39]);
         contextDetector.addCharacter(sourceCode[40]);
         contextDetector.addCharacter(sourceCode[41]);
-        contextDetector.addCharacter(sourceCode[42]);
         expect(contextDetector.isInContext()).to.equal(true);
     });
 
@@ -418,29 +419,192 @@ describe('parser helper: context detector: html', () => {
         expect(languageZoneList[0].languageName).to.equal('javascript');
         expect(languageZoneList[0].zoneList).to.be.an('array').that.have.lengthOf(2);
         expect(languageZoneList[0].zoneList[0].startPosition).to.equal(31);
-        expect(languageZoneList[0].zoneList[0].endPosition).to.equal(33);
-        expect(languageZoneList[0].zoneList[1].startPosition).to.equal(103);
-        expect(languageZoneList[0].zoneList[1].endPosition).to.equal(105);
+        expect(languageZoneList[0].zoneList[0].endPosition).to.equal(32);
+        expect(languageZoneList[0].zoneList[1].startPosition).to.equal(108);
+        expect(languageZoneList[0].zoneList[1].endPosition).to.equal(109);
         expect(languageZoneList[1].languageName).to.equal('css');
         expect(languageZoneList[1].zoneList).to.be.an('array').that.have.lengthOf(1);
-        expect(languageZoneList[1].zoneList[0].startPosition).to.equal(61);
-        expect(languageZoneList[1].zoneList[0].endPosition).to.equal(63);
+        expect(languageZoneList[1].zoneList[0].startPosition).to.equal(66);
+        expect(languageZoneList[1].zoneList[0].endPosition).to.equal(67);
     });
 
-    it.skip('should defaults to javascript when no type specified in script tag', () => {
+    it('should defaults to javascript when no type specified in script tag', () => {
+        let contextDetector = new ContextDetectorHtml();
+        let sourceCode      = '<script>..</script>';
+
+        contextDetector.addCharacter(sourceCode[0]);
+        contextDetector.addCharacter(sourceCode[1]);
+        contextDetector.addCharacter(sourceCode[2]);
+        contextDetector.addCharacter(sourceCode[3]);
+        contextDetector.addCharacter(sourceCode[4]);
+        contextDetector.addCharacter(sourceCode[5]);
+        contextDetector.addCharacter(sourceCode[6]);
+        contextDetector.addCharacter(sourceCode[7]);
+        contextDetector.addCharacter(sourceCode[8]);
+        contextDetector.addCharacter(sourceCode[9]);
+        contextDetector.addCharacter(sourceCode[10]);
+        contextDetector.addCharacter(sourceCode[11]);
+        contextDetector.addCharacter(sourceCode[12]);
+        contextDetector.addCharacter(sourceCode[13]);
+        contextDetector.addCharacter(sourceCode[14]);
+        contextDetector.addCharacter(sourceCode[15]);
+        contextDetector.addCharacter(sourceCode[16]);
+        contextDetector.addCharacter(sourceCode[17]);
+        contextDetector.addCharacter(sourceCode[18]);
+
+        let languageZoneList = contextDetector.getLanguageZoneList();
+        expect(languageZoneList).to.be.an('array').that.have.lengthOf(1);
+        expect(languageZoneList[0].languageName).to.equal('javascript');
     });
 
-    it.skip('should defaults to css when no type specified in style tag', () => {
+    it('should defaults to css when no type specified in style tag', () => {
+        let contextDetector = new ContextDetectorHtml();
+        let sourceCode      = '<style>..</style>';
+
+        contextDetector.addCharacter(sourceCode[0]);
+        contextDetector.addCharacter(sourceCode[1]);
+        contextDetector.addCharacter(sourceCode[2]);
+        contextDetector.addCharacter(sourceCode[3]);
+        contextDetector.addCharacter(sourceCode[4]);
+        contextDetector.addCharacter(sourceCode[5]);
+        contextDetector.addCharacter(sourceCode[6]);
+        contextDetector.addCharacter(sourceCode[7]);
+        contextDetector.addCharacter(sourceCode[8]);
+        contextDetector.addCharacter(sourceCode[9]);
+        contextDetector.addCharacter(sourceCode[10]);
+        contextDetector.addCharacter(sourceCode[11]);
+        contextDetector.addCharacter(sourceCode[12]);
+        contextDetector.addCharacter(sourceCode[13]);
+        contextDetector.addCharacter(sourceCode[14]);
+        contextDetector.addCharacter(sourceCode[15]);
+        contextDetector.addCharacter(sourceCode[16]);
+
+        let languageZoneList = contextDetector.getLanguageZoneList();
+        expect(languageZoneList).to.be.an('array').that.have.lengthOf(1);
+        expect(languageZoneList[0].languageName).to.equal('css');
     });
 
-    it.skip('should ignore script tags in html comments', () => {
+    it('should ignore script tags in html comments', () => {
+        let contextDetector = new ContextDetectorHtml();
+        let sourceCode      = '<!--<script>..</script>-->';
+
+        contextDetector.addCharacter(sourceCode[0]);
+        contextDetector.addCharacter(sourceCode[1]);
+        contextDetector.addCharacter(sourceCode[2]);
+        contextDetector.addCharacter(sourceCode[3]);
+        contextDetector.addCharacter(sourceCode[4]);
+        contextDetector.addCharacter(sourceCode[5]);
+        contextDetector.addCharacter(sourceCode[6]);
+        contextDetector.addCharacter(sourceCode[7]);
+        contextDetector.addCharacter(sourceCode[8]);
+        contextDetector.addCharacter(sourceCode[9]);
+        contextDetector.addCharacter(sourceCode[10]);
+        contextDetector.addCharacter(sourceCode[11]);
+        expect(contextDetector.isInContext()).to.equal(true);
+
+        contextDetector.addCharacter(sourceCode[12]);
+        contextDetector.addCharacter(sourceCode[13]);
+        contextDetector.addCharacter(sourceCode[14]);
+        contextDetector.addCharacter(sourceCode[15]);
+        contextDetector.addCharacter(sourceCode[16]);
+        contextDetector.addCharacter(sourceCode[17]);
+        contextDetector.addCharacter(sourceCode[18]);
+        contextDetector.addCharacter(sourceCode[19]);
+        contextDetector.addCharacter(sourceCode[20]);
+        contextDetector.addCharacter(sourceCode[21]);
+        contextDetector.addCharacter(sourceCode[22]);
+        contextDetector.addCharacter(sourceCode[23]);
+        contextDetector.addCharacter(sourceCode[24]);
+        contextDetector.addCharacter(sourceCode[25]);
+
+        let languageZoneList = contextDetector.getLanguageZoneList();
+        expect(languageZoneList).to.be.an('array').that.have.lengthOf(0);
     });
 
-    it.skip('should ignore script end tags in html comments', () => {
+    it('should ignore script end tags in html comments', () => {
+        let contextDetector = new ContextDetectorHtml();
+        let sourceCode      = '<script>..<!--</script>-->';
+
+        contextDetector.addCharacter(sourceCode[0]);
+        contextDetector.addCharacter(sourceCode[1]);
+        contextDetector.addCharacter(sourceCode[2]);
+        contextDetector.addCharacter(sourceCode[3]);
+        contextDetector.addCharacter(sourceCode[4]);
+        contextDetector.addCharacter(sourceCode[5]);
+        contextDetector.addCharacter(sourceCode[6]);
+        contextDetector.addCharacter(sourceCode[7]);
+        contextDetector.addCharacter(sourceCode[8]);
+        contextDetector.addCharacter(sourceCode[9]);
+        contextDetector.addCharacter(sourceCode[10]);
+        contextDetector.addCharacter(sourceCode[11]);
+        contextDetector.addCharacter(sourceCode[12]);
+        contextDetector.addCharacter(sourceCode[13]);
+        contextDetector.addCharacter(sourceCode[14]);
+        contextDetector.addCharacter(sourceCode[15]);
+        contextDetector.addCharacter(sourceCode[16]);
+        contextDetector.addCharacter(sourceCode[17]);
+        contextDetector.addCharacter(sourceCode[18]);
+        contextDetector.addCharacter(sourceCode[19]);
+        contextDetector.addCharacter(sourceCode[20]);
+        contextDetector.addCharacter(sourceCode[21]);
+        contextDetector.addCharacter(sourceCode[22]);
+        contextDetector.addCharacter(sourceCode[23]);
+        contextDetector.addCharacter(sourceCode[24]);
+        contextDetector.addCharacter(sourceCode[25]);
+
+        expect(contextDetector.isInContext()).to.equal(false);
     });
 
-    it.skip('should ignore html comments in returned languages zones', () => {
-        // <script>...<!-- -->...</script> should return 2 zones
+    it('should ignore html comments in returned languages zones', () => {
+        let contextDetector = new ContextDetectorHtml();
+        let sourceCode      = '<script>..<!--</script>-->..</script>';
+
+        contextDetector.addCharacter(sourceCode[0]);
+        contextDetector.addCharacter(sourceCode[1]);
+        contextDetector.addCharacter(sourceCode[2]);
+        contextDetector.addCharacter(sourceCode[3]);
+        contextDetector.addCharacter(sourceCode[4]);
+        contextDetector.addCharacter(sourceCode[5]);
+        contextDetector.addCharacter(sourceCode[6]);
+        contextDetector.addCharacter(sourceCode[7]);
+        contextDetector.addCharacter(sourceCode[8]);
+        contextDetector.addCharacter(sourceCode[9]);
+        contextDetector.addCharacter(sourceCode[10]);
+        contextDetector.addCharacter(sourceCode[11]);
+        contextDetector.addCharacter(sourceCode[12]);
+        contextDetector.addCharacter(sourceCode[13]);
+        contextDetector.addCharacter(sourceCode[14]);
+        contextDetector.addCharacter(sourceCode[15]);
+        contextDetector.addCharacter(sourceCode[16]);
+        contextDetector.addCharacter(sourceCode[17]);
+        contextDetector.addCharacter(sourceCode[18]);
+        contextDetector.addCharacter(sourceCode[19]);
+        contextDetector.addCharacter(sourceCode[20]);
+        contextDetector.addCharacter(sourceCode[21]);
+        contextDetector.addCharacter(sourceCode[22]);
+        contextDetector.addCharacter(sourceCode[23]);
+        contextDetector.addCharacter(sourceCode[24]);
+        contextDetector.addCharacter(sourceCode[25]);
+        contextDetector.addCharacter(sourceCode[26]);
+        contextDetector.addCharacter(sourceCode[27]);
+        contextDetector.addCharacter(sourceCode[28]);
+        contextDetector.addCharacter(sourceCode[29]);
+        contextDetector.addCharacter(sourceCode[30]);
+        contextDetector.addCharacter(sourceCode[31]);
+        contextDetector.addCharacter(sourceCode[32]);
+        contextDetector.addCharacter(sourceCode[33]);
+        contextDetector.addCharacter(sourceCode[34]);
+        contextDetector.addCharacter(sourceCode[35]);
+        contextDetector.addCharacter(sourceCode[36]);
+
+        let languageZoneList = contextDetector.getLanguageZoneList();
+        expect(languageZoneList).to.be.an('array').that.have.lengthOf(2);
+        expect(languageZoneList[0].languageName).to.equal('javascript');
+        expect(languageZoneList[0].zoneList).to.be.an('array').that.have.lengthOf(2);
+        expect(languageZoneList[0].zoneList[0].startPosition).to.equal(8);
+        expect(languageZoneList[0].zoneList[0].endPosition).to.equal(9);
+        expect(languageZoneList[0].zoneList[1].startPosition).to.equal(26);
+        expect(languageZoneList[0].zoneList[1].endPosition).to.equal(27);
     });
 
     it('should register the last zone as processed if it is at the end of the source code', () => {
@@ -574,7 +738,7 @@ describe('parser helper: context detector: html', () => {
         contextDetector.addCharacter(sourceCode[54]);
         contextDetector.noMoreCharacter();
         let languageZoneList = contextDetector.getLanguageZoneList();
-        expect(languageZoneList[0].languageName).to.equal('javascript');
+        expect(languageZoneList[0].languageName).to.equal('css');
         expect(languageZoneList[0].zoneList).to.be.an('array').that.have.lengthOf(1);
         expect(languageZoneList[0].zoneList[0].startPosition).to.equal(23);
         expect(languageZoneList[0].zoneList[0].endPosition).to.equal(24);
