@@ -10,37 +10,6 @@ import { expect } from 'chai';
 import { ContextDetectorHtml } from '../../../../src';
 
 describe('parser helper: context detector: html', () => {
-    // TODO todel
-    it('test context detector html', () => {
-        let contextDetector = new ContextDetectorHtml();
-        let sourceCode  = '<script type="text/javascript">11';
-        sourceCode     += '</script>2';
-        sourceCode     += '<style type="text/css">33';
-        sourceCode     += '</style>4';
-        sourceCode     += '<script>55';
-        sourceCode     += '<!--</script>-->';
-        sourceCode     += '</script>6';
-        sourceCode     += '<style type="</style>">77';
-        sourceCode     += '<ul>';
-        sourceCode     += '</li>';
-        sourceCode     += '</style>8';
-        sourceCode     += '<!--<script type="text/javascript">99';
-        sourceCode     += '</script>-->10';
-        sourceCode     += '<script type="text/javascript" src="..">11';
-        sourceCode     += '</script>12';
-
-        for (let char of sourceCode) {
-            contextDetector.addCharacter(char);
-        }
-
-        console.log('======');
-        console.log(contextDetector.getLanguageZoneList());
-        // console.log(sourceCode.substr(31, 2));
-        // console.log(sourceCode.substr(66, 2));
-        // console.log(sourceCode.substr(108, 18));
-        // console.log(sourceCode.substr(159, 11));
-    });
-
     it('should be in context by default', () => {
         let contextDetector = new ContextDetectorHtml();
         expect(contextDetector.isInContext()).to.equal(true);
@@ -198,6 +167,68 @@ describe('parser helper: context detector: html', () => {
         contextDetector.addCharacter(sourceCode[38]);
         contextDetector.addCharacter(sourceCode[39]);
         contextDetector.addCharacter(sourceCode[41]);
+        expect(contextDetector.isInContext()).to.equal(true);
+    });
+
+    it('should not enter context when the end tag is not matching the open tag', () => {
+        let contextDetector = new ContextDetectorHtml();
+        let sourceCode      = '<script type="text/javascript">..</style>.</script>';
+
+        contextDetector.addCharacter(sourceCode[0]);
+        contextDetector.addCharacter(sourceCode[1]);
+        contextDetector.addCharacter(sourceCode[2]);
+        contextDetector.addCharacter(sourceCode[3]);
+        contextDetector.addCharacter(sourceCode[4]);
+        contextDetector.addCharacter(sourceCode[5]);
+        contextDetector.addCharacter(sourceCode[6]);
+        contextDetector.addCharacter(sourceCode[7]);
+        contextDetector.addCharacter(sourceCode[8]);
+        contextDetector.addCharacter(sourceCode[9]);
+        contextDetector.addCharacter(sourceCode[10]);
+        contextDetector.addCharacter(sourceCode[11]);
+        contextDetector.addCharacter(sourceCode[12]);
+        contextDetector.addCharacter(sourceCode[13]);
+        contextDetector.addCharacter(sourceCode[14]);
+        contextDetector.addCharacter(sourceCode[15]);
+        contextDetector.addCharacter(sourceCode[16]);
+        contextDetector.addCharacter(sourceCode[17]);
+        contextDetector.addCharacter(sourceCode[18]);
+        contextDetector.addCharacter(sourceCode[19]);
+        contextDetector.addCharacter(sourceCode[20]);
+        contextDetector.addCharacter(sourceCode[21]);
+        contextDetector.addCharacter(sourceCode[22]);
+        contextDetector.addCharacter(sourceCode[23]);
+        contextDetector.addCharacter(sourceCode[24]);
+        contextDetector.addCharacter(sourceCode[25]);
+        contextDetector.addCharacter(sourceCode[26]);
+        contextDetector.addCharacter(sourceCode[27]);
+        contextDetector.addCharacter(sourceCode[28]);
+        contextDetector.addCharacter(sourceCode[29]);
+        contextDetector.addCharacter(sourceCode[30]);
+        expect(contextDetector.isInContext()).to.equal(false);
+
+        contextDetector.addCharacter(sourceCode[31]);
+        contextDetector.addCharacter(sourceCode[32]);
+        contextDetector.addCharacter(sourceCode[33]);
+        contextDetector.addCharacter(sourceCode[34]);
+        contextDetector.addCharacter(sourceCode[35]);
+        contextDetector.addCharacter(sourceCode[36]);
+        contextDetector.addCharacter(sourceCode[37]);
+        contextDetector.addCharacter(sourceCode[38]);
+        contextDetector.addCharacter(sourceCode[39]);
+        contextDetector.addCharacter(sourceCode[40]);
+        expect(contextDetector.isInContext()).to.equal(false);
+
+        contextDetector.addCharacter(sourceCode[41]);
+        contextDetector.addCharacter(sourceCode[42]);
+        contextDetector.addCharacter(sourceCode[43]);
+        contextDetector.addCharacter(sourceCode[44]);
+        contextDetector.addCharacter(sourceCode[45]);
+        contextDetector.addCharacter(sourceCode[46]);
+        contextDetector.addCharacter(sourceCode[47]);
+        contextDetector.addCharacter(sourceCode[48]);
+        contextDetector.addCharacter(sourceCode[49]);
+        contextDetector.addCharacter(sourceCode[50]);
         expect(contextDetector.isInContext()).to.equal(true);
     });
 
@@ -555,7 +586,7 @@ describe('parser helper: context detector: html', () => {
         expect(contextDetector.isInContext()).to.equal(false);
     });
 
-    it('should ignore html comments in returned languages zones', () => {
+    it('should not ignore html comments in returned languages zones', () => {
         let contextDetector = new ContextDetectorHtml();
         let sourceCode      = '<script>..<!--</script>-->..</script>';
 
@@ -598,13 +629,11 @@ describe('parser helper: context detector: html', () => {
         contextDetector.addCharacter(sourceCode[36]);
 
         let languageZoneList = contextDetector.getLanguageZoneList();
-        expect(languageZoneList).to.be.an('array').that.have.lengthOf(2);
+        expect(languageZoneList).to.be.an('array').that.have.lengthOf(1);
         expect(languageZoneList[0].languageName).to.equal('javascript');
-        expect(languageZoneList[0].zoneList).to.be.an('array').that.have.lengthOf(2);
+        expect(languageZoneList[0].zoneList).to.be.an('array').that.have.lengthOf(1);
         expect(languageZoneList[0].zoneList[0].startPosition).to.equal(9);
-        expect(languageZoneList[0].zoneList[0].endPosition).to.equal(11);
-        expect(languageZoneList[0].zoneList[1].startPosition).to.equal(27);
-        expect(languageZoneList[0].zoneList[1].endPosition).to.equal(29);
+        expect(languageZoneList[0].zoneList[0].endPosition).to.equal(29);
     });
 
     it('should register the last zone as processed if it is at the end of the source code', () => {

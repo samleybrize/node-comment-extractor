@@ -9,13 +9,6 @@ import { ContextDetector } from './context-detector';
 import { ParserHelperCommentMultiLineXml } from '../comment/multi-line-xml';
 import { SourceCodeZone } from '../../../source-code/zone';
 
-// TODO if script with no type attribute: default to javascript
-// TODO if style with no type attribute: default to css
-
-// TODO handle html comments + test
-// TODO test end tag in an attribute
-// TODO when a handled start tag has been retrieved, only its end tag should be handled, other tags are ignored
-
 export class SourceCodeLanguageZoneList {
     constructor(public readonly languageName:string, public readonly zoneList:SourceCodeZone[]) {
     }
@@ -130,9 +123,6 @@ export class ContextDetectorHtml implements ContextDetector {
             this.currentLanguageZoneStartPosition,
             this.currentLanguageZoneEndPosition
         );
-        console.log('language: ' + this.startTagParser.getLastTagLanguage());
-        console.log('start:    ' + this.currentLanguageZoneStartPosition);
-        console.log('end:      ' + this.currentLanguageZoneEndPosition);
 
         this.currentLanguageZoneStartPosition   = null;
         this.currentLanguageZoneEndPosition     = null;
@@ -352,10 +342,6 @@ class StartTagParser implements TagParser {
     }
 
     private closeTag() {
-        console.log('-----');
-        console.log(this.currentTagName);
-        console.log(this.currentAttributeList);
-        // TODO if script tag has a 'src' attribute, ignore it
         if (this.currentTagName && this.hasAttribute('src')) {
             this.resetState();
             return;
@@ -493,8 +479,6 @@ class EndTagParser implements TagParser {
     }
 
     private endTag() {
-        console.log('-----');
-        console.log("end " + this.currentTagName);
         this.lastTagName = this.currentTagName;
         this.resetState();
     }
