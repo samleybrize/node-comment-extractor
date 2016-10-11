@@ -39,6 +39,7 @@ export class ContextDetectorHtml implements ContextDetector {
     private commentParser:CommentTagParser;
     private currentTagParser:TagParser;
     private isInContextProperty = true;
+    private isNoMoreCharacter = false;
     private isStartTagParserEnabled = true;
     private isCurrentTagIsStartTag = false;
     private isCurrentTagIsEndTag = false;
@@ -53,6 +54,10 @@ export class ContextDetectorHtml implements ContextDetector {
     }
 
     addCharacter(character:string) {
+        if (this.isNoMoreCharacter) {
+            throw "Can't add a character because noMoreCharacter() was called. Use reset() before adding any character";
+        }
+
         this.characterCounter++;
 
         if (this.currentTagParser) {
@@ -86,7 +91,7 @@ export class ContextDetectorHtml implements ContextDetector {
         } else if (this.endTagParser.isInTag()) {
             this.currentTagParser               = this.endTagParser;
             this.isCurrentTagIsEndTag           = true;
-            this.currentLanguageZoneEndPosition = this.characterCounter - 2;
+            this.currentLanguageZoneEndPosition = this.characterCounter - 1;
             this.startTagParser.resetState();
             this.commentParser.resetState();
         } else if (this.commentParser.isInTag()) {
@@ -104,24 +109,33 @@ export class ContextDetectorHtml implements ContextDetector {
             this.currentLanguageZoneStartPosition   = this.characterCounter + 1;
             this.currentLanguageZoneEndPosition     = null;
         } else if (this.isCurrentTagIsEndTag && this.endTagParser.getLastTagName() == this.startTagParser.getLastTagName()) {
-            this.isStartTagParserEnabled            = true;
-            this.isCurrentTagIsEndTag               = false;
-            this.isInContextProperty                = true;
-            this.addToLanguageZoneList(
-                this.startTagParser.getLastTagLanguage(),
-                this.currentLanguageZoneStartPosition,
-                this.currentLanguageZoneEndPosition
-            );
-            console.log('language: ' + this.startTagParser.getLastTagLanguage());
-            console.log('start:    ' + this.currentLanguageZoneStartPosition);
-            console.log('end:      ' + this.currentLanguageZoneEndPosition);
-
-            this.currentLanguageZoneStartPosition   = null;
-            this.currentLanguageZoneEndPosition     = null;
+            this.leaveCurrentLanguageZone();
         }
 
         this.currentTagParser.resetState();
         this.currentTagParser = null;
+    }
+
+    private leaveCurrentLanguageZone() {
+        if (null == this.currentLanguageZoneStartPosition) {
+            this.currentLanguageZoneEndPosition = null;
+            return;
+        }
+
+        this.isStartTagParserEnabled            = true;
+        this.isCurrentTagIsEndTag               = false;
+        this.isInContextProperty                = true;
+        this.addToLanguageZoneList(
+            this.startTagParser.getLastTagLanguage(),
+            this.currentLanguageZoneStartPosition,
+            this.currentLanguageZoneEndPosition
+        );
+        console.log('language: ' + this.startTagParser.getLastTagLanguage());
+        console.log('start:    ' + this.currentLanguageZoneStartPosition);
+        console.log('end:      ' + this.currentLanguageZoneEndPosition);
+
+        this.currentLanguageZoneStartPosition   = null;
+        this.currentLanguageZoneEndPosition     = null;
     }
 
     private addToLanguageZoneList(languageName:string, startPosition:number, endPosition:number) {
@@ -135,11 +149,26 @@ export class ContextDetectorHtml implements ContextDetector {
     }
 
     noMoreCharacter() {
-        
+        this.isNoMoreCharacter              = true;
+        this.currentLanguageZoneEndPosition = this.characterCounter + 1;
+        this.leaveCurrentLanguageZone();
     }
 
     reset() {
-        this.characterCounter = 0;
+        this.rawLanguageZoneList                = [];
+        this.currentTagParser                   = null;
+        this.isInContextProperty                = true;
+        this.isNoMoreCharacter                  = false;
+        this.isStartTagParserEnabled            = true;
+        this.isCurrentTagIsStartTag             = false;
+        this.isCurrentTagIsEndTag               = false;
+        this.currentLanguageZoneStartPosition   = null;
+        this.currentLanguageZoneEndPosition     = null;
+        this.characterCounter                   = 0;
+
+        this.startTagParser.resetState();
+        this.endTagParser.resetState();
+        this.commentParser.resetState();
     }
 
     getLanguageZoneList(): SourceCodeLanguageZoneList[] {
