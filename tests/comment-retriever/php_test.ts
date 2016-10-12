@@ -161,4 +161,8 @@ describe('comment retriever: php', () => {
             expect(commentList[0].sourceIdentifier).to.equal('php-sample');
         });
     });
+
+    it.skip('should ignore non-allowed zones', () => {
+        
+    });
 });

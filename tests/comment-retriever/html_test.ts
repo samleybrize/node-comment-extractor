@@ -19,7 +19,7 @@ describe('comment retriever: html', () => {
         let commentRetriever    = new CommentRetrieverHtml();
 
         return commentRetriever.getCommentList(sourceCode).then((commentList) => {
-            expect(commentList).to.be.an('array').that.have.lengthOf(5);
+            expect(commentList).to.be.an('array').that.have.lengthOf(6);
 
             expect(commentList[0].text).to.equal('should appear 1');
             expect(commentList[0].lineStart).to.equal(23);
@@ -37,9 +37,13 @@ describe('comment retriever: html', () => {
             expect(commentList[3].lineStart).to.equal(9);
             expect(commentList[3].sourceIdentifier).to.equal('html-sample');
 
-            expect(commentList[4].text).to.equal('should appear 5');
-            expect(commentList[4].lineStart).to.equal(13);
+            expect(commentList[4].text).to.equal('-->');
+            expect(commentList[4].lineStart).to.equal(10);
             expect(commentList[4].sourceIdentifier).to.equal('html-sample');
+
+            expect(commentList[5].text).to.equal('should appear 5');
+            expect(commentList[5].lineStart).to.equal(13);
+            expect(commentList[5].sourceIdentifier).to.equal('html-sample');
         });
     });
 
@@ -52,22 +56,24 @@ describe('comment retriever: html', () => {
 
         return commentRetriever.getCommentList(sourceCode1)
             .then((commentList) => {
-                expect(commentList).to.be.an('array').that.have.lengthOf(5);
+                expect(commentList).to.be.an('array').that.have.lengthOf(6);
                 expect(commentList[0].lineStart).to.equal(23);
                 expect(commentList[1].lineStart).to.equal(24);
                 expect(commentList[2].lineStart).to.equal(5);
                 expect(commentList[3].lineStart).to.equal(9);
-                expect(commentList[4].lineStart).to.equal(13);
+                expect(commentList[4].lineStart).to.equal(10);
+                expect(commentList[5].lineStart).to.equal(13);
 
                 return commentRetriever.getCommentList(sourceCode2);
             })
             .then((commentList) => {
-                expect(commentList).to.be.an('array').that.have.lengthOf(5);
+                expect(commentList).to.be.an('array').that.have.lengthOf(6);
                 expect(commentList[0].lineStart).to.equal(23);
                 expect(commentList[1].lineStart).to.equal(24);
                 expect(commentList[2].lineStart).to.equal(5);
                 expect(commentList[3].lineStart).to.equal(9);
-                expect(commentList[4].lineStart).to.equal(13);
+                expect(commentList[4].lineStart).to.equal(10);
+                expect(commentList[5].lineStart).to.equal(13);
             })
         ;
     });
@@ -103,5 +109,9 @@ describe('comment retriever: html', () => {
             expect(commentList[0].lineStart).to.equal(2);
             expect(commentList[0].sourceIdentifier).to.equal('html-sample');
         });
+    });
+
+    it.skip('should ignore non-allowed zones', () => {
+        
     });
 });

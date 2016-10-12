@@ -9,6 +9,7 @@ import { Comment } from '../comment';
 import { CommentRetriever } from './comment-retriever';
 import { CommentRetrieverFactory } from './factory';
 import { ParserHelper } from './parser-helper/parser-helper';
+import { ParserHelperDeadZoneAllowedZone } from './parser-helper/dead-zone/allowed-zone';
 import { ParserHelperDeadZoneCollection } from './parser-helper/dead-zone/dead-zone-collection';
 import { ParserHelperDeadZoneIgnoredZone } from './parser-helper/dead-zone/ignored-zone';
 import { ParserHelperDeadZoneXmlTag } from './parser-helper/dead-zone/xml-tag';
@@ -20,7 +21,7 @@ import { SourceCodeZone } from '../source-code/zone';
 export class CommentRetrieverHtml implements CommentRetriever {
     private commentRetrieverFactory:CommentRetrieverFactory;
 
-    getCommentList(sourceCode:SourceCode, ignoredZoneList?:SourceCodeZone[]): Promise<Comment[]> {
+    getCommentList(sourceCode:SourceCode, ignoredZoneList?:SourceCodeZone[], allowedZoneList?:SourceCodeZone[]): Promise<Comment[]> {
         let parserHelperDeadZone    = new ParserHelperDeadZoneCollection();
         parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneXmlTag());
         let parserHelperComment     = new ParserHelperCommentMultiLineXml();
@@ -29,6 +30,10 @@ export class CommentRetrieverHtml implements CommentRetriever {
 
         if (ignoredZoneList) {
             parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneIgnoredZone(ignoredZoneList));
+        }
+
+        if (allowedZoneList) {
+            parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneAllowedZone(allowedZoneList));
         }
 
         return parserHelper.getCommentList()
@@ -44,7 +49,7 @@ export class CommentRetrieverHtml implements CommentRetriever {
         }
 
         let languageZone = languageZoneList.shift();
-        let parserHelper;
+        let parserHelper:CommentRetriever;
 
         try {
             parserHelper = this.getCommentRetrieverFactory().getNewCommentRetriever(languageZone.languageName);
@@ -53,9 +58,9 @@ export class CommentRetrieverHtml implements CommentRetriever {
         }
 
         sourceCode.rewind();
-        return parserHelper.getCommentList(sourceCode)
+        return parserHelper.getCommentList(sourceCode, null, [languageZone.zone])
             .then((languageZoneCommentList) => {
-                // TODO merge comment list
+                commentList = commentList.concat(languageZoneCommentList);
                 return this.processLanguageZoneList(sourceCode, languageZoneList, commentList);
             })
         ;

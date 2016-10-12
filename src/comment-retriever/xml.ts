@@ -9,6 +9,7 @@ import { Comment } from '../comment';
 import { CommentRetriever } from './comment-retriever';
 import { CommentRetrieverFactory } from './factory';
 import { ParserHelper } from './parser-helper/parser-helper';
+import { ParserHelperDeadZoneAllowedZone } from './parser-helper/dead-zone/allowed-zone';
 import { ParserHelperDeadZoneCollection } from './parser-helper/dead-zone/dead-zone-collection';
 import { ParserHelperDeadZoneIgnoredZone } from './parser-helper/dead-zone/ignored-zone';
 import { ParserHelperDeadZoneXmlTag } from './parser-helper/dead-zone/xml-tag';
@@ -17,7 +18,7 @@ import { SourceCode } from '../source-code/source-code';
 import { SourceCodeZone } from '../source-code/zone';
 
 export class CommentRetrieverXml implements CommentRetriever {
-    getCommentList(sourceCode:SourceCode, ignoredZoneList?:SourceCodeZone[]): Promise<Comment[]> {
+    getCommentList(sourceCode:SourceCode, ignoredZoneList?:SourceCodeZone[], allowedZoneList?:SourceCodeZone[]): Promise<Comment[]> {
         let parserHelperDeadZone    = new ParserHelperDeadZoneCollection();
         parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneXmlTag());
         let parserHelperComment     = new ParserHelperCommentMultiLineXml();
@@ -25,6 +26,10 @@ export class CommentRetrieverXml implements CommentRetriever {
 
         if (ignoredZoneList) {
             parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneIgnoredZone(ignoredZoneList));
+        }
+
+        if (allowedZoneList) {
+            parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneAllowedZone(allowedZoneList));
         }
 
         return parserHelper.getCommentList();

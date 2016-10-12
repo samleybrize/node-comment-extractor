@@ -10,6 +10,7 @@ import { CommentRetriever } from './comment-retriever';
 import { CommentRetrieverFactory } from './factory';
 import { ContextDetectorPhp } from './parser-helper/context-detector/php';
 import { ParserHelper } from './parser-helper/parser-helper';
+import { ParserHelperDeadZoneAllowedZone } from './parser-helper/dead-zone/allowed-zone';
 import { ParserHelperDeadZoneCollection } from './parser-helper/dead-zone/dead-zone-collection';
 import { ParserHelperDeadZoneDoubleQuotedString } from './parser-helper/dead-zone/double-quoted-string';
 import { ParserHelperDeadZoneHeredocString } from './parser-helper/dead-zone/heredoc-string';
@@ -25,7 +26,7 @@ import { SourceCodeZone } from '../source-code/zone';
 export class CommentRetrieverPhp implements CommentRetriever {
     private commentRetrieverFactory:CommentRetrieverFactory;
 
-    getCommentList(sourceCode:SourceCode, ignoredZoneList?:SourceCodeZone[]): Promise<Comment[]> {
+    getCommentList(sourceCode:SourceCode, ignoredZoneList?:SourceCodeZone[], allowedZoneList?:SourceCodeZone[]): Promise<Comment[]> {
         let contextDetector         = new ContextDetectorPhp();
         let parserHelperDeadZone    = new ParserHelperDeadZoneCollection();
         parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneDoubleQuotedString());
@@ -39,6 +40,10 @@ export class CommentRetrieverPhp implements CommentRetriever {
 
         if (ignoredZoneList) {
             parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneIgnoredZone(ignoredZoneList));
+        }
+
+        if (allowedZoneList) {
+            parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneAllowedZone(allowedZoneList));
         }
 
         let commentListPhp:Comment[];

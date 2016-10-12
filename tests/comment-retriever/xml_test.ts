@@ -82,4 +82,8 @@ describe('comment retriever: xml', () => {
             expect(commentList[0].sourceIdentifier).to.equal('xml-sample');
         });
     });
+
+    it.skip('should ignore non-allowed zones', () => {
+        
+    });
 });

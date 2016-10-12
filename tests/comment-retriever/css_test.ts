@@ -94,4 +94,8 @@ describe('comment retriever: css', () => {
             expect(commentList[0].sourceIdentifier).to.equal('css-sample');
         });
     });
+
+    it.skip('should ignore non-allowed zones', () => {
+        
+    });
 });

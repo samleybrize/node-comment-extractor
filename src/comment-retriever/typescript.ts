@@ -9,6 +9,7 @@ import { Comment } from '../comment';
 import { CommentRetriever } from './comment-retriever';
 import { CommentRetrieverFactory } from './factory';
 import { ParserHelper } from './parser-helper/parser-helper';
+import { ParserHelperDeadZoneAllowedZone } from './parser-helper/dead-zone/allowed-zone';
 import { ParserHelperDeadZoneBacktickedString } from './parser-helper/dead-zone/backticked-string';
 import { ParserHelperDeadZoneCollection } from './parser-helper/dead-zone/dead-zone-collection';
 import { ParserHelperDeadZoneDoubleQuotedString } from './parser-helper/dead-zone/double-quoted-string';
@@ -21,7 +22,7 @@ import { SourceCode } from '../source-code/source-code';
 import { SourceCodeZone } from '../source-code/zone';
 
 export class CommentRetrieverTypescript implements CommentRetriever {
-    getCommentList(sourceCode:SourceCode, ignoredZoneList?:SourceCodeZone[]): Promise<Comment[]> {
+    getCommentList(sourceCode:SourceCode, ignoredZoneList?:SourceCodeZone[], allowedZoneList?:SourceCodeZone[]): Promise<Comment[]> {
         let parserHelperDeadZone    = new ParserHelperDeadZoneCollection();
         parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneBacktickedString());
         parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneDoubleQuotedString());
@@ -33,6 +34,10 @@ export class CommentRetrieverTypescript implements CommentRetriever {
 
         if (ignoredZoneList) {
             parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneIgnoredZone(ignoredZoneList));
+        }
+
+        if (allowedZoneList) {
+            parserHelperDeadZone.addParserHelper(new ParserHelperDeadZoneAllowedZone(allowedZoneList));
         }
 
         return parserHelper.getCommentList();

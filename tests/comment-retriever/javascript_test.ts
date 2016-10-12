@@ -112,4 +112,8 @@ describe('comment retriever: javascript', () => {
             expect(commentList[0].sourceIdentifier).to.equal('js-sample');
         });
     });
+
+    it.skip('should ignore non-allowed zones', () => {
+        
+    });
 });

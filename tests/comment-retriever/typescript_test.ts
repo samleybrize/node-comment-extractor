@@ -112,4 +112,8 @@ describe('comment retriever: typescript', () => {
             expect(commentList[0].sourceIdentifier).to.equal('ts-sample');
         });
     });
+
+    it.skip('should ignore non-allowed zones', () => {
+        
+    });
 });
