@@ -95,7 +95,19 @@ describe('comment retriever: css', () => {
         });
     });
 
-    it.skip('should ignore non-allowed zones', () => {
-        
+    it('should ignore non-allowed zones', () => {
+        let sourceCodeContent   = '/* ignored */ \n /* comment */';
+        let sourceCode          = new SourceCodeString('css-sample', sourceCodeContent);
+        let commentRetriever    = new CommentRetrieverCss();
+        let allowedZoneList     = [
+            new SourceCodeZone(13, 29),
+        ];
+
+        return commentRetriever.getCommentList(sourceCode, null, allowedZoneList).then((commentList) => {
+            expect(commentList).to.be.an('array').that.have.lengthOf(1);
+            expect(commentList[0].text).to.equal('comment');
+            expect(commentList[0].lineStart).to.equal(2);
+            expect(commentList[0].sourceIdentifier).to.equal('css-sample');
+        });
     });
 });

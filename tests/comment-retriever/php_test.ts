@@ -162,7 +162,20 @@ describe('comment retriever: php', () => {
         });
     });
 
-    it.skip('should ignore non-allowed zones', () => {
-        
+    it('should ignore non-allowed zones', () => {
+        let sourceCodeContent   = '<?php\n// ignored\n// comment';
+        let sourceCode          = new SourceCodeString('php-sample', sourceCodeContent);
+        let commentRetriever    = new CommentRetrieverPhp();
+        let allowedZoneList     = [
+            new SourceCodeZone(1, 6),
+            new SourceCodeZone(16, 27),
+        ];
+
+        return commentRetriever.getCommentList(sourceCode, null, allowedZoneList).then((commentList) => {
+            expect(commentList).to.be.an('array').that.have.lengthOf(1);
+            expect(commentList[0].text).to.equal('comment');
+            expect(commentList[0].lineStart).to.equal(3);
+            expect(commentList[0].sourceIdentifier).to.equal('php-sample');
+        });
     });
 });

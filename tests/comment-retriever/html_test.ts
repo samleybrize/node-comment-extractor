@@ -128,7 +128,19 @@ describe('comment retriever: html', () => {
         });
     });
 
-    it.skip('should ignore non-allowed zones', () => {
-        
+    it('should ignore non-allowed zones', () => {
+        let sourceCodeContent   = '<!-- ignored --> \n <!-- comment -->';
+        let sourceCode          = new SourceCodeString('html-sample', sourceCodeContent);
+        let commentRetriever    = new CommentRetrieverHtml();
+        let allowedZoneList     = [
+            new SourceCodeZone(16, 35),
+        ];
+
+        return commentRetriever.getCommentList(sourceCode, null, allowedZoneList).then((commentList) => {
+            expect(commentList).to.be.an('array').that.have.lengthOf(1);
+            expect(commentList[0].text).to.equal('comment');
+            expect(commentList[0].lineStart).to.equal(2);
+            expect(commentList[0].sourceIdentifier).to.equal('html-sample');
+        });
     });
 });
