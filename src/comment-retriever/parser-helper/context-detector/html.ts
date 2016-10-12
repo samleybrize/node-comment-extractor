@@ -9,15 +9,9 @@ import { ContextDetector } from './context-detector';
 import { ParserHelperCommentMultiLineXml } from '../comment/multi-line-xml';
 import { SourceCodeZone } from '../../../source-code/zone';
 
-export class SourceCodeLanguageZoneList {
-    constructor(public readonly languageName:string, public readonly zoneList:SourceCodeZone[]) {
+export class SourceCodeLanguageZone {
+    constructor(public readonly languageName:string, public readonly zone:SourceCodeZone) {
     }
-}
-
-interface RawLanguageZoneList {
-    languageName:string;
-    startPosition:number;
-    endPosition:number;
 }
 
 class HtmlAttribute {
@@ -26,7 +20,7 @@ class HtmlAttribute {
 }
 
 export class ContextDetectorHtml implements ContextDetector {
-    private rawLanguageZoneList:RawLanguageZoneList[] = [];
+    private rawLanguageZoneList:SourceCodeLanguageZone[] = [];
     private startTagParser:StartTagParser;
     private endTagParser:EndTagParser;
     private commentParser:CommentTagParser;
@@ -130,7 +124,13 @@ export class ContextDetectorHtml implements ContextDetector {
 
     private addToLanguageZoneList(languageName:string, startPosition:number, endPosition:number) {
         if (!this.rawLanguageZoneList[languageName]) {
-            this.rawLanguageZoneList.push({languageName, startPosition, endPosition});
+            this.rawLanguageZoneList.push(new SourceCodeLanguageZone(
+                languageName,
+                new SourceCodeZone(
+                    startPosition,
+                    endPosition
+                )
+            ));
         }
     }
 
@@ -161,29 +161,8 @@ export class ContextDetectorHtml implements ContextDetector {
         this.commentParser.resetState();
     }
 
-    getLanguageZoneList(): SourceCodeLanguageZoneList[] {
-        let languageZoneList:SourceCodeLanguageZoneList[] = [];
-        let temporaryLanguageZoneList = this.getLanguageZoneListGroupedByLanguage();
-
-        for (let languageName in temporaryLanguageZoneList) {
-            languageZoneList.push(new SourceCodeLanguageZoneList(languageName, temporaryLanguageZoneList[languageName]));
-        }
-
-        return languageZoneList;
-    }
-
-    private getLanguageZoneListGroupedByLanguage(): SourceCodeZone[][] {
-        let languageZoneList:SourceCodeZone[][] = [];
-
-        for (let languageZone of this.rawLanguageZoneList) {
-            if (!languageZoneList[languageZone.languageName]) {
-                languageZoneList[languageZone.languageName] = [];
-            }
-
-            languageZoneList[languageZone.languageName].push(new SourceCodeZone(languageZone.startPosition, languageZone.endPosition));
-        }
-
-        return languageZoneList;
+    getLanguageZoneList(): SourceCodeLanguageZone[] {
+        return this.rawLanguageZoneList;
     }
 }
 
