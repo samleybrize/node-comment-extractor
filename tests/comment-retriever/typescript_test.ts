@@ -118,7 +118,7 @@ describe('comment retriever: typescript', () => {
         let sourceCode          = new SourceCodeString('ts-sample', sourceCodeContent);
         let commentRetriever    = new CommentRetrieverTypescript();
         let allowedZoneList     = [
-            new SourceCodeZone(13, 29),
+            new SourceCodeZone(13, 30),
         ];
 
         return commentRetriever.getCommentList(sourceCode, null, allowedZoneList).then((commentList) => {

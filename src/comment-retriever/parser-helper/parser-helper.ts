@@ -76,7 +76,7 @@ export class ParserHelper {
             this.contextDetector.addCharacter(character);
 
             if (!this.contextDetector.isInContext()) {
-                // TODO this.parserHelperDeadZone.nextCharacterIsIgnored();
+                this.parserHelperDeadZone.nextCharacterIsIgnored();
                 return;
             }
         }

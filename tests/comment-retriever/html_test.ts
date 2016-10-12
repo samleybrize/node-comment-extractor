@@ -133,7 +133,7 @@ describe('comment retriever: html', () => {
         let sourceCode          = new SourceCodeString('html-sample', sourceCodeContent);
         let commentRetriever    = new CommentRetrieverHtml();
         let allowedZoneList     = [
-            new SourceCodeZone(16, 35),
+            new SourceCodeZone(16, 36),
         ];
 
         return commentRetriever.getCommentList(sourceCode, null, allowedZoneList).then((commentList) => {

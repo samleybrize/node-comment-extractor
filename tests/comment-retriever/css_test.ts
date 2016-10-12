@@ -100,7 +100,7 @@ describe('comment retriever: css', () => {
         let sourceCode          = new SourceCodeString('css-sample', sourceCodeContent);
         let commentRetriever    = new CommentRetrieverCss();
         let allowedZoneList     = [
-            new SourceCodeZone(13, 29),
+            new SourceCodeZone(13, 30),
         ];
 
         return commentRetriever.getCommentList(sourceCode, null, allowedZoneList).then((commentList) => {

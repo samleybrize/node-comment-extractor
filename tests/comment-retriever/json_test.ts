@@ -118,7 +118,7 @@ describe('comment retriever: json', () => {
         let sourceCode          = new SourceCodeString('json-sample', sourceCodeContent);
         let commentRetriever    = new CommentRetrieverJson();
         let allowedZoneList     = [
-            new SourceCodeZone(13, 29),
+            new SourceCodeZone(13, 30),
         ];
 
         return commentRetriever.getCommentList(sourceCode, null, allowedZoneList).then((commentList) => {

@@ -358,7 +358,6 @@ class StartTagParser implements TagParser {
             let index = type.lastIndexOf('/') + 1;
             return type.substr(index);
         } else {
-            // TODO default
             return this.getDefaultLanguageName();
         }
     }

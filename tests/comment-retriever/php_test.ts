@@ -168,7 +168,7 @@ describe('comment retriever: php', () => {
         let commentRetriever    = new CommentRetrieverPhp();
         let allowedZoneList     = [
             new SourceCodeZone(1, 6),
-            new SourceCodeZone(16, 27),
+            new SourceCodeZone(16, 28),
         ];
 
         return commentRetriever.getCommentList(sourceCode, null, allowedZoneList).then((commentList) => {

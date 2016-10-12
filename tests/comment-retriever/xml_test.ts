@@ -88,7 +88,7 @@ describe('comment retriever: xml', () => {
         let sourceCode          = new SourceCodeString('xml-sample', sourceCodeContent);
         let commentRetriever    = new CommentRetrieverXml();
         let allowedZoneList     = [
-            new SourceCodeZone(16, 35),
+            new SourceCodeZone(16, 36),
         ];
 
         return commentRetriever.getCommentList(sourceCode, null, allowedZoneList).then((commentList) => {
