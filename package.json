@@ -22,7 +22,7 @@
         "pretest": "npm run tsc",
         "tsc": "tsc",
         "pretsc": "rm -rf ./dist ",
-        "lint": "tslint './src/**/*.ts' './tests/**/*.ts'",
+        "lint": "tslint -e './tests/fixtures/**' './src/**/*.ts' './tests/**/*.ts'",
         "prepublish": "npm run tsc"
     },
     "dependencies": {
