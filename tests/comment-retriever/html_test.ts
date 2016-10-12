@@ -9,7 +9,8 @@ import { expect } from 'chai';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { CommentRetrieverHtml, SourceCodeString, SourceCodeZone } from '../../src';
+import { Comment, CommentRetrieverFactory, CommentRetrieverHtml, SourceCodeString, SourceCodeZone } from '../../src';
+import { CommentRetrieverMock } from '../mock/comment-retriever/comment-retriever-mock';
 
 describe('comment retriever: html', () => {
     it('should return all comments', () => {
@@ -91,8 +92,24 @@ describe('comment retriever: html', () => {
         });
     });
 
-    it.skip('should use the given factory', () => {
-        //
+    it('should use the given factory', () => {
+        let commentRetrieverMock    = new CommentRetrieverMock();
+        commentRetrieverMock.setCommentList([
+            new Comment('mock comment', 128, 'mock'),
+        ]);
+        let commentRetrieverFactory = new CommentRetrieverFactory();
+        commentRetrieverFactory.addBuilder('javascript', () => commentRetrieverMock);
+        let commentRetriever        = new CommentRetrieverHtml();
+        commentRetriever.setCommentRetrieverFactory(commentRetrieverFactory);
+        let sourceCodeContent       = '<script type="text/javascript">...</script>';
+        let sourceCode              = new SourceCodeString('php-sample', sourceCodeContent);
+
+        return commentRetriever.getCommentList(sourceCode).then((commentList) => {
+            expect(commentList).to.be.an('array').that.have.lengthOf(1);
+            expect(commentList[0].text).to.equal('mock comment');
+            expect(commentList[0].lineStart).to.equal(128);
+            expect(commentList[0].sourceIdentifier).to.equal('mock');
+        });
     });
 
     it('should ignore ignored zones', () => {
