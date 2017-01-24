@@ -7,7 +7,7 @@
         "parser",
         "todo"
     ],
-    "version": "0.8.0",
+    "version": "0.8.1",
     "repository": "samleybrize/node-comment-extractor",
     "author": "Stephen Berquet",
     "license": "MIT",
@@ -16,14 +16,14 @@
     },
     "main": "dist/src/index.js",
     "scripts": {
-        "postinstall": "typings install",
+        "install-dev": "npm install && typings install",
         "typings": "typings",
         "test": "mocha ./dist/tests --recursive --require source-map-support/register",
         "pretest": "npm run tsc",
         "tsc": "tsc",
         "pretsc": "rm -rf ./dist ",
         "lint": "tslint -e './tests/fixtures/**' './src/**/*.ts' './tests/**/*.ts'",
-        "prepublish": "npm run tsc"
+        "prepublish": "typings install && npm run tsc"
     },
     "dependencies": {
         "mz": "^2.4.0"
